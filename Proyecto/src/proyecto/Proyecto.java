@@ -23,4 +23,9 @@ public class Proyecto {
         //cargar Usuarios
     }
     
+    
+    public int Sumar(){
+        return 1;
+    }
+    
 }
