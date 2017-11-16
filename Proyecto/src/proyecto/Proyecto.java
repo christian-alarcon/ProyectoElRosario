@@ -19,4 +19,8 @@ public class Proyecto {
         
     }
     
+    public void cargarUsuarios(){
+        //cargar Usuarios
+    }
+    
 }
