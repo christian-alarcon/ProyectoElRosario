@@ -9,7 +9,7 @@ package Cuotas;
  *
  * @author Diego
  */
-public class Cuotas extends javax.swing.JFrame {
+public class Cuotas extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form Cuotas
@@ -48,7 +48,8 @@ public class Cuotas extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblBusqueda = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setClosable(true);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel2.setText("Cuotas");

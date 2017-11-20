@@ -9,7 +9,7 @@ package Pagos;
  *
  * @author Diego
  */
-public class Pagos extends javax.swing.JFrame {
+public class Pagos extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form Pagos
@@ -48,7 +48,7 @@ public class Pagos extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblBusqueda = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setClosable(true);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel2.setText("Pagos");

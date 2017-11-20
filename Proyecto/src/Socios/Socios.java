@@ -9,7 +9,7 @@ package Socios;
  *
  * @author Diego
  */
-public class Socios extends javax.swing.JFrame {
+public class Socios extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form Socios
@@ -50,7 +50,8 @@ public class Socios extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblBusqueda = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setClosable(true);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel2.setText("Socios");
