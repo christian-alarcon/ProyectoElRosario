@@ -91,10 +91,11 @@
                           <Component id="btnBuscar" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                              <Component id="txtMotivo" min="-2" pref="231" max="-2" attributes="0"/>
-                              <Component id="txtValor" min="-2" pref="231" max="-2" attributes="0"/>
+                              <Component id="txtMotivo" pref="231" max="32767" attributes="0"/>
+                              <Component id="txtValor" pref="231" max="32767" attributes="0"/>
+                              <Component id="jDateChooser1" alignment="0" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
@@ -109,19 +110,22 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="lblMotivo" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="txtMotivo" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
+                      <Component id="txtMotivo" alignment="3" min="-2" pref="25" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="txtValor" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
+                      <Component id="txtValor" alignment="3" min="-2" pref="25" max="-2" attributes="0"/>
                       <Component id="lblValor" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="lblFecha" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="lblFecha" min="-2" max="-2" attributes="0"/>
+                      <Component id="jDateChooser1" min="-2" pref="25" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="lblSocio" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="txtSocio" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
+                      <Component id="txtSocio" alignment="3" min="-2" pref="25" max="-2" attributes="0"/>
                       <Component id="btnBuscar" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -179,6 +183,8 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="jLabel1"/>
           </Properties>
+        </Component>
+        <Component class="com.toedter.calendar.JDateChooser" name="jDateChooser1">
         </Component>
       </SubComponents>
     </Container>
@@ -273,8 +279,8 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="txtBusqueda" min="-2" pref="20" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="txtBusqueda" min="-2" pref="25" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jScrollPane1" min="-2" pref="249" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
