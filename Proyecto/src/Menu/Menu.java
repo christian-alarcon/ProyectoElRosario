@@ -70,7 +70,7 @@ public class Menu extends javax.swing.JFrame {
 
         jMenu2.setText("Configuracion");
 
-        jMenuItem1.setText("jMenuItem1");
+        jMenuItem1.setText("Ayuda");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem1ActionPerformed(evt);
