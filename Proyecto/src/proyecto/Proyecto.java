@@ -16,11 +16,7 @@ public class Proyecto {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-        //comentario
-        //comentario2
-        //comentario3.1
-        //comentario4
+
         Proyecto.estilo();
         Login l=new Login();
         l.setVisible(true);
