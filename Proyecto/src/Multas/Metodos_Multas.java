@@ -78,4 +78,8 @@ public class Metodos_Multas {
         tabla.setModel(modelo);
       
     }
+    
+    public void insertar(){
+    
+    }
 }//fin de la clase
