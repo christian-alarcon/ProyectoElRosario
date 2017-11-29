@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package proyecto;
+import Login.Login;
 
 /**
  *
@@ -20,6 +21,9 @@ public class Proyecto {
         //comentario2
         //comentario3.1
         //comentario4
+        Login l=new Login();
+        l.show();
+     
     }
     
     public void cargarUsuarios(){
