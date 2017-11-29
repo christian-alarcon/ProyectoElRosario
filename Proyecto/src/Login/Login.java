@@ -28,7 +28,7 @@ public class Login extends javax.swing.JFrame {
         Usuario = txtUsuario.getText();
         Password = txtContrasena.getText();
         Connection con;
-        con = Conexion.GetConnection();
+        con = new Conexion().GetConnection();
         String consulta = "CALL SP_UsuariosAcceso ('" + txtUsuario.getText() + "','" + txtContrasena.getText() + "') ";
         try {
             java.sql.Statement st = con.createStatement();
@@ -77,6 +77,8 @@ public class Login extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel2.setText("Contraseña:");
 
+        txtUsuario.setText("christian");
+
         jButton1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jButton1.setText("Cerrar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -92,6 +94,8 @@ public class Login extends javax.swing.JFrame {
                 jButton2ActionPerformed(evt);
             }
         });
+
+        txtContrasena.setText("1234");
 
         lblError.setFont(new java.awt.Font("Sitka Text", 1, 12)); // NOI18N
         lblError.setForeground(new java.awt.Color(204, 0, 0));

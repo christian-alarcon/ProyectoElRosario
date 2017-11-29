@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package Conexion;
-import com.mysql.jdbc.Connection;
+import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
@@ -15,11 +15,12 @@ import javax.swing.JOptionPane;
  * @author Joel
  */
 public class Conexion {
+    
       
-    public static java.sql.Connection GetConnection()
+    public static Connection GetConnection()
     {
-        java.sql.Connection conexion=null;
-               try
+        Connection conexion=null;
+        try
         {
             Class.forName("com.mysql.jdbc.Driver");
             String servidor = "jdbc:mysql://localhost/proyectoelrosario";
