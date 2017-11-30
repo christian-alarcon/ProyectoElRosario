@@ -5,7 +5,15 @@
  */
 package Multas;
 
+import java.text.ParseException;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 /**
  *
@@ -23,8 +31,23 @@ public class Multas extends javax.swing.JInternalFrame {
 
     
     public void inicio(){
-        multas=new Metodos_Multas();
+       multas=new Metodos_Multas();
        multas.cargarTabla(tblBusqueda);
+       
+       ((JTextField) this.txtFecha.getDateEditor()).setEditable(false);
+       iniciarFecha();
+    }
+    
+    public void limpiar(){
+        txtMotivo.setText("");
+        txtValor.setText("");
+        txtSocio.setText("");
+        iniciarFecha();
+    }
+    
+    private void iniciarFecha(){
+        Calendar c2 = new GregorianCalendar();
+        txtFecha.setCalendar(c2);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -45,7 +68,7 @@ public class Multas extends javax.swing.JInternalFrame {
         txtValor = new javax.swing.JTextField();
         btnBuscar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        txtFecha = new com.toedter.calendar.JDateChooser();
         jLabel2 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         btnInserta = new javax.swing.JButton();
@@ -77,6 +100,8 @@ public class Multas extends javax.swing.JInternalFrame {
 
         jLabel1.setText("jLabel1");
 
+        txtFecha.setDateFormatString("dd-MM-yyyy");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -99,7 +124,7 @@ public class Multas extends javax.swing.JInternalFrame {
                             .addComponent(jLabel1)
                             .addComponent(txtMotivo, javax.swing.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)
                             .addComponent(txtValor, javax.swing.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)
-                            .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(txtFecha, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -117,7 +142,7 @@ public class Multas extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblFecha)
-                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(12, 12, 12)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblSocio)
@@ -253,6 +278,23 @@ public class Multas extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtBusquedaKeyReleased
 
     private void btnInsertaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertaActionPerformed
+        
+           
+               String multa=txtMotivo.getText();
+               double valor=Double.parseDouble(txtValor.getText());
+               
+               String fecha=Metodos_Multas.fechaMySQL(txtFecha);
+               
+               int id_socio=Integer.valueOf(txtSocio.getText());
+               
+               if(multas.insertar(multa,valor,fecha,id_socio)==1){
+                   JOptionPane.showMessageDialog(null, "Multa ingresada");
+                   multas.cargarTabla(tblBusqueda);
+                   limpiar();
+               }
+               else{
+                   JOptionPane.showMessageDialog(null, "No se pudo ingresar la multa");
+               }
 
     }//GEN-LAST:event_btnInsertaActionPerformed
 
@@ -295,7 +337,6 @@ public class Multas extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnInserta;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel6;
@@ -309,6 +350,7 @@ public class Multas extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lblValor;
     private javax.swing.JTable tblBusqueda;
     private javax.swing.JTextField txtBusqueda;
+    private com.toedter.calendar.JDateChooser txtFecha;
     private javax.swing.JTextField txtMotivo;
     private javax.swing.JTextField txtSocio;
     private javax.swing.JTextField txtValor;
