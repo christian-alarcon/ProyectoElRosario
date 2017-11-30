@@ -331,7 +331,7 @@ public class Sesion extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCliEliminarActionPerformed
 
     private void btnCliGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliGuardar1ActionPerformed
-        // TODO add your handling code here:
+        // TODO add your handling code here: jkadsfd
     }//GEN-LAST:event_btnCliGuardar1ActionPerformed
 
     private void btnCliActualizar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliActualizar1ActionPerformed
