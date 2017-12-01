@@ -14,19 +14,22 @@ import Conexion.Conexion;
 import Menu.Menu;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 
 public class Login_Metodos {
     
  public static String Usuario;
     public static String Password;  
     
-    public void IniciarSesion() {
+    public void IniciarSesion(JTextField txtUsuario,JTextField txtContrasena,JLabel lblError) {
         Login l=new Login();
-        Usuario = l.txtUsuario.getText();
-        Password = l.txtContrasena.getText();
+        Usuario = txtUsuario.getText();
+        Password = txtContrasena.getText();
         Connection con;
         con = Conexion.GetConnection();
-        String consulta = "CALL SP_UsuariosAcceso ('" + Usuario + "','" + Password + "') ";
+        String consulta = "CALL SP_UsuariosAcceso ('" + txtUsuario.getText() + "','" + txtContrasena.getText() + "') ";
+        
         try {
             java.sql.Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(consulta);
@@ -38,10 +41,10 @@ public class Login_Metodos {
                 
                   }
               else {
-                l.txtUsuario.setText("");
-                l.txtContrasena.setText("");
-                l.txtUsuario.requestFocus();
-                l.lblError.setVisible(true);
+                txtUsuario.setText("");
+                txtContrasena.setText("");
+                txtUsuario.requestFocus();
+                lblError.setVisible(true);
             }
             rs.close();
 
