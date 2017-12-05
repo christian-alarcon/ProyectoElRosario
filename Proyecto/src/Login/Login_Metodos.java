@@ -34,20 +34,20 @@ public class Login_Metodos {
             java.sql.Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(consulta);
            
-            if (rs.next()) {
+            if (rs.first()) {
+                System.out.println(rs.getString(1)+" "+rs.getString(2));
                 Menu ob = new Menu();
                 ob.setVisible(true);
                 l.dispose();
-                
-                  }
-              else {
+            }
+            else {
                 txtUsuario.setText("");
                 txtContrasena.setText("");
                 txtUsuario.requestFocus();
                 lblError.setVisible(true);
             }
             rs.close();
-
+            con.close();
         } catch (Exception SQL) {
             System.out.println(SQL.getMessage());
         }

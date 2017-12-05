@@ -16,10 +16,15 @@ import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JComboBox;
 import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
@@ -66,8 +71,44 @@ public class Metodos_Multas {
         return columnas;
     }//fin del mètodo
     
-    public void cargarTabla(JTable tabla){
-        ArrayList<ArrayList> datos=obtenerMultas();
+    public ArrayList<ArrayList> obtenerMultas(String where,String valor){
+         ArrayList<ArrayList> columnas=new ArrayList<>();
+        
+        try {
+            conexion=Conexion.GetConnection();
+            query="SELECT * FROM MULTAS WHERE "+where+" ='"+valor+"'";
+            //System.out.println(""+query);
+            st=conexion.createStatement();
+            
+            ResultSet rs=st.executeQuery(query);
+            
+            ArrayList<Object> filas=null;
+            columnas=new ArrayList<ArrayList>();
+                   
+            while(rs.next()){
+
+                filas=new ArrayList<Object>();
+                filas.add(rs.getString(2));
+                filas.add(rs.getDouble(3));
+                filas.add(rs.getDate(4));
+                
+                //obtiene los nombre y apellidos segun cedula
+                filas.add(getNombreApellidoUsuario(rs.getInt(5))[0]+" "+
+                            getNombreApellidoUsuario(rs.getInt(5))[1]);
+                
+                columnas.add(filas);
+                
+            }
+            st.close();
+            conexion.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Metodos_Multas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return columnas;
+    }
+    
+    public void cargarTabla(JTable tabla,ArrayList<ArrayList> datos1){
+        ArrayList<ArrayList> datos=datos1;
         
         ArrayList<String> columnNames=new ArrayList<>();
         columnNames.add("Multa");
@@ -76,11 +117,11 @@ public class Metodos_Multas {
         columnNames.add("Socio");
         DefaultTableModel modelo=new DefaultTableModel(columnNames.toArray(),0);
         
-        System.out.println(""+datos.size());
+        //System.out.println(""+datos.size());
         for(int i=0;i<datos.size();i++){
                 modelo.addRow(datos.get(i).toArray());
                 for(int j=0;j<datos.get(0).size();j++){
-                    System.out.println("fila "+i+" "+datos.get(i).get(j));
+                   // System.out.println("fila "+i+" "+datos.get(i).get(j));
                 }
         }
         tabla.setModel(modelo);
@@ -123,7 +164,7 @@ public class Metodos_Multas {
 
         return anio+"/"+sdf.format(mes)+"/"+sdf.format(dia); 
     }
-    
+
     public String[] getNombreApellidoUsuario(int ced) {
             query="SELECT Apellido_Socio,Nombre_Socio FROM SOCIO WHERE CED_SOCIO='"+ced+"'";
             String[] socio=null;
@@ -146,5 +187,20 @@ public class Metodos_Multas {
         return socio;
     }
     
+    
+    public void filtro(JComboBox comboFiltro,TableRowSorter trsFiltro,JTextField txtFiltro) {
+        int columnaABuscar = 0;
+        if (comboFiltro.getSelectedItem().toString() == "MOTIVO") {
+            columnaABuscar = 0;
+        }
+        if (comboFiltro.getSelectedItem().toString() == "SOCIO") {
+            columnaABuscar = 3;
+        }
+        
+        trsFiltro.setRowFilter(RowFilter.regexFilter(txtFiltro.getText(), columnaABuscar));
+  
+        
+    }//fin del metodo filtro
+   
     
 }//fin de la clase
