@@ -5,24 +5,29 @@
  */
 package Multas;
 
+import com.toedter.calendar.JDateChooser;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+import javax.swing.text.NumberFormatter;
 
 /**
  *
@@ -40,31 +45,67 @@ public class Multas extends javax.swing.JInternalFrame {
     public Multas() {
         initComponents();
         inicio();
+        
     }
 
     
     public void inicio(){
        multas=new Metodos_Multas();
+       
+       txtIdMulta.setText(multas.obtenerNuevoIdMulta());
+       
        datos_busqueda=multas.obtenerMultas();
        multas.cargarTabla(tblBusqueda,datos_busqueda);
        
+       
+       
        ((JTextField) this.txtFecha.getDateEditor()).setEditable(false);
-       iniciarFecha();
+       iniciarFecha(txtFecha);
        
        txtFechaBusqueda.setVisible(false);
+       
+       txtValor.setText("$ ");
+       
+      
     }
     
     public void limpiar(){
         txtMotivo.setText("");
-        txtValor.setText("");
+        txtValor.setText("$ ");
         txtSocio.setText("");
-        iniciarFecha();
+        
+        txtIdMulta.setText(multas.obtenerNuevoIdMulta());
+        
+        iniciarFecha(txtFecha);
     }
     
-    private void iniciarFecha(){
+    private void iniciarFecha(JDateChooser fecha){
         Calendar c2 = new GregorianCalendar();
-        txtFecha.setCalendar(c2);
+        fecha.setCalendar(c2);
     }
+    
+    private void insertar(){
+        String id=txtIdMulta.getText();
+        String multa=txtMotivo.getText().toUpperCase();
+        double valor=0;
+        String val=txtValor.getText().substring(2).replace(",",".");
+        valor=Float.valueOf(val);
+        System.out.println("valor: "+valor);
+        String fecha=Metodos_Multas.fechaMySQL(txtFecha);
+        int id_socio=Integer.parseInt(txtSocio.getText());
+        
+        if(multas.insertar(id,multa, valor, fecha, id_socio)==1){
+            
+            JOptionPane.showMessageDialog(null, "Se inserto correctamente");
+            limpiar();
+            datos_busqueda=multas.obtenerMultas();
+            multas.cargarTabla(tblBusqueda, datos_busqueda);
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "No se pudo insertar");
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -85,14 +126,14 @@ public class Multas extends javax.swing.JInternalFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        txtValor = new javax.swing.JTextField();
         txtSocio = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
+        txtIdMulta = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        btnBuscar = new javax.swing.JButton();
+        btnBuscarSocio = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         txtMotivo = new javax.swing.JTextField();
         txtFecha = new com.toedter.calendar.JDateChooser();
+        txtValor = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblBusqueda = new javax.swing.JTable();
@@ -105,6 +146,11 @@ public class Multas extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                formMouseEntered(evt);
+            }
+        });
 
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -160,7 +206,7 @@ public class Multas extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnCliEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
+                .addComponent(btnCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -178,17 +224,44 @@ public class Multas extends javax.swing.JInternalFrame {
 
         jLabel5.setText("MOTIVO:");
 
+        txtIdMulta.setEditable(false);
+
         jLabel7.setText("FECHA:");
 
-        btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/buscar1.png"))); // NOI18N
-        btnBuscar.setText("BUSCAR");
-        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+        btnBuscarSocio.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/buscar1.png"))); // NOI18N
+        btnBuscarSocio.setText("BUSCAR");
+        btnBuscarSocio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscarActionPerformed(evt);
+                btnBuscarSocioActionPerformed(evt);
             }
         });
 
         jLabel6.setText("ID:");
+
+        txtMotivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtMotivoActionPerformed(evt);
+            }
+        });
+        txtMotivo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtMotivoKeyTyped(evt);
+            }
+        });
+
+        txtValor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtValorActionPerformed(evt);
+            }
+        });
+        txtValor.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtValorKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtValorKeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -202,7 +275,7 @@ public class Multas extends javax.swing.JInternalFrame {
                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
+                    .addComponent(txtIdMulta, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
                     .addComponent(txtMotivo)
                     .addComponent(txtSocio))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -220,7 +293,7 @@ public class Multas extends javax.swing.JInternalFrame {
                         .addGap(16, 16, 16))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(31, 31, 31)
-                        .addComponent(btnBuscar)
+                        .addComponent(btnBuscarSocio)
                         .addContainerGap(173, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
@@ -230,7 +303,7 @@ public class Multas extends javax.swing.JInternalFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel6)
-                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtIdMulta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel7))
                     .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -240,17 +313,18 @@ public class Multas extends javax.swing.JInternalFrame {
                             .addComponent(jLabel5)
                             .addComponent(txtMotivo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(24, 24, 24)
+                        .addComponent(jLabel3))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(txtSocio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel2))
-                    .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(24, Short.MAX_VALUE))
+                    .addComponent(btnBuscarSocio, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "LISTA DE MULTAS", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(0, 102, 153))); // NOI18N
@@ -332,7 +406,7 @@ public class Multas extends javax.swing.JInternalFrame {
                         .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(txtFechaBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -405,7 +479,23 @@ public class Multas extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnInsertaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertaActionPerformed
-
+       String mensaje="";
+        if(txtMotivo.getText().equals("")){
+           mensaje+="Debe ingresar un motivo\n";
+        }
+            if(!txtValor.getText().contains(",")){
+                mensaje+="El valor de la multa debe tener un formato adecuado\n";
+            }
+                if(txtSocio.getText().equals("")){
+                    mensaje+="Debe escoger un socio";
+                }
+        if(mensaje==""){
+            insertar();
+            
+        }
+        else{
+            JOptionPane.showMessageDialog(null, mensaje);
+        }
     }//GEN-LAST:event_btnInsertaActionPerformed
 
     private void btnCliActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliActualizarActionPerformed
@@ -420,10 +510,10 @@ public class Multas extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnCancelarActionPerformed
 
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+    private void btnBuscarSocioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarSocioActionPerformed
         // TODO add your handling code here:
 
-    }//GEN-LAST:event_btnBuscarActionPerformed
+    }//GEN-LAST:event_btnBuscarSocioActionPerformed
 
     private void jPanel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseClicked
         // TODO add your handling code here:
@@ -434,7 +524,7 @@ public class Multas extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jcboBusquedaActionPerformed
 
     private void btnBuscar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscar1ActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_btnBuscar1ActionPerformed
 
     private void txtBusquedaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBusquedaKeyTyped
@@ -460,6 +550,7 @@ public class Multas extends javax.swing.JInternalFrame {
             txtFechaBusqueda.setVisible(true);
             txtBusqueda.setVisible(false);
             txtFechaBusqueda.requestFocus();
+            iniciarFecha(txtFechaBusqueda);
         }else{
             txtFechaBusqueda.setVisible(false);
             txtBusqueda.setVisible(true);
@@ -491,6 +582,63 @@ public class Multas extends javax.swing.JInternalFrame {
         
         
     }//GEN-LAST:event_txtFechaBusquedaPropertyChange
+
+    private void txtMotivoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMotivoKeyTyped
+        int k=(int)evt.getKeyChar();
+        if (k>=97 && k<=122 || k >= 65 && k <= 90 || k>=48 && k<=57 || k==32){
+            
+        }
+        else{
+            evt.setKeyChar((char)KeyEvent.VK_CLEAR);
+        }
+    }//GEN-LAST:event_txtMotivoKeyTyped
+
+    private void txtValorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorKeyTyped
+         int k=(int)evt.getKeyChar();
+        if (k >= 48 && k <= 57 || k==44){
+            
+        }
+        else{
+            evt.setKeyChar((char)KeyEvent.VK_CLEAR);
+        }   
+        
+        
+        if(txtValor.getText().contains(",")){
+            
+             if(k==44)
+                evt.consume();
+        }
+         
+        if(txtValor.getText().contains(",")){
+            int pos=txtValor.getText().indexOf(",");
+             
+            if((txtValor.getText().length()-pos)>2){
+                evt.consume();
+            }
+        }
+         
+    }//GEN-LAST:event_txtValorKeyTyped
+
+    private void txtValorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorKeyPressed
+        int k=(int)evt.getKeyChar();
+        if(txtValor.getText().length()<=2){
+            if(k == KeyEvent.VK_BACK_SPACE || k==KeyEvent.VK_SPACE ){
+                evt.consume();       
+            }
+        }
+    }//GEN-LAST:event_txtValorKeyPressed
+
+    private void txtMotivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMotivoActionPerformed
+        txtValor.requestFocus();
+    }//GEN-LAST:event_txtMotivoActionPerformed
+
+    private void txtValorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtValorActionPerformed
+        btnBuscarSocio.requestFocus();
+    }//GEN-LAST:event_txtValorActionPerformed
+
+    private void formMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseEntered
+        txtMotivo.requestFocus();
+    }//GEN-LAST:event_formMouseEntered
 
     /**
      * @param args the command line arguments
@@ -528,8 +676,8 @@ public class Multas extends javax.swing.JInternalFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnBuscar1;
+    private javax.swing.JButton btnBuscarSocio;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnCliActualizar;
     private javax.swing.JButton btnCliEliminar;
@@ -547,12 +695,12 @@ public class Multas extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField4;
     private javax.swing.JComboBox<String> jcboBusqueda;
     private javax.swing.JTable tblBusqueda;
     private javax.swing.JTextField txtBusqueda;
     private com.toedter.calendar.JDateChooser txtFecha;
     private com.toedter.calendar.JDateChooser txtFechaBusqueda;
+    private javax.swing.JTextField txtIdMulta;
     private javax.swing.JTextField txtMotivo;
     private javax.swing.JTextField txtSocio;
     private javax.swing.JTextField txtValor;

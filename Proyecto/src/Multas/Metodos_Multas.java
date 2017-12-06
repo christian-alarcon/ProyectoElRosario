@@ -125,10 +125,10 @@ public class Metodos_Multas {
                 }
         }
         tabla.setModel(modelo);
-      
+        
     }
     
-    public int insertar(String multa,double valor,String fecha,int id_socio){
+    public int insertar(String id,String multa,double valor,String fecha,int id_socio){
             query="INSERT INTO MULTAS(Id_Multa,Nom_Multa,Val_Multa,Fec_Multa,Id_Socio)"+
                     "VALUES(?,?,?,?,?)";
             int v_retorno=0;
@@ -137,7 +137,7 @@ public class Metodos_Multas {
             conexion=Conexion.GetConnection();
             ps=conexion.prepareStatement(query);
             
-            ps.setString(1, "2");
+            ps.setString(1, id);
             ps.setString(2, multa);
             ps.setDouble(3, valor);
             ps.setString(4, fecha);
@@ -165,7 +165,7 @@ public class Metodos_Multas {
         return anio+"/"+sdf.format(mes)+"/"+sdf.format(dia); 
     }
 
-    public String[] getNombreApellidoUsuario(int ced) {
+    private String[] getNombreApellidoUsuario(int ced) {
             query="SELECT Apellido_Socio,Nombre_Socio FROM SOCIO WHERE CED_SOCIO='"+ced+"'";
             String[] socio=null;
         try {
@@ -202,5 +202,48 @@ public class Metodos_Multas {
         
     }//fin del metodo filtro
    
+    
+    public String selectMaxMulta(){
+            
+        String id_multa="";
+            
+        try {
+            conexion=Conexion.GetConnection();
+            query="SELECT SUBSTRING(MAX(Id_Multa),3) FROM MULTAS";
+            st=conexion.createStatement();
+            
+            ResultSet rs=st.executeQuery(query);
+                while(rs.next()){
+                    id_multa=rs.getString(1);
+                }
+            st.close();
+            conexion.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Metodos_Multas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if(id_multa==null)
+            id_multa="0";
+            
+        return id_multa;
+    }
+    
+    public String obtenerNuevoIdMulta(){
+        String id_nuevo="";
+        String max=selectMaxMulta();
+        if(!(max=="0")){
+            int ultima=Integer.valueOf(max)+1;
+            String ultima_s=String.valueOf(ultima);
+            String ceros="";
+            for(int i=ultima_s.length();i<6;i++){
+                ceros+="0";
+            }
+            id_nuevo="MU"+ceros+ultima_s;
+        }
+        else{
+            id_nuevo="MU000001";
+        }
+        
+        return id_nuevo;
+    }
     
 }//fin de la clase
