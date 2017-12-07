@@ -17,8 +17,7 @@ import javax.swing.*;
  * @author Diego
  */
 public class Login extends javax.swing.JFrame {
-    public static String Usuario;
-    public static String Password;
+    
     Login_Metodos login=null;
     
     public Login() {
@@ -28,8 +27,8 @@ public class Login extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
         lblError.setVisible(false);
-         JFrame.setDefaultLookAndFeelDecorated(true);
-         login=new Login_Metodos();
+        JFrame.setDefaultLookAndFeelDecorated(true);
+        login=new Login_Metodos();
     }  
     
 
@@ -159,8 +158,7 @@ public class Login extends javax.swing.JFrame {
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
 
 
-        Login_Metodos login=new Login_Metodos();
-        login.IniciarSesion(txtUsuario, txtUsuario, lblError);
+        login.IniciarSesion(txtUsuario, txtContrasena, lblError);
         
           
     }//GEN-LAST:event_btnIngresarActionPerformed
@@ -172,13 +170,13 @@ public class Login extends javax.swing.JFrame {
     private void btnIngresarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnIngresarKeyPressed
             if(evt.getKeyCode() == evt.VK_ENTER)
            {
-               login.IniciarSesion(txtUsuario, txtUsuario, lblError);
+               login.IniciarSesion(txtUsuario, txtContrasena, lblError);
            }
     }//GEN-LAST:event_btnIngresarKeyPressed
 
     private void txtContrasenaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtContrasenaKeyReleased
             if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            login.IniciarSesion(txtUsuario, txtUsuario, lblError);
+            login.IniciarSesion(txtUsuario, txtContrasena, lblError);
         } else if (evt.getKeyCode() == KeyEvent.VK_TAB) {
             btnIngresar.setFocusable(true);
         }  
