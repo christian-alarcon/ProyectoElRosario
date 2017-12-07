@@ -5,6 +5,14 @@
  */
 package Socios;
 
+import Conexion.Conexion;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Diego
@@ -14,10 +22,105 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
     /**
      * Creates new form Socios
      */
+    DefaultTableModel m;
     public BuscarSocio() {
         initComponents();
+        lblErrorcb.setText("");
     }
+    
+       public void TablaSocios(String val) {//Realiza la consulta de los productos que tenemos en la base de datos
+        String titles[] = {"Cédula", "Apellidos", "Nombres", "Dirección", "Teléfono"};
+        String reg[] = new String[6];
+        String sentence = "";
+        m = new DefaultTableModel(null, titles);
 
+        Connection con;
+        con = Conexion.GetConnection();
+        //sentence = "CALL SP_SociosSel('%" + val + "%')";
+        String variable = (String) cbDatoDeBusqueda.getSelectedItem();
+         if(variable == "CEDULA")
+        {
+            sentence = "CALL SP_SociosBusCed('%" + val + "%')";
+        try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sentence);
+            while (rs.next()) {
+                reg[0] = rs.getString("Ced_Socio");
+                reg[1] = rs.getString("Apellido_Socio");
+                reg[2] = rs.getString("Nombre_Socio");
+                reg[3] = rs.getString("Dir_Socio");
+                reg[4] = rs.getString("Tel_Socio");
+                m.addRow(reg);//agrega el registro a la tabla
+            }
+            tblBusqueda.setModel(m);//asigna a la tabla el modelo creado
+          
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }   
+        }       
+    }
+    public void TablaSociosA(String val) {//Realiza la consulta de los productos que tenemos en la base de datos
+        String titles[] = {"Cédula", "Apellidos", "Nombres", "Dirección", "Teléfono"};
+        String reg[] = new String[6];
+        String sentence = "";
+        m = new DefaultTableModel(null, titles);
+
+        Connection con;
+        con = Conexion.GetConnection();
+        //sentence = "CALL SP_SociosSel('%" + val + "%')";
+        String variable = (String) cbDatoDeBusqueda.getSelectedItem(); 
+         if(variable == "APELLIDO")
+        {
+            sentence = "CALL SP_SociosBusApe('%" + val + "%')";
+        try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sentence);
+            while (rs.next()) {
+                reg[0] = rs.getString("Ced_Socio");
+                reg[1] = rs.getString("Apellido_Socio");
+                reg[2] = rs.getString("Nombre_Socio");
+                reg[3] = rs.getString("Dir_Socio");
+                reg[4] = rs.getString("Tel_Socio");
+                m.addRow(reg);//agrega el registro a la tabla
+            }
+            tblBusqueda.setModel(m);//asigna a la tabla el modelo creado
+          
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }   
+        }       
+    }
+    public void TablaSociosN(String val) {//Realiza la consulta de los productos que tenemos en la base de datos
+        String titles[] = {"Cédula", "Apellidos", "Nombres", "Dirección", "Teléfono"};
+        String reg[] = new String[6];
+        String sentence = "";
+        m = new DefaultTableModel(null, titles);
+
+        Connection con;
+        con = Conexion.GetConnection();
+        //sentence = "CALL SP_SociosSel('%" + val + "%')";
+        String variable = (String) cbDatoDeBusqueda.getSelectedItem(); 
+         if(variable == "NOMBRE")
+        {
+            sentence = "CALL SP_SociosBusNom('%" + val + "%')";
+        try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sentence);
+            while (rs.next()) {
+                reg[0] = rs.getString("Ced_Socio");
+                reg[1] = rs.getString("Apellido_Socio");
+                reg[2] = rs.getString("Nombre_Socio");
+                reg[3] = rs.getString("Dir_Socio");
+                reg[4] = rs.getString("Tel_Socio");
+                m.addRow(reg);//agrega el registro a la tabla
+            }
+            tblBusqueda.setModel(m);//asigna a la tabla el modelo creado
+          
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }   
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -32,12 +135,13 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         btnBuscar = new javax.swing.JButton();
-        jTextField2 = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        txtBusqueda = new javax.swing.JTextField();
+        cbDatoDeBusqueda = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
+        lblErrorcb = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblBusqueda = new javax.swing.JTable();
         jLabel11 = new javax.swing.JLabel();
 
         setClosable(true);
@@ -62,9 +166,24 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
             }
         });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE:", "CEDULA", "APELLIDO P", "NOMBRE P" }));
+        txtBusqueda.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtBusquedaKeyReleased(evt);
+            }
+        });
+
+        cbDatoDeBusqueda.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE:", "CEDULA", "APELLIDO P", "NOMBRE P" }));
+        cbDatoDeBusqueda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbDatoDeBusquedaActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("BUSCAR POR:");
+
+        lblErrorcb.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        lblErrorcb.setForeground(new java.awt.Color(255, 0, 0));
+        lblErrorcb.setText("jLabel1");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -77,12 +196,14 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
                     .addComponent(jLabel3))
                 .addGap(25, 25, 25)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbDatoDeBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblErrorcb)))
+                .addContainerGap(388, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -92,18 +213,19 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
                     .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cbDatoDeBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3))
                         .addGap(12, 12, 12)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))))
+                            .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2)))
+                    .addComponent(lblErrorcb))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "LISTA COMPLETA DE  CLIENTES", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(0, 102, 153))); // NOI18N
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblBusqueda.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -114,7 +236,7 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
 
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblBusqueda);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -204,6 +326,58 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
        
     }//GEN-LAST:event_btnBuscarActionPerformed
 
+    private void cbDatoDeBusquedaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbDatoDeBusquedaActionPerformed
+        int valor = cbDatoDeBusqueda.getSelectedIndex();
+        if (valor == 1)
+        {
+            txtBusqueda.setText("");
+            lblErrorcb.setText("");
+            txtBusqueda.requestFocus();
+        }
+        if (valor == 2)
+        {
+            txtBusqueda.setText("");
+            lblErrorcb.setText("");
+            txtBusqueda.requestFocus();
+        }
+        if (valor == 3)
+        {
+            txtBusqueda.setText("");
+            lblErrorcb.setText("");
+            txtBusqueda.requestFocus();
+        }
+
+    
+    }//GEN-LAST:event_cbDatoDeBusquedaActionPerformed
+
+    private void txtBusquedaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBusquedaKeyReleased
+       int valor = cbDatoDeBusqueda.getSelectedIndex();
+        if (txtBusqueda.getText().trim().length() >= 1) 
+        {
+            String filtro = txtBusqueda.getText();
+            if(valor == 1)
+            TablaSocios(filtro);
+            tblBusqueda.setVisible(true);
+            if(valor == 2)
+            TablaSociosA(filtro);
+            tblBusqueda.setVisible(true);
+            if(valor == 3)
+            TablaSociosN(filtro);
+            tblBusqueda.setVisible(true);
+        if (valor ==0)
+        {
+
+             lblErrorcb.setText("Seleccione el filtro de busqueda");
+        }
+        } 
+        
+        else 
+        {
+            tblBusqueda.setVisible(false);
+        }
+
+    }//GEN-LAST:event_txtBusquedaKeyReleased
+
     /**
      * @param args the command line arguments
      */
@@ -244,7 +418,7 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> cbDatoDeBusqueda;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -253,7 +427,8 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JLabel lblErrorcb;
+    private javax.swing.JTable tblBusqueda;
+    private javax.swing.JTextField txtBusqueda;
     // End of variables declaration//GEN-END:variables
 }

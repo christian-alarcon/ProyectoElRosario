@@ -30,6 +30,7 @@ public class Socios extends javax.swing.JInternalFrame {
         btnActualizar.setEnabled(false);
         btnEliminar.setEnabled(false);
         btnCancelar.setEnabled(false);
+        lblErrorcb.setText("");
     }
     
     public  void Limpiar()
@@ -67,8 +68,11 @@ public class Socios extends javax.swing.JInternalFrame {
 
         Connection con;
         con = Conexion.GetConnection();
-        sentence = "CALL SP_SociosSel('%" + val + "%')";
-
+        //sentence = "CALL SP_SociosSel('%" + val + "%')";
+         String variable = (String) cbDatoDeBusqueda.getSelectedItem();
+         if(variable == "CEDULA")
+        {
+            sentence = "CALL SP_SociosBusCed('%" + val + "%')";
         try {
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(sentence);
@@ -81,9 +85,72 @@ public class Socios extends javax.swing.JInternalFrame {
                 m.addRow(reg);//agrega el registro a la tabla
             }
             tblBusqueda.setModel(m);//asigna a la tabla el modelo creado
-
+          
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, ex);
+        }   
+        }       
+    }
+    public void TablaSociosA(String val) {//Realiza la consulta de los productos que tenemos en la base de datos
+        String titles[] = {"Cédula", "Apellidos", "Nombres", "Dirección", "Teléfono"};
+        String reg[] = new String[6];
+        String sentence = "";
+        m = new DefaultTableModel(null, titles);
+
+        Connection con;
+        con = Conexion.GetConnection();
+        //sentence = "CALL SP_SociosSel('%" + val + "%')";
+        String variable = (String) cbDatoDeBusqueda.getSelectedItem(); 
+         if(variable == "APELLIDO")
+        {
+            sentence = "CALL SP_SociosBusApe('%" + val + "%')";
+        try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sentence);
+            while (rs.next()) {
+                reg[0] = rs.getString("Ced_Socio");
+                reg[1] = rs.getString("Apellido_Socio");
+                reg[2] = rs.getString("Nombre_Socio");
+                reg[3] = rs.getString("Dir_Socio");
+                reg[4] = rs.getString("Tel_Socio");
+                m.addRow(reg);//agrega el registro a la tabla
+            }
+            tblBusqueda.setModel(m);//asigna a la tabla el modelo creado
+          
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }   
+        }       
+    }
+    public void TablaSociosN(String val) {//Realiza la consulta de los productos que tenemos en la base de datos
+        String titles[] = {"Cédula", "Apellidos", "Nombres", "Dirección", "Teléfono"};
+        String reg[] = new String[6];
+        String sentence = "";
+        m = new DefaultTableModel(null, titles);
+
+        Connection con;
+        con = Conexion.GetConnection();
+        //sentence = "CALL SP_SociosSel('%" + val + "%')";
+        String variable = (String) cbDatoDeBusqueda.getSelectedItem(); 
+         if(variable == "NOMBRE")
+        {
+            sentence = "CALL SP_SociosBusNom('%" + val + "%')";
+        try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sentence);
+            while (rs.next()) {
+                reg[0] = rs.getString("Ced_Socio");
+                reg[1] = rs.getString("Apellido_Socio");
+                reg[2] = rs.getString("Nombre_Socio");
+                reg[3] = rs.getString("Dir_Socio");
+                reg[4] = rs.getString("Tel_Socio");
+                m.addRow(reg);//agrega el registro a la tabla
+            }
+            tblBusqueda.setModel(m);//asigna a la tabla el modelo creado
+          
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }   
         }
     }
     
@@ -329,14 +396,16 @@ public class Socios extends javax.swing.JInternalFrame {
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblBusqueda = new javax.swing.JTable();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        cbDatoDeBusqueda = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
         txtBusqueda = new javax.swing.JTextField();
         btnBuscar = new javax.swing.JButton();
+        lblErrorcb = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setName("Socios"); // NOI18N
 
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -409,6 +478,30 @@ public class Socios extends javax.swing.JInternalFrame {
         jLabel3.setText("NOMBRE:");
 
         jLabel4.setText("APELLIDO:");
+
+        txtNombres.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNombresKeyTyped(evt);
+            }
+        });
+
+        txtCedula.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtCedulaKeyTyped(evt);
+            }
+        });
+
+        txtApellidos.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtApellidosKeyTyped(evt);
+            }
+        });
+
+        txtTelefono.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtTelefonoKeyTyped(evt);
+            }
+        });
 
         jLabel7.setText("DIRECCION:");
 
@@ -485,9 +578,20 @@ public class Socios extends javax.swing.JInternalFrame {
         ));
         jScrollPane1.setViewportView(tblBusqueda);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE:", "CEDULA", "APELLIDO P", "NOMBRE P" }));
+        cbDatoDeBusqueda.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE:", "CEDULA", "APELLIDO", "NOMBRE" }));
+        cbDatoDeBusqueda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbDatoDeBusquedaActionPerformed(evt);
+            }
+        });
 
         jLabel9.setText("BUSCAR POR:");
+
+        txtBusqueda.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtBusquedaKeyReleased(evt);
+            }
+        });
 
         btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/buscar1.png"))); // NOI18N
         btnBuscar.addActionListener(new java.awt.event.ActionListener() {
@@ -495,6 +599,10 @@ public class Socios extends javax.swing.JInternalFrame {
                 btnBuscarActionPerformed(evt);
             }
         });
+
+        lblErrorcb.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        lblErrorcb.setForeground(new java.awt.Color(255, 0, 0));
+        lblErrorcb.setText("jLabel1");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -507,11 +615,13 @@ public class Socios extends javax.swing.JInternalFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addComponent(cbDatoDeBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblErrorcb)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -523,8 +633,9 @@ public class Socios extends javax.swing.JInternalFrame {
                     .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel9)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cbDatoDeBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblErrorcb))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE))
         );
@@ -603,21 +714,21 @@ public class Socios extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
-
+        InsertarSocios();
     }//GEN-LAST:event_btnIngresarActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        // TODO add your handling code here:
+        ActualizarSocios();
 
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        // TODO add your handling code here:
+        EliminarSocios();
 
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        // TODO add your handling code here:
+        Limpiar();
 
     }//GEN-LAST:event_btnCancelarActionPerformed
 
@@ -629,8 +740,92 @@ public class Socios extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
         BuscarSocio obj = new BuscarSocio();
         obj.setVisible(true);
+        obj.show();
 
     }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void txtCedulaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCedulaKeyTyped
+         if (!Character.isDigit(evt.getKeyChar())) {
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+         }
+    }//GEN-LAST:event_txtCedulaKeyTyped
+
+    private void txtNombresKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombresKeyTyped
+     char c = evt.getKeyChar();
+        if (Character.isLowerCase(c)) {
+            String cad = ("" + c).toUpperCase();
+            c = cad.charAt(0);
+            evt.setKeyChar(c);
+        } 
+    }//GEN-LAST:event_txtNombresKeyTyped
+
+    private void txtApellidosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtApellidosKeyTyped
+     char c = evt.getKeyChar();
+        if (Character.isLowerCase(c)) {
+            String cad = ("" + c).toUpperCase();
+            c = cad.charAt(0);
+            evt.setKeyChar(c);
+        } 
+    }//GEN-LAST:event_txtApellidosKeyTyped
+
+    private void txtTelefonoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoKeyTyped
+        if (!Character.isDigit(evt.getKeyChar())) {
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+         }
+
+    }//GEN-LAST:event_txtTelefonoKeyTyped
+
+    private void txtBusquedaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBusquedaKeyReleased
+       int valor = cbDatoDeBusqueda.getSelectedIndex();
+        if (txtBusqueda.getText().trim().length() >= 1) 
+        {
+            String filtro = txtBusqueda.getText();
+            if(valor == 1)
+            TablaSocios(filtro);
+            tblBusqueda.setVisible(true);
+            if(valor == 2)
+            TablaSociosA(filtro);
+            tblBusqueda.setVisible(true);
+            if(valor == 3)
+            TablaSociosN(filtro);
+            tblBusqueda.setVisible(true);
+        if (valor ==0)
+        {
+
+             lblErrorcb.setText("Seleccione el filtro de busqueda");
+        }
+        } 
+        
+        else 
+        {
+            tblBusqueda.setVisible(false);
+        }
+   
+    }//GEN-LAST:event_txtBusquedaKeyReleased
+
+    private void cbDatoDeBusquedaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbDatoDeBusquedaActionPerformed
+        int valor = cbDatoDeBusqueda.getSelectedIndex();
+        if (valor == 1)
+        {
+            txtBusqueda.setText("");
+            lblErrorcb.setText("");
+            txtBusqueda.requestFocus();
+        }
+        if (valor == 2)
+        {
+            txtBusqueda.setText("");
+            lblErrorcb.setText("");
+            txtBusqueda.requestFocus();
+        }
+        if (valor == 3)
+        {
+            txtBusqueda.setText("");
+            lblErrorcb.setText("");
+            txtBusqueda.requestFocus();
+        }
+    }//GEN-LAST:event_cbDatoDeBusquedaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -673,7 +868,7 @@ public class Socios extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnIngresar;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> cbDatoDeBusqueda;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -687,6 +882,7 @@ public class Socios extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblErrorcb;
     private javax.swing.JTable tblBusqueda;
     private javax.swing.JTextField txtApellidos;
     private javax.swing.JTextField txtBusqueda;
