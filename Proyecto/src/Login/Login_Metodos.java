@@ -28,7 +28,7 @@ public class Login_Metodos {
         Password = txtContrasena.getText();
         Connection con;
         con = Conexion.GetConnection();
-        String consulta = "CALL SP_UsuariosAcceso ('" + txtUsuario.getText() + "','" + txtContrasena.getText() + "') ";
+        String consulta = "CALL SP_UsuariosAcceso ('" + Usuario + "','" + Password + "') ";
         
         try {
             java.sql.Statement st = con.createStatement();
@@ -37,7 +37,7 @@ public class Login_Metodos {
             if (rs.first()) {
                 System.out.println(rs.getString(1)+" "+rs.getString(2));
                 Menu ob = new Menu();
-                ob.setVisible(true);
+                ob.show();
                 l.dispose();
             }
             else {
