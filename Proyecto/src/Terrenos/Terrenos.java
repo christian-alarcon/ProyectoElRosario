@@ -10,6 +10,7 @@ import Multas.Metodos_Multas;
 import Socios.*;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
+import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -275,9 +276,26 @@ public class Terrenos extends javax.swing.JInternalFrame {
 
         jLabel4.setText("METRAJE:");
 
+        txtDireccion.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtDireccionKeyTyped(evt);
+            }
+        });
+
+        txtSocio.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtSocioKeyTyped(evt);
+            }
+        });
+
         txtMetaje.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtMetajeActionPerformed(evt);
+            }
+        });
+        txtMetaje.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtMetajeKeyTyped(evt);
             }
         });
 
@@ -290,6 +308,11 @@ public class Terrenos extends javax.swing.JInternalFrame {
         txtSolar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtSolarActionPerformed(evt);
+            }
+        });
+        txtSolar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtSolarKeyTyped(evt);
             }
         });
 
@@ -520,6 +543,28 @@ public class Terrenos extends javax.swing.JInternalFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtSolarActionPerformed
 
+    private void txtSocioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSocioKeyTyped
+        // TODO add your handling code here:
+        
+        controlSoloLetras(evt);
+    }//GEN-LAST:event_txtSocioKeyTyped
+
+    private void txtSolarKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSolarKeyTyped
+        // TODO add your handling code here:
+        controlSoloNumeros(evt);
+    }//GEN-LAST:event_txtSolarKeyTyped
+
+    private void txtMetajeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMetajeKeyTyped
+        // TODO add your handling code here:
+        controlSoloNumeros(evt);
+    }//GEN-LAST:event_txtMetajeKeyTyped
+
+    private void txtDireccionKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDireccionKeyTyped
+        // TODO add your handling code here:
+        
+        controlSoloLetras(evt);
+    }//GEN-LAST:event_txtDireccionKeyTyped
+
     /**
      * @param args the command line arguments
      */
@@ -684,5 +729,16 @@ public class Terrenos extends javax.swing.JInternalFrame {
     cnbModulo.setSelectedIndex(-1);
     
     
+    }
+     public void controlSoloLetras(KeyEvent evt) {
+        if (evt.getKeyChar() < 65 || evt.getKeyChar() > 90 && evt.getKeyChar() < 97 || evt.getKeyChar() > 122 && evt.getKeyChar() == 32) {
+            evt.consume();
+        }
+    }
+
+    public void controlSoloNumeros(KeyEvent evt) {
+        if (evt.getKeyChar() < 48 || evt.getKeyChar() > 57) {
+            evt.consume();
+        }
     }
 }

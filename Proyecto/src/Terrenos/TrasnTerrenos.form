@@ -136,9 +136,9 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="btnCancelar" max="32767" attributes="1"/>
-                              <Component id="btnCliEliminar" alignment="1" max="32767" attributes="1"/>
-                              <Component id="btnCliGuardar" alignment="0" max="32767" attributes="1"/>
-                              <Component id="btnCliActualizar" alignment="0" max="32767" attributes="1"/>
+                              <Component id="btnEliminar" alignment="1" max="32767" attributes="1"/>
+                              <Component id="btnGuardar" alignment="0" max="32767" attributes="1"/>
+                              <Component id="btnActualizar" alignment="0" max="32767" attributes="1"/>
                           </Group>
                           <EmptySpace pref="16" max="32767" attributes="0"/>
                       </Group>
@@ -148,11 +148,11 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="btnCliGuardar" min="-2" pref="35" max="-2" attributes="0"/>
+                          <Component id="btnGuardar" min="-2" pref="35" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="btnCliActualizar" min="-2" pref="33" max="-2" attributes="0"/>
+                          <Component id="btnActualizar" min="-2" pref="33" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
-                          <Component id="btnCliEliminar" min="-2" pref="35" max="-2" attributes="0"/>
+                          <Component id="btnEliminar" min="-2" pref="35" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="btnCancelar" min="-2" pref="33" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
@@ -161,28 +161,28 @@
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="javax.swing.JButton" name="btnCliGuardar">
+                <Component class="javax.swing.JButton" name="btnGuardar">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="GUARDAR"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCliGuardarActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnGuardarActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JButton" name="btnCliActualizar">
+                <Component class="javax.swing.JButton" name="btnActualizar">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="ACTUALIZAR"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCliActualizarActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnActualizarActionPerformed"/>
                   </Events>
                 </Component>
-                <Component class="javax.swing.JButton" name="btnCliEliminar">
+                <Component class="javax.swing.JButton" name="btnEliminar">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="ELIMINAR"/>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCliEliminarActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEliminarActionPerformed"/>
                   </Events>
                 </Component>
                 <Component class="javax.swing.JButton" name="btnCancelar">
@@ -480,11 +480,15 @@
                 <Component class="javax.swing.JTextField" name="txtSocioVendedor">
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtSocioVendedorActionPerformed"/>
+                    <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtSocioVendedorKeyTyped"/>
                   </Events>
                 </Component>
                 <Component class="javax.swing.JTextField" name="txtIdTerreno">
                 </Component>
                 <Component class="javax.swing.JTextField" name="txtSocioComprador">
+                  <Events>
+                    <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtSocioCompradorKeyTyped"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel7">
                   <Properties>
@@ -492,6 +496,9 @@
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JTextField" name="txtMonto">
+                  <Events>
+                    <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtMontoKeyTyped"/>
+                  </Events>
                 </Component>
                 <Component class="javax.swing.JLabel" name="jLabel8">
                   <Properties>
