@@ -39,7 +39,7 @@ public class Metodos_Multas {
     public ArrayList obtenerMultas(){
         ArrayList<ArrayList> columnas=null;
         
-        try {
+        try {            
             conexion=Conexion.GetConnection();
             query="SELECT * FROM MULTAS";
             st=conexion.createStatement();

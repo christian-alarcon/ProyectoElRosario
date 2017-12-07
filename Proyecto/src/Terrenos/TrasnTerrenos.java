@@ -5,7 +5,18 @@
  */
 package Terrenos;
 
+import Conexion.Conexion;
 import Socios.*;
+import com.mysql.jdbc.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Calendar;
+import java.util.Date;
+import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -13,12 +24,159 @@ import Socios.*;
  */
 public class TrasnTerrenos extends javax.swing.JInternalFrame {
 
+     DefaultTableModel modelo; 
     /**
+     * 
      * Creates new form Socios
      */
     public TrasnTerrenos() {
         initComponents();
+        crearTabla();
+        cargarModulo();
+        
+        tblTerreno.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                
+                int fila = tblTerreno.getSelectedRow();
+                
+                if (fila != -1) {
+                    
+
+                    txtIdTerreno.setText(tblTerreno.getValueAt(fila, 0).toString());
+                    txtMonto.setText(tblTerreno.getValueAt(fila, 4).toString());
+                    txtSocioComprador.setText(tblTerreno.getValueAt(fila, 2).toString());
+                    txtSocioVendedor.setText(tblTerreno.getValueAt(fila, 1).toString());
+                  //  jDateChooser1.setDate(tblTerreno.getValueAt(fila, 3).toString());
+            cnbModulo.setSelectedItem(tblTerreno.getValueAt(fila, 5).toString());
+jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
+                    //txtMetaje.setText(tblTerreno.getValueAt(fila, 1).toString());
+                    //txtDireccion.setText(tblTerreno.getValueAt(fila, 2).toString());
+    
+                   
+                    txtIdTerreno.setEnabled(false);
+                    //bloquearBotonesNuevo();
+                    //Texto();
+                   // bloquearBotonUpdate();
+                   // btnBorrar.setEnabled(true);
+                   // txtPlaca.setEditable(false);
+                }
+
+            }
+        });
     }
+    
+    public void cargarModulo() {
+         java.sql.Connection con;
+            con = Conexion.GetConnection();
+            
+        String sql = "";
+        sql = "Select Id_Modulo from terreno";
+        
+        try {
+            Statement psd = con.createStatement();
+            ResultSet rs = psd.executeQuery(sql);
+
+            while (rs.next()) {
+               
+                cnbModulo.addItem(rs.getString("Id_Modulo"));
+                
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "No se cargo los datos del Modiulo");
+        }
+    }
+    
+    public void crearTabla() {
+        String[] titulos = {"Terreno", "Socio_Vendedor", "Socio_Comprador", "Fecha","Monto", "Modulo","tipo_Transaccion"};
+        
+        String[] registros = new String[8];
+        
+        modelo = new DefaultTableModel(null, titulos);
+
+
+
+       
+        java.sql.Connection con;
+            con = Conexion.GetConnection();
+
+        String sql = "";
+
+
+       
+        sql = "Select * from transaccionterreno"; 
+
+        try {
+            
+            Statement psd = con.createStatement();
+            ResultSet rs = psd.executeQuery(sql); 
+            while (rs.next()) { 
+                registros[0] = rs.getString("Id"); 
+                registros[1] = rs.getString("Socio_Vendedor");
+                registros[2] = rs.getString("Socio_Comprador");
+                registros[3] = rs.getString("Fecha");
+                registros[4] = rs.getString("monto");
+                registros[5] = rs.getString("modulo");
+                 registros[6] = rs.getString("tipo_transaccion");
+              
+               
+                modelo.addRow(registros);
+
+            }
+
+           tblTerreno.setModel(modelo);
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+    }
+
+  public void modificar() {
+  if (txtMonto.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese el monto");
+            txtMonto.requestFocus();
+
+        } else if (txtSocioComprador.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese el Comprador");
+            txtSocioComprador.requestFocus();
+        } else if (txtSocioVendedor.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese el Vendedor");
+            txtSocioVendedor.requestFocus();
+        
+      } else if (cnbModulo.getSelectedIndex()==-1) {
+            JOptionPane.showMessageDialog(null, "Ingrese el Modulo");
+            cnbModulo.requestFocus();
+        
+      
+        
+        } else {
+            java.sql.Connection con;
+            con = Conexion.GetConnection();
+            
+            String sql = "";
+            sql = "update transaccionterreno set Id='" +  txtIdTerreno.getText() + "',"
+                    + "Socio_Vendedor='" + txtSocioVendedor.getText() + "',"
+                    + "Socio_Comprador='" + txtSocioComprador.getText() + "',"
+                    + "Fecha='" + jDateChooser1.getDateFormatString()+ "',"
+                     + "monto='" + txtMonto.getText() + "',"   
+                  + "modulo='" + cnbModulo.getSelectedItem()+ "', "
+                      + "tipo_transaccion='" + jComboBox2.getSelectedItem()+ "' "
+                    + "where Id='" +txtIdTerreno.getText()+ "'";
+            
+            try {
+
+                PreparedStatement psd = (PreparedStatement) con.prepareStatement(sql);
+                int n = psd.executeUpdate();
+                if (n > 0) {
+                    JOptionPane.showMessageDialog(null, "Se actualizo Correctamente");
+                }
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, ex);
+            }
+        }
+    }
+   
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -38,7 +196,7 @@ public class TrasnTerrenos extends javax.swing.JInternalFrame {
         btnCancelar = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblTerreno = new javax.swing.JTable();
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
         jTextField8 = new javax.swing.JTextField();
@@ -51,13 +209,13 @@ public class TrasnTerrenos extends javax.swing.JInternalFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
+        txtSocioVendedor = new javax.swing.JTextField();
+        txtIdTerreno = new javax.swing.JTextField();
+        txtSocioComprador = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        jTextField7 = new javax.swing.JTextField();
+        txtMonto = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
-        jComboBox3 = new javax.swing.JComboBox<>();
+        cnbModulo = new javax.swing.JComboBox<>();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jLabel11 = new javax.swing.JLabel();
 
@@ -125,7 +283,7 @@ public class TrasnTerrenos extends javax.swing.JInternalFrame {
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "TRANSACCIONES REALIZADAS", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(0, 102, 153))); // NOI18N
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblTerreno.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -136,7 +294,7 @@ public class TrasnTerrenos extends javax.swing.JInternalFrame {
 
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblTerreno);
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE:", "COMPRADOR", "VENDEDOR", "TIPO DE ADQUISICION" }));
 
@@ -230,11 +388,15 @@ public class TrasnTerrenos extends javax.swing.JInternalFrame {
 
         jLabel6.setText("MONTO:");
 
+        txtSocioVendedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtSocioVendedorActionPerformed(evt);
+            }
+        });
+
         jLabel7.setText("MODULO:");
 
         jLabel8.setText("FECHA:");
-
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -248,15 +410,15 @@ public class TrasnTerrenos extends javax.swing.JInternalFrame {
                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
-                    .addComponent(jTextField4)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtSocioVendedor, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+                    .addComponent(txtSocioComprador)
+                    .addComponent(txtIdTerreno, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addGap(18, 18, 18)
-                        .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(cnbModulo, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
@@ -267,7 +429,7 @@ public class TrasnTerrenos extends javax.swing.JInternalFrame {
                                 .addComponent(jLabel8)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField7, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
+                            .addComponent(txtMonto, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
                             .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
@@ -278,21 +440,21 @@ public class TrasnTerrenos extends javax.swing.JInternalFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel2)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtIdTerreno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel8))
                     .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtSocioVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6)
-                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtMonto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cnbModulo, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel5)
-                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtSocioComprador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel7)))
                 .addContainerGap())
         );
@@ -375,12 +537,106 @@ public class TrasnTerrenos extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCliGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliGuardarActionPerformed
-
-        
+ verificarDatos();
+        crearTabla();
+ 
     }//GEN-LAST:event_btnCliGuardarActionPerformed
+private void verificarDatos() {
+       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+     String id = txtIdTerreno.getText();
+      java.sql.Connection con;
+            con = Conexion.GetConnection();
+        try {
+            Statement consulta = con.createStatement();
+            ResultSet resultado = consulta.executeQuery("Select * from transaccionterreno where transaccionterreno.Id like '" + id + "'");
+            if (!resultado.next()) {
+                //  control();
+                GuardarTerrenos();
+            } else {
+                JOptionPane.showMessageDialog(null, "el terreno ya existe");
+            }
 
+
+        } catch (Exception ex) {
+        }
+
+    }
+ private void GuardarTerrenos() {
+      //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    if (txtIdTerreno.getText().equals("")) {
+
+            JOptionPane.showMessageDialog(null, "Ingrese Id Terreno");
+            txtIdTerreno.requestFocus(true);
+        } else if (txtSocioVendedor.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese la Direccion");
+            txtSocioVendedor.requestFocus(true);
+
+
+        } else if (txtSocioComprador.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese la Metaje");
+            txtSocioComprador.requestFocus(true);
+        } else if (txtMonto.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ingrese el socio");
+            txtMonto.requestFocus(true);
+        }else if (jComboBox2.getSelectedIndex()==-1) {
+            JOptionPane.showMessageDialog(null, "Ingrese el Tipo de Transacción");
+            txtMonto.requestFocus(true);
+        }
+// else if (txtAn.getText().isEmpty() ) {
+        //  JOptionPane.showMessageDialog(null, "Ingrese la Año");
+        //  txtAn.requestFocus(true);
+        // }
+        else {
+            String Id,Socio_Vendedor,Socio_Comprador,Fecha,modulo,tipo_transaccion;
+            double monto;
+            int anio=jDateChooser1.getCalendar().get(Calendar.YEAR);
+            int mes=jDateChooser1.getCalendar().get(Calendar.MONTH)+1;
+            int dia=jDateChooser1.getCalendar().get(Calendar.DAY_OF_WEEK_IN_MONTH);
+            Fecha=dia+"/"+mes+"/"+anio+"";
+            Id = txtIdTerreno.getText();
+            Socio_Vendedor =txtSocioVendedor.getText();
+            Socio_Comprador=txtSocioComprador.getText();
+            modulo=cnbModulo.getSelectedItem().toString();
+            tipo_transaccion=jComboBox2.getSelectedItem().toString();
+            monto=Double.valueOf( txtMonto.getText());
+
+            java.sql.Connection con;
+            con = Conexion.GetConnection();
+            String sql = "";
+            sql = "insert into transaccionterreno(Id,Socio_Vendedor,Socio_Comprador,Fecha,monto,modulo,tipo_transaccion) values (?,?,?,?,?,?,?) ";
+            try {
+                java.sql.PreparedStatement psd = con.prepareStatement(sql);
+
+
+
+                psd.setString(1, Id);
+                psd.setString(2, Socio_Vendedor);
+                psd.setString(3, Socio_Comprador);
+                psd.setString(4, Fecha);
+                psd.setDouble(5, monto);
+                psd.setString(6, modulo);
+                psd.setString(7, tipo_transaccion);
+
+                int n = psd.executeUpdate();
+
+                if (n > 0) {
+                    JOptionPane.showMessageDialog(null, "Se Inserto el dato correctamente");
+                    limpiarTexto();
+               //     BloquearTexto();
+               //     bloquearBotonesInicio();
+
+
+
+                }
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null,ex);
+            }
+
+        }
+    }
     private void btnCliActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliActualizarActionPerformed
-        // TODO add your handling code here:
+ modificar();
+      crearTabla();        // TODO add your handling code here:
       
     }//GEN-LAST:event_btnCliActualizarActionPerformed
 
@@ -408,6 +664,10 @@ public class TrasnTerrenos extends javax.swing.JInternalFrame {
     private void jPanel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_jPanel2MouseClicked
+
+    private void txtSocioVendedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSocioVendedorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSocioVendedorActionPerformed
 
     /**
      * @param args the command line arguments
@@ -451,9 +711,9 @@ public class TrasnTerrenos extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnCliActualizar;
     private javax.swing.JButton btnCliEliminar;
     private javax.swing.JButton btnCliGuardar;
+    private javax.swing.JComboBox<String> cnbModulo;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JComboBox<String> jComboBox3;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -471,11 +731,21 @@ public class TrasnTerrenos extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField7;
     private javax.swing.JTextField jTextField8;
+    private javax.swing.JTable tblTerreno;
+    private javax.swing.JTextField txtIdTerreno;
+    private javax.swing.JTextField txtMonto;
+    private javax.swing.JTextField txtSocioComprador;
+    private javax.swing.JTextField txtSocioVendedor;
     // End of variables declaration//GEN-END:variables
+
+    private void limpiarTexto() {
+      //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    txtIdTerreno.setText("");
+    txtMonto.setText("");
+    txtSocioComprador.setText("");
+    txtSocioVendedor.setText("");
+    cnbModulo.setSelectedIndex(-1);
+    jComboBox2.setSelectedIndex(-1);
+    }
 }
