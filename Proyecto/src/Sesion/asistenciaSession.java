@@ -4,18 +4,136 @@
  * and open the template in the editor.
  */
 package Sesion;
+import Conexion.Conexion;
+import Multas.Metodos_Multas;
+import com.mysql.jdbc.Statement;
+import com.toedter.calendar.JDateChooser;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 /**
  *
  * @author Gabriel
  */
 public class asistenciaSession extends javax.swing.JFrame {
+    private Connection conexion;
+    private String query;
+    private java.sql.Statement st;
+    private PreparedStatement ps;
 
     /**
      * Creates new form asistenciaSession
      */
     public asistenciaSession() {
         initComponents();
+        
+    }
+    public String selectMaxMulta(){
+            
+        String id_multa="";
+            
+        try {
+            conexion=Conexion.GetConnection();
+            query="SELECT SUBSTRING(MAX(Id_Multa),3) FROM MULTAS";
+            st=conexion.createStatement();
+            
+            ResultSet rs=st.executeQuery(query);
+                while(rs.next()){
+                    id_multa=rs.getString(1);
+                }
+            st.close();
+            conexion.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Metodos_Multas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if(id_multa==null)
+            id_multa="0";
+            
+        return id_multa;
+    }
+    public String obtenerNuevoIdMulta(){
+        String id_nuevo="";
+        String max=selectMaxMulta();
+        if(!(max=="0")){
+            int ultima=Integer.valueOf(max)+1;
+            String ultima_s=String.valueOf(ultima);
+            String ceros="";
+            for(int i=ultima_s.length();i<6;i++){
+                ceros+="0";
+            }
+            id_nuevo="MU"+ceros+ultima_s;
+        }
+        else{
+            id_nuevo="MU000001";
+        }
+        
+        return id_nuevo;
+    }
+    public asistenciaSession(String codigo,String motivo,String fecha) throws Exception {
+        initComponents();
+        carTabla("");
+        txtCodigo.setEnabled(false);
+        txtMotivo.setEnabled(false);
+        jDateChooser1.setEnabled(false);
+        txtCodigo.setText(codigo);
+        txtMotivo.setText(motivo);
+        Calendar c2 = new GregorianCalendar();
+        jDateChooser1.setCalendar(c2);
+        //jDateChooser1.setDateFormatString(fecha);
+        
+        //TableColumn check = jTable1.getColumnModel().getColumn(3);
+        //JCheckBox checkbox = new JCheckBox();
+        //check.setCellEditor(new DefaultCellEditor(checkbox));
+        JComboBox asistencia;
+        TableColumn col=jTable1.getColumnModel().getColumn(3);
+        String op[]={"Asiste","Falta","Atraso"};
+        asistencia=new JComboBox(op);
+        col.setCellEditor(new DefaultCellEditor(asistencia));
+    }
+    
+    
+    DefaultTableModel model;
+    public void carTabla(String Dato) throws Exception{
+        //String [] titulos={"MODULO","CEDULA PRESIDENTE","NOMBRE PRESIDENTE","ASISTIO","NO ASISTIO","ATRASO"};
+        String [] registros=new String[3];
+        
+        model=new DefaultTableModel();
+        model = (DefaultTableModel) jTable1.getModel();
+        java.sql.Connection cn =  Conexion.GetConnection();
+        String sql="";
+        sql="select * from socio where Ced_Socio LIKE '%"+Dato+"%'";
+        
+        try {
+            Statement psd=(Statement) cn.createStatement();
+            ResultSet rs=psd.executeQuery(sql);
+            
+            while(rs.next()){
+                registros[0]=rs.getString("Mod_Per");
+                registros[1]=rs.getString("Ced_Socio");
+                String apellido=rs.getString("Apellido_Socio");
+                String nombre=rs.getString("Nombre_Socio");
+                registros[2]=apellido+" "+nombre;
+                JOptionPane.showMessageDialog(null, registros[0]);
+                model.addRow(registros);
+            }
+            jTable1.setModel(model);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
     }
 
     /**
@@ -35,10 +153,10 @@ public class asistenciaSession extends javax.swing.JFrame {
         btnCancelar = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        txtCodigo = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
+        txtMotivo = new javax.swing.JTextField();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -120,8 +238,8 @@ public class asistenciaSession extends javax.swing.JFrame {
                     .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
-                    .addComponent(jTextField4))
+                    .addComponent(txtMotivo, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
+                    .addComponent(txtCodigo))
                 .addGap(41, 41, 41)
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -134,13 +252,13 @@ public class asistenciaSession extends javax.swing.JFrame {
                 .addGap(17, 17, 17)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel5)
-                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtMotivo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel7)))
                 .addContainerGap(70, Short.MAX_VALUE))
         );
@@ -152,11 +270,12 @@ public class asistenciaSession extends javax.swing.JFrame {
 
             },
             new String [] {
-                "MODULO", "PRESIDENTE", "ASISTIO", "NO ASISTIO", "ATRASO"
+                "MODULO", "CEDULA ", "APELLIDO NOMBRE", "ASISTENCIA", "REPRESENTANTE"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
         if (jTable1.getColumnModel().getColumnCount() > 0) {
+            jTable1.getColumnModel().getColumn(2).setMinWidth(100);
             jTable1.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(jComboBox2));
         }
 
@@ -181,9 +300,9 @@ public class asistenciaSession extends javax.swing.JFrame {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(20, 20, 20)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 685, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 627, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -191,7 +310,8 @@ public class asistenciaSession extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(btnBuscar2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(btnBuscar2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -213,15 +333,13 @@ public class asistenciaSession extends javax.swing.JFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(31, 31, 31))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -234,8 +352,6 @@ public class asistenciaSession extends javax.swing.JFrame {
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
-
-        jPanel1.getAccessibleContext().setAccessibleName("ACCION ASISTENCIA");
 
         jLabel11.setBackground(new java.awt.Color(0, 51, 0));
         jLabel11.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
@@ -250,11 +366,11 @@ public class asistenciaSession extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(21, 21, 21)
-                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -279,9 +395,121 @@ public class asistenciaSession extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+public static String fechaMySQL(JDateChooser miJDate){ 
 
+        DecimalFormat sdf = new DecimalFormat("00"); 
+        int anio = miJDate.getCalendar().get(Calendar. YEAR); 
+        int mes = miJDate.getCalendar().get(Calendar. MONTH) + 1; 
+        int dia = miJDate.getCalendar().get(Calendar. DAY_OF_MONTH); 
+
+        return anio+"/"+sdf.format(mes)+"/"+sdf.format(dia); 
+    }
     private void btnCliGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliGuardarActionPerformed
+            TableModel tableModel = jTable1.getModel();
+        int cols = tableModel.getColumnCount();
+        int fils = tableModel.getRowCount();
+        for (int i = 0; i < fils; i++) {
+                  String asiste = tableModel.getValueAt(i, 3).toString();
+                  String modulo = tableModel.getValueAt(i, 0).toString();
+                String razon = "Asiste";
+                //Date fecha = jDateChooser1.getDate();
+                String socio = tableModel.getValueAt(i, 1).toString();
+                ////////////////////////////////////////////////////////////
+                String Id = obtenerNuevoIdMulta();
+            if (asiste.equals("Falta")) {
+                int valor = 10;
+                razon = "Falta";
+                /****************************************/
+                query = "INSERT INTO MULTAS(Id_Multa,Nom_Multa,Val_Multa,Fec_Multa,Id_Socio)"
+                        + "VALUES(?,?,?,?,?)";
+                try {
 
+                    conexion = Conexion.GetConnection();
+                    ps = conexion.prepareStatement(query);
+
+                    ps.setString(1, Id);
+                    ps.setString(2, razon);
+                    ps.setDouble(3, valor);
+                    ps.setString(4, fechaMySQL(jDateChooser1));
+                    ps.setString(5, socio);
+
+                    if (ps.executeUpdate() > 0) {
+                        JOptionPane.showMessageDialog(null, "Se insertó el dato Multa Falta correctamente...");
+                    }
+
+                    ps.close();
+                    conexion.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Metodos_Multas.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                /****************************************/
+                ////////////////////////////////////////////////////////////
+            }
+            if (asiste.equals("Atraso")) {
+                int valor = 5;
+                razon = "Atraso";
+                /****************************************/
+                query = "INSERT INTO MULTAS(Id_Multa,Nom_Multa,Val_Multa,Fec_Multa,Id_Socio)"
+                        + "VALUES(?,?,?,?,?)";
+                try {
+
+                    conexion = Conexion.GetConnection();
+                    ps = conexion.prepareStatement(query);
+
+                    ps.setString(1, Id);
+                    ps.setString(2, razon);
+                    ps.setDouble(3, valor);
+                    ps.setString(4, fechaMySQL(jDateChooser1));
+                    ps.setString(5, socio);
+
+                    if (ps.executeUpdate() >0) {
+                        JOptionPane.showMessageDialog(null, "Se insertó el dato Multa Atraso correctamente...");
+                    }
+
+                    ps.close();
+                    conexion.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Metodos_Multas.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                /****************************************/
+                ////////////////////////////////////////////////////////////
+            }
+            /****************************************/
+                query = "INSERT INTO Detalle_Sesion(Rep_Det_Sesion,Obs_Det_Sesion,Id_Sesion,Id_Modulo)"
+                        + "VALUES(?,?,?,?)";
+                String Rep_Det_Sesion,Obs_Det_Sesion,Id_Sesion,Id_Modulo;
+                Id_Sesion = txtCodigo.getText();
+                Id_Modulo = modulo;
+                Rep_Det_Sesion = socio;
+                Obs_Det_Sesion = asiste;
+                try {
+
+                    conexion = Conexion.GetConnection();
+                    ps = conexion.prepareStatement(query);
+
+                    ps.setString(1, Rep_Det_Sesion);
+                    ps.setString(2, Obs_Det_Sesion);
+                    ps.setString(3, Id_Sesion);
+                    ps.setString(4, Id_Modulo);
+
+                    if (ps.executeUpdate() >  0) {
+                        JOptionPane.showMessageDialog(null, "Se insertó el dato en Detalle Sesión correctamente...");
+                    }
+
+                    ps.close();
+                    conexion.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Metodos_Multas.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                /****************************************/
+            
+            
+            //for (int j = 0; j < cols; j++) {
+                //System.out.print(tableModel.getValueAt(i, j);
+                
+            //}
+            //System.out.println();
+        }
     }//GEN-LAST:event_btnCliGuardarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
@@ -354,8 +582,8 @@ public class asistenciaSession extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
     private javax.swing.JTextField jTextField8;
+    private javax.swing.JTextField txtCodigo;
+    private javax.swing.JTextField txtMotivo;
     // End of variables declaration//GEN-END:variables
 }

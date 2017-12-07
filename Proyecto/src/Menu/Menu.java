@@ -10,6 +10,8 @@ import Terrenos.Terrenos;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import Terrenos.TrasnTerrenos;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.JInternalFrame;
 
@@ -222,7 +224,12 @@ public class Menu extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
-     Sesion obj = new Sesion();
+     Sesion obj = null;
+        try {
+            obj = new Sesion();
+        } catch (Exception ex) {
+            Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         jDesktopPane1.add(obj);
         obj.setLocation((jDesktopPane1.getWidth()/2)-(obj.getWidth()/2),(jDesktopPane1.getHeight()/2)-(obj.getHeight()/2));
