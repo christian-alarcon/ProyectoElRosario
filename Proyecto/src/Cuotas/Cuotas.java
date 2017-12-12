@@ -8,11 +8,16 @@ package Cuotas;
 import Conexion.Conexion;
 import static Menu.Menu.jDesktopPane1;
 import Socios.BuscarSocio;
+import java.awt.Toolkit;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -32,6 +37,7 @@ public class Cuotas extends javax.swing.JInternalFrame {
          btnActualizar.setEnabled(false);
         btnEliminar.setEnabled(false);
         btnCancelar.setEnabled(false);
+        TablaSocios("");
     }
 public  void Limpiar()
     {
@@ -59,8 +65,8 @@ public  void Limpiar()
    DefaultTableModel m;
 
     public void TablaSocios(String val) {//Realiza la consulta de los productos que tenemos en la base de datos
-        String titles[] = {"ID", "MOTIVO", "VALOR", "FECHA", "ID_SOCIO"};
-        String reg[] = new String[6];
+        String titles[] = {"ID", "MOTIVO", "VALOR", "FECHA"};
+        String reg[] = new String[4];
         String sentence = "";
         m = new DefaultTableModel(null, titles);
 
@@ -68,9 +74,8 @@ public  void Limpiar()
         con = Conexion.GetConnection();
         //sentence = "CALL SP_SociosSel('%" + val + "%')";
          String variable = (String) jcbBuscar.getSelectedItem();
-         if(variable == "CEDULA")
-        {
-            sentence = "CALL SP_ConsultarCuota('%" + val + "%')";
+      
+            sentence = "CALL SP_ConsultarCuota()";
         try {
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(sentence);
@@ -79,7 +84,7 @@ public  void Limpiar()
                 reg[1] = rs.getString("Mot_Cuota");
                 reg[2] = rs.getString("Val_Cuota");
                 reg[3] = rs.getString("Fec_Cuota");
-                reg[4] = rs.getString("Id_Socio");
+               // reg[4] = rs.getString("Id_Socio");
                 m.addRow(reg);//agrega el registro a la tabla
             }
             jtbCuotas.setModel(m);//asigna a la tabla el modelo creado
@@ -87,11 +92,11 @@ public  void Limpiar()
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, ex);
         }   
-        }       
+        
     }
-    public void TablaSociosA(String val) {//Realiza la consulta las cuotas 
-        String titles[] = {"ID", "MOTIVO", "VALOR", "FECHA", "ID_SOCIO"};
-        String reg[] = new String[6];
+    public void TablaSociosF(String val) {//Realiza la consulta las cuotas 
+        String titles[] = {"ID", "MOTIVO", "VALOR", "FECHA"};
+        String reg[] = new String[4];
         String sentence = "";
         m = new DefaultTableModel(null, titles);
 
@@ -99,9 +104,9 @@ public  void Limpiar()
         con = Conexion.GetConnection();
         //sentence = "CALL SP_SociosSel('%" + val + "%')";
         String variable = (String) jcbBuscar.getSelectedItem(); 
-         if(variable == "APELLIDO")
+         if(variable == "FECHA")
         {
-            sentence = "CALL SP_SociosBusApe('%" + val + "%')";
+            sentence = "CALL SP_ConsultarCuotaFecha('%" + val + "%')";
         try {
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(sentence);
@@ -110,8 +115,37 @@ public  void Limpiar()
                 reg[1] = rs.getString("Mot_Cuota");
                 reg[2] = rs.getString("Val_Cuota");
                 reg[3] = rs.getString("Fec_Cuota");
-                reg[4] = rs.getString("Id_Socio");
-                m.addRow(reg);//agrega el registro a la tabla
+             m.addRow(reg);//agrega el registro a la tabla
+            }
+         jtbCuotas.setModel(m);//asigna a la tabla el modelo creado
+          
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }   
+        }       
+    }
+     public void TablaSociosM(String val) {//Realiza la consulta las cuotas 
+        String titles[] = {"ID", "MOTIVO", "VALOR", "FECHA"};
+        String reg[] = new String[4];
+        String sentence = "";
+        m = new DefaultTableModel(null, titles);
+
+        Connection con;
+        con = Conexion.GetConnection();
+        //sentence = "CALL SP_SociosSel('%" + val + "%')";
+        String variable = (String) jcbBuscar.getSelectedItem(); 
+         if(variable == "MOTIVO")
+        {
+            sentence = "CALL SP_ConsultarCuotaMotivo('%" + val + "%')";
+        try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sentence);
+            while (rs.next()) {
+                reg[0] = rs.getString("Id_Cuota");
+                reg[1] = rs.getString("Mot_Cuota");
+                reg[2] = rs.getString("Val_Cuota");
+                reg[3] = rs.getString("Fec_Cuota");
+             m.addRow(reg);//agrega el registro a la tabla
             }
          jtbCuotas.setModel(m);//asigna a la tabla el modelo creado
           
@@ -127,14 +161,15 @@ public  void Limpiar()
             String motivo = txtxMotivo.getText();
             String valorCuota = txtValor.getText();
 //            int socio = Integer.parseInt(txtSocio   .getText());
-            String fecha = jdcFecha.getDate().toString();
+            String fecha = new SimpleDateFormat("yyyy-MM-dd").format( jdcFecha.getDate());
 
             //SI LOS CAMPOS ESTAN LLENOS
             if (!txtID.getText().trim().isEmpty()
                     && !txtxMotivo.getText().trim().isEmpty()
                     && !txtValor.getText().trim().isEmpty()
                   //  && !txtSocio.getText().trim().isEmpty()
-                    && jdcFecha.getDate().toString().isEmpty()) {
+                   // && jdcFecha.getDate().toString().isEmpty()
+                    ) {
                 int confirmado = JOptionPane.showConfirmDialog(null, "¿Esta seguro de insertar la cuota?", "Confirmación", JOptionPane.YES_OPTION);
 
                 if (JOptionPane.YES_OPTION == confirmado) {
@@ -175,7 +210,8 @@ public  void Limpiar()
         id = txtID.getText();
         mot = txtxMotivo.getText();
         val = txtValor.getText();
-        fec = jdcFecha.getDate().toString();
+       fec = new SimpleDateFormat("yyyy-MM-dd").format( jdcFecha.getDate());
+       
 //        soc = txtSocio.getText();
 
         //si los datos son diferentes de vacios
@@ -184,7 +220,7 @@ public  void Limpiar()
             int confirmado = JOptionPane.showConfirmDialog(null, "¿Esta seguro de modificar la cuota?", "Confirmación", JOptionPane.YES_OPTION);
             if (JOptionPane.YES_OPTION == confirmado) {
 
-                sentence = "CALL SP_ModificarCuota('" + mot + "','" + val + "','" + fec + "')";
+                sentence = "CALL SP_ModificarCuota('" + id + "','" + mot + "','" + val + "','" + fec + "')";
                 getToolkit().beep();
                 JOptionPane.showMessageDialog(null, "Cuota modificado correctamente", "Información", JOptionPane.INFORMATION_MESSAGE);
 
@@ -220,7 +256,50 @@ public  void Limpiar()
 
         }
     }
-    
+    public void EliminarCuota(){
+         int filasel;
+        String id;
+        try{
+            filasel=jtbCuotas.getSelectedRow();
+            if (filasel==-1) {
+                JOptionPane.showMessageDialog(null,"No se ha seleccionado ninguna fila","Advertencia",JOptionPane.WARNING_MESSAGE);
+                txtBuscar.requestFocus();
+            }else{
+                int confirmado=javax.swing.JOptionPane.showConfirmDialog(null,"¿Realmente desea eliminar el socio?","Confirmación",JOptionPane.YES_OPTION);
+                if(confirmado==JOptionPane.YES_OPTION){
+                m=(DefaultTableModel) jtbCuotas.getModel();
+                id=(String) m.getValueAt(filasel, 0);
+                
+                Connection con;
+               con=Conexion.GetConnection();
+                String sentence="";
+                sentence="CALL SP_EliminarCuota("+id+")";
+                
+                try {
+                       PreparedStatement pst=con.prepareStatement(sentence);
+                       pst.executeUpdate();
+                       JOptionPane.showMessageDialog(null,"Socio eliminado correctamente","Información",JOptionPane.INFORMATION_MESSAGE);
+                        //Limpia de nuevo todos los campos
+                       jtbCuotas.setVisible(false);
+                       txtBuscar.setText("");
+                        txtBuscar.requestFocus();
+                            } catch (SQLException ex) {
+                                JOptionPane.showMessageDialog(null,ex);
+                            }
+                            }else{
+                            TablaSocios("");
+                            jtbCuotas.setVisible(false);
+                            txtBuscar.setText("");
+                             txtBuscar.requestFocus();
+                             Limpiar();
+                           JOptionPane.showMessageDialog(null, "Cancelado correctamente","Información",JOptionPane.ERROR_MESSAGE);
+                                 }
+                  }
+        }catch(Exception e){
+            e.printStackTrace();
+            
+        }
+    }
      
     /**
      * This method is called from within the constructor to initialize the form.
@@ -254,6 +333,7 @@ public  void Limpiar()
         jLabel9 = new javax.swing.JLabel();
         txtBuscar = new javax.swing.JTextField();
         btnBuscar1 = new javax.swing.JButton();
+        lblErrorcb = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
 
         setClosable(true);
@@ -330,6 +410,15 @@ public  void Limpiar()
 
         jLabel5.setText("MOTIVO:");
 
+        txtValor.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtValorKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtValorKeyTyped(evt);
+            }
+        });
+
         jLabel7.setText("FECHA:");
 
         jLabel6.setText("ID:");
@@ -396,9 +485,19 @@ public  void Limpiar()
 
             }
         ));
+        jtbCuotas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jtbCuotasMouseClicked(evt);
+            }
+        });
+        jtbCuotas.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jtbCuotasKeyReleased(evt);
+            }
+        });
         jScrollPane1.setViewportView(jtbCuotas);
 
-        jcbBuscar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SELECCIONE:", "MOTIVO", "SOCIO", "FECHA" }));
+        jcbBuscar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SELECCIONE:", "MOTIVO", "FECHA" }));
         jcbBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jcbBuscarActionPerformed(evt);
@@ -407,12 +506,22 @@ public  void Limpiar()
 
         jLabel9.setText("BUSCAR POR:");
 
+        txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtBuscarKeyReleased(evt);
+            }
+        });
+
         btnBuscar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/buscar1.png"))); // NOI18N
         btnBuscar1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBuscar1ActionPerformed(evt);
             }
         });
+
+        lblErrorcb.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        lblErrorcb.setForeground(new java.awt.Color(255, 0, 0));
+        lblErrorcb.setText("jLabel1");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -430,6 +539,8 @@ public  void Limpiar()
                         .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnBuscar1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblErrorcb, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -442,9 +553,12 @@ public  void Limpiar()
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel9)
                         .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jcbBuscar)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE))
+                        .addComponent(jcbBuscar))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(lblErrorcb, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -473,7 +587,6 @@ public  void Limpiar()
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(32, 32, 32)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -528,10 +641,11 @@ public  void Limpiar()
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
              // TODO add your handling code here:
         ActualizarSocios();
+       Limpiar();
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        // TODO add your handling code here:
+       EliminarCuota();        // TODO add your handling code here:
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
@@ -550,6 +664,66 @@ public  void Limpiar()
         // TODO add your handling code here:
     }//GEN-LAST:event_btnBuscar1ActionPerformed
 
+    private void jtbCuotasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtbCuotasMouseClicked
+       int row = jtbCuotas.rowAtPoint(evt.getPoint());
+       txtID.setText(jtbCuotas.getValueAt(row, 0).toString());
+    txtValor.setText(jtbCuotas.getValueAt(row, 2).toString());
+    txtxMotivo.setText(jtbCuotas.getValueAt(row, 1).toString());
+     try {
+      String fecha =jtbCuotas.getValueAt(row, 3).toString();
+      SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd");
+      Date fechaDate = formato.parse(fecha.replace('-', '/'));
+      jdcFecha.setDate(fechaDate);
+      } catch(Exception e){
+            e.printStackTrace();
+            
+        }
+     btnGuardar.setEnabled(false);
+     btnActualizar.setEnabled(true);
+     btnEliminar.setEnabled(true);
+    }//GEN-LAST:event_jtbCuotasMouseClicked
+
+    private void jtbCuotasKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtbCuotasKeyReleased
+ 
+           // TODO add your handling code here:
+    }//GEN-LAST:event_jtbCuotasKeyReleased
+
+    private void txtBuscarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyReleased
+       int valor = jcbBuscar.getSelectedIndex();
+        if (txtBuscar.getText().trim().length() >= 1) 
+        {
+            String filtro = txtBuscar.getText();
+            if(valor == 1)
+            TablaSociosM(filtro);
+            jtbCuotas.setVisible(true);
+            if(valor == 2)
+            TablaSociosF(filtro);
+            jtbCuotas.setVisible(true);
+           
+        if (valor ==0)
+        {
+
+             lblErrorcb.setText("Seleccione el filtro de busqueda");
+        }
+        } 
+        
+        else 
+        {
+            jtbCuotas.setVisible(false);
+        } // TODO add your handling code here:
+    }//GEN-LAST:event_txtBuscarKeyReleased
+
+    private void txtValorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtValorKeyPressed
+
+    private void txtValorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorKeyTyped
+if (!Character.isDigit(evt.getKeyChar())) {
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+         }        // TODO add your handling code here:
+    }//GEN-LAST:event_txtValorKeyTyped
+   
     /**
      * @param args the command line arguments
      */
@@ -606,6 +780,7 @@ public  void Limpiar()
     private javax.swing.JComboBox<String> jcbBuscar;
     private com.toedter.calendar.JDateChooser jdcFecha;
     private javax.swing.JTable jtbCuotas;
+    private javax.swing.JLabel lblErrorcb;
     private javax.swing.JTextField txtBuscar;
     private javax.swing.JTextField txtID;
     private javax.swing.JTextField txtValor;
