@@ -5,19 +5,302 @@
  */
 package Cuotas;
 
+import Conexion.Conexion;
+import static Menu.Menu.jDesktopPane1;
+import Socios.BuscarSocio;
+import java.awt.Toolkit;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Diego
  */
 public class Cuotas extends javax.swing.JInternalFrame {
-
+    
+    
+    /////////YA NO VA SOCIOS BORRAR EL CAMPO
     /**
      * Creates new form Cuotas
      */
     public Cuotas() {
         initComponents();
+         btnActualizar.setEnabled(false);
+        btnEliminar.setEnabled(false);
+        btnCancelar.setEnabled(false);
+        TablaSocios("");
     }
+public  void Limpiar()
+    {
+        txtID.setText("");
+        txtxMotivo.setText("");
+        txtValor.setText("");
+//        txtSocio.setText("");
+        
+        
+        btnActualizar.setEnabled(true);
+        btnActualizar.setEnabled(false);
+        btnEliminar.setEnabled(false);
+        btnCancelar.setEnabled(false);
+    }
+  public void DesactivarCampos() {        
+        txtID.setEnabled(false);
+        txtxMotivo.setEnabled(false);
+        txtValor.setEnabled(false);
+//        txtSocio.setEnabled(false);
+       
+        btnActualizar.setEnabled(false);
+        btnEliminar.setEnabled(false);
+        btnCancelar.setEnabled(false);
+    }
+   DefaultTableModel m;
 
+    public void TablaSocios(String val) {//Realiza la consulta de los productos que tenemos en la base de datos
+        String titles[] = {"ID", "MOTIVO", "VALOR", "FECHA"};
+        String reg[] = new String[4];
+        String sentence = "";
+        m = new DefaultTableModel(null, titles);
+
+        Connection con;
+        con = Conexion.GetConnection();
+        //sentence = "CALL SP_SociosSel('%" + val + "%')";
+         String variable = (String) jcbBuscar.getSelectedItem();
+      
+            sentence = "CALL SP_ConsultarCuota()";
+        try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sentence);
+            while (rs.next()) {
+                reg[0] = rs.getString("Id_Cuota");
+                reg[1] = rs.getString("Mot_Cuota");
+                reg[2] = rs.getString("Val_Cuota");
+                reg[3] = rs.getString("Fec_Cuota");
+               // reg[4] = rs.getString("Id_Socio");
+                m.addRow(reg);//agrega el registro a la tabla
+            }
+            jtbCuotas.setModel(m);//asigna a la tabla el modelo creado
+          
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }   
+        
+    }
+    public void TablaSociosF(String val) {//Realiza la consulta las cuotas 
+        String titles[] = {"ID", "MOTIVO", "VALOR", "FECHA"};
+        String reg[] = new String[4];
+        String sentence = "";
+        m = new DefaultTableModel(null, titles);
+
+        Connection con;
+        con = Conexion.GetConnection();
+        //sentence = "CALL SP_SociosSel('%" + val + "%')";
+        String variable = (String) jcbBuscar.getSelectedItem(); 
+         if(variable == "FECHA")
+        {
+            sentence = "CALL SP_ConsultarCuotaFecha('%" + val + "%')";
+        try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sentence);
+            while (rs.next()) {
+                reg[0] = rs.getString("Id_Cuota");
+                reg[1] = rs.getString("Mot_Cuota");
+                reg[2] = rs.getString("Val_Cuota");
+                reg[3] = rs.getString("Fec_Cuota");
+             m.addRow(reg);//agrega el registro a la tabla
+            }
+         jtbCuotas.setModel(m);//asigna a la tabla el modelo creado
+          
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }   
+        }       
+    }
+     public void TablaSociosM(String val) {//Realiza la consulta las cuotas 
+        String titles[] = {"ID", "MOTIVO", "VALOR", "FECHA"};
+        String reg[] = new String[4];
+        String sentence = "";
+        m = new DefaultTableModel(null, titles);
+
+        Connection con;
+        con = Conexion.GetConnection();
+        //sentence = "CALL SP_SociosSel('%" + val + "%')";
+        String variable = (String) jcbBuscar.getSelectedItem(); 
+         if(variable == "MOTIVO")
+        {
+            sentence = "CALL SP_ConsultarCuotaMotivo('%" + val + "%')";
+        try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sentence);
+            while (rs.next()) {
+                reg[0] = rs.getString("Id_Cuota");
+                reg[1] = rs.getString("Mot_Cuota");
+                reg[2] = rs.getString("Val_Cuota");
+                reg[3] = rs.getString("Fec_Cuota");
+             m.addRow(reg);//agrega el registro a la tabla
+            }
+         jtbCuotas.setModel(m);//asigna a la tabla el modelo creado
+          
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }   
+        }       
+    }
+  public void InsertarCuotas() {
+
+        try {
+            String ID = txtID.getText();
+            String motivo = txtxMotivo.getText();
+            String valorCuota = txtValor.getText();
+//            int socio = Integer.parseInt(txtSocio   .getText());
+            String fecha = new SimpleDateFormat("yyyy-MM-dd").format( jdcFecha.getDate());
+
+            //SI LOS CAMPOS ESTAN LLENOS
+            if (!txtID.getText().trim().isEmpty()
+                    && !txtxMotivo.getText().trim().isEmpty()
+                    && !txtValor.getText().trim().isEmpty()
+                  //  && !txtSocio.getText().trim().isEmpty()
+                   // && jdcFecha.getDate().toString().isEmpty()
+                    ) {
+                int confirmado = JOptionPane.showConfirmDialog(null, "¿Esta seguro de insertar la cuota?", "Confirmación", JOptionPane.YES_OPTION);
+
+                if (JOptionPane.YES_OPTION == confirmado) {
+
+                    //REGISTRAR LOS PRODUCTOS
+                    Connection miConexion = (Connection) Conexion.GetConnection();
+                    try {
+                        Statement statement = (Statement) miConexion.createStatement();
+                        statement.executeUpdate("CALL SP_InsertarCuota ('" + ID + "','" + motivo + "','" + valorCuota + "','" + fecha + "') ");
+                        miConexion.close();
+                        JOptionPane.showMessageDialog(this, "Se agrego correctamente", "Información", JOptionPane.INFORMATION_MESSAGE);
+                        Limpiar();
+
+                    } catch (Exception ex) {
+
+                        JOptionPane.showMessageDialog(this, "Error " + ex.getMessage());
+                    }
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "Cancelado correctamente", "Mensaje", JOptionPane.ERROR_MESSAGE);
+                    txtxMotivo.requestFocus();
+                }
+            }
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(null, "No dejar vacio ningun campo", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            txtxMotivo.requestFocus();
+        }
+
+    }
+  public void ActualizarSocios()
+    {
+            Connection con;
+        con = Conexion.GetConnection();
+        String sentence = "";
+        String msj = "";
+        String id, mot, val, fec,  soc;
+        id = txtID.getText();
+        mot = txtxMotivo.getText();
+        val = txtValor.getText();
+       fec = new SimpleDateFormat("yyyy-MM-dd").format( jdcFecha.getDate());
+       
+//        soc = txtSocio.getText();
+
+        //si los datos son diferentes de vacios
+        if (!id.isEmpty() && !mot.isEmpty() && !val.isEmpty() && !fec.isEmpty() ) {
+
+            int confirmado = JOptionPane.showConfirmDialog(null, "¿Esta seguro de modificar la cuota?", "Confirmación", JOptionPane.YES_OPTION);
+            if (JOptionPane.YES_OPTION == confirmado) {
+
+                sentence = "CALL SP_ModificarCuota('" + id + "','" + mot + "','" + val + "','" + fec + "')";
+                getToolkit().beep();
+                JOptionPane.showMessageDialog(null, "Cuota modificado correctamente", "Información", JOptionPane.INFORMATION_MESSAGE);
+
+                try {
+                    PreparedStatement pst = con.prepareStatement(sentence);
+                    pst.executeUpdate();
+
+                    txtID.setText("");
+                    txtxMotivo.setText("");
+                    txtValor.setText("");
+                
+                    btnGuardar.setEnabled(true);
+                    btnActualizar.setEnabled(false);
+                    btnCancelar.setEnabled(false);
+                    btnEliminar.setEnabled(false);
+                   // TablaSocios("");
+                    //DesactivarCampos();
+
+                    //tblBusqueda.setVisible(false);
+                    txtBuscar.setText("");
+                    txtBuscar.requestFocus();
+
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                txtBuscar.setText("");
+            //    TablaSocios("");
+                JOptionPane.showMessageDialog(null, "Cancelado correctamente", "Información", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "No dejar vacio ningun campo", "Advertencia", JOptionPane.WARNING_MESSAGE);
+
+        }
+    }
+    public void EliminarCuota(){
+         int filasel;
+        String id;
+        try{
+            filasel=jtbCuotas.getSelectedRow();
+            if (filasel==-1) {
+                JOptionPane.showMessageDialog(null,"No se ha seleccionado ninguna fila","Advertencia",JOptionPane.WARNING_MESSAGE);
+                txtBuscar.requestFocus();
+            }else{
+                int confirmado=javax.swing.JOptionPane.showConfirmDialog(null,"¿Realmente desea eliminar el socio?","Confirmación",JOptionPane.YES_OPTION);
+                if(confirmado==JOptionPane.YES_OPTION){
+                m=(DefaultTableModel) jtbCuotas.getModel();
+                id=(String) m.getValueAt(filasel, 0);
+                
+                Connection con;
+               con=Conexion.GetConnection();
+                String sentence="";
+                sentence="CALL SP_EliminarCuota("+id+")";
+                
+                try {
+                       PreparedStatement pst=con.prepareStatement(sentence);
+                       pst.executeUpdate();
+                       JOptionPane.showMessageDialog(null,"Socio eliminado correctamente","Información",JOptionPane.INFORMATION_MESSAGE);
+                        //Limpia de nuevo todos los campos
+                       jtbCuotas.setVisible(false);
+                       txtBuscar.setText("");
+                        txtBuscar.requestFocus();
+                            } catch (SQLException ex) {
+                                JOptionPane.showMessageDialog(null,ex);
+                            }
+                            }else{
+                            TablaSocios("");
+                            jtbCuotas.setVisible(false);
+                            txtBuscar.setText("");
+                             txtBuscar.requestFocus();
+                             Limpiar();
+                           JOptionPane.showMessageDialog(null, "Cancelado correctamente","Información",JOptionPane.ERROR_MESSAGE);
+                                 }
+                  }
+        }catch(Exception e){
+            e.printStackTrace();
+            
+        }
+    }
+     
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -30,29 +313,27 @@ public class Cuotas extends javax.swing.JInternalFrame {
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
-        btnCliGuardar = new javax.swing.JButton();
-        btnCliActualizar = new javax.swing.JButton();
-        btnCliEliminar = new javax.swing.JButton();
+        btnGuardar = new javax.swing.JButton();
+        btnActualizar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
+        txtValor = new javax.swing.JTextField();
+        txtID = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        btnBuscar = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        txtxMotivo = new javax.swing.JTextField();
+        jdcFecha = new com.toedter.calendar.JDateChooser();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        jtbCuotas = new javax.swing.JTable();
+        jcbBuscar = new javax.swing.JComboBox<String>();
         jLabel9 = new javax.swing.JLabel();
-        jTextField8 = new javax.swing.JTextField();
+        txtBuscar = new javax.swing.JTextField();
         btnBuscar1 = new javax.swing.JButton();
+        lblErrorcb = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
 
         setClosable(true);
@@ -60,26 +341,26 @@ public class Cuotas extends javax.swing.JInternalFrame {
 
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "ACCION", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(0, 102, 153))); // NOI18N
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "ACCION", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, new java.awt.Color(0, 102, 153)));
 
-        btnCliGuardar.setText("GUARDAR");
-        btnCliGuardar.addActionListener(new java.awt.event.ActionListener() {
+        btnGuardar.setText("GUARDAR");
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCliGuardarActionPerformed(evt);
+                btnGuardarActionPerformed(evt);
             }
         });
 
-        btnCliActualizar.setText("ACTUALIZAR");
-        btnCliActualizar.addActionListener(new java.awt.event.ActionListener() {
+        btnActualizar.setText("ACTUALIZAR");
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCliActualizarActionPerformed(evt);
+                btnActualizarActionPerformed(evt);
             }
         });
 
-        btnCliEliminar.setText("ELIMINAR");
-        btnCliEliminar.addActionListener(new java.awt.event.ActionListener() {
+        btnEliminar.setText("ELIMINAR");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCliEliminarActionPerformed(evt);
+                btnEliminarActionPerformed(evt);
             }
         });
 
@@ -98,26 +379,26 @@ public class Cuotas extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnCliEliminar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnCliGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnCliActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnEliminar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnCliGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnCliActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
                 .addGap(11, 11, 11)
-                .addComponent(btnCliEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "DATOS ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(0, 102, 153))); // NOI18N
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "DATOS ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, new java.awt.Color(0, 102, 153)));
         jPanel2.setForeground(new java.awt.Color(0, 102, 153));
         jPanel2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -125,21 +406,20 @@ public class Cuotas extends javax.swing.JInternalFrame {
             }
         });
 
-        jLabel2.setText("SOCIO:");
-
         jLabel3.setText("VALOR:");
 
         jLabel5.setText("MOTIVO:");
 
-        jLabel7.setText("FECHA:");
-
-        btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/buscar1.png"))); // NOI18N
-        btnBuscar.setText("BUSCAR");
-        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscarActionPerformed(evt);
+        txtValor.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtValorKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtValorKeyTyped(evt);
             }
         });
+
+        jLabel7.setText("FECHA:");
 
         jLabel6.setText("ID:");
 
@@ -151,30 +431,22 @@ public class Cuotas extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
-                    .addComponent(jTextField5)
-                    .addComponent(jTextField2))
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtID, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
+                    .addComponent(txtxMotivo))
+                .addGap(52, 52, 52)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(52, 52, 52)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addGap(18, 18, 18)
-                                .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(18, 18, 18)
-                                .addComponent(jTextField1)))
-                        .addGap(16, 16, 16))
+                        .addComponent(jLabel7)
+                        .addGap(18, 18, 18)
+                        .addComponent(jdcFecha, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(31, 31, 31)
-                        .addComponent(btnBuscar)
-                        .addContainerGap(173, Short.MAX_VALUE))))
+                        .addComponent(jLabel3)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtValor)))
+                .addGap(16, 16, 16))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -183,32 +455,26 @@ public class Cuotas extends javax.swing.JInternalFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel6)
-                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel7))
-                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jdcFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel5)
-                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(txtxMotivo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(21, 21, 21)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel2))
-                    .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(54, Short.MAX_VALUE))
+                            .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "LISTA DE CUOTAS", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(0, 102, 153))); // NOI18N
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "LISTA DE CUOTAS", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, new java.awt.Color(0, 102, 153)));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jtbCuotas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -219,16 +485,32 @@ public class Cuotas extends javax.swing.JInternalFrame {
 
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jtbCuotas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jtbCuotasMouseClicked(evt);
+            }
+        });
+        jtbCuotas.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jtbCuotasKeyReleased(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jtbCuotas);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE:", "MOTIVO", "SOCIO", "FECHA" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        jcbBuscar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SELECCIONE:", "MOTIVO", "FECHA" }));
+        jcbBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                jcbBuscarActionPerformed(evt);
             }
         });
 
         jLabel9.setText("BUSCAR POR:");
+
+        txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtBuscarKeyReleased(evt);
+            }
+        });
 
         btnBuscar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/buscar1.png"))); // NOI18N
         btnBuscar1.addActionListener(new java.awt.event.ActionListener() {
@@ -236,6 +518,10 @@ public class Cuotas extends javax.swing.JInternalFrame {
                 btnBuscar1ActionPerformed(evt);
             }
         });
+
+        lblErrorcb.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        lblErrorcb.setForeground(new java.awt.Color(255, 0, 0));
+        lblErrorcb.setText("jLabel1");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -248,11 +534,13 @@ public class Cuotas extends javax.swing.JInternalFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jcbBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnBuscar1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblErrorcb, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -264,10 +552,13 @@ public class Cuotas extends javax.swing.JInternalFrame {
                     .addComponent(btnBuscar1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel9)
-                        .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jComboBox1)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE))
+                        .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jcbBuscar))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(lblErrorcb, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -281,8 +572,9 @@ public class Cuotas extends javax.swing.JInternalFrame {
                         .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(4, 4, 4)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 51, Short.MAX_VALUE))))
         );
@@ -290,10 +582,11 @@ public class Cuotas extends javax.swing.JInternalFrame {
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(32, 32, 32)))
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -341,39 +634,96 @@ public class Cuotas extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnCliGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliGuardarActionPerformed
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+        InsertarCuotas();
+    }//GEN-LAST:event_btnGuardarActionPerformed
 
-    }//GEN-LAST:event_btnCliGuardarActionPerformed
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+             // TODO add your handling code here:
+        ActualizarSocios();
+       Limpiar();
+    }//GEN-LAST:event_btnActualizarActionPerformed
 
-    private void btnCliActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliActualizarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnCliActualizarActionPerformed
-
-    private void btnCliEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliEliminarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnCliEliminarActionPerformed
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+       EliminarCuota();        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnCancelarActionPerformed
 
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        // TODO add your handling code here:
-
-    }//GEN-LAST:event_btnBuscarActionPerformed
-
     private void jPanel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_jPanel2MouseClicked
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+    private void jcbBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbBuscarActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    }//GEN-LAST:event_jcbBuscarActionPerformed
 
     private void btnBuscar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscar1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnBuscar1ActionPerformed
 
+    private void jtbCuotasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtbCuotasMouseClicked
+       int row = jtbCuotas.rowAtPoint(evt.getPoint());
+       txtID.setText(jtbCuotas.getValueAt(row, 0).toString());
+    txtValor.setText(jtbCuotas.getValueAt(row, 2).toString());
+    txtxMotivo.setText(jtbCuotas.getValueAt(row, 1).toString());
+     try {
+      String fecha =jtbCuotas.getValueAt(row, 3).toString();
+      SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd");
+      Date fechaDate = formato.parse(fecha.replace('-', '/'));
+      jdcFecha.setDate(fechaDate);
+      } catch(Exception e){
+            e.printStackTrace();
+            
+        }
+     btnGuardar.setEnabled(false);
+     btnActualizar.setEnabled(true);
+     btnEliminar.setEnabled(true);
+    }//GEN-LAST:event_jtbCuotasMouseClicked
+
+    private void jtbCuotasKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtbCuotasKeyReleased
+ 
+           // TODO add your handling code here:
+    }//GEN-LAST:event_jtbCuotasKeyReleased
+
+    private void txtBuscarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyReleased
+       int valor = jcbBuscar.getSelectedIndex();
+        if (txtBuscar.getText().trim().length() >= 1) 
+        {
+            String filtro = txtBuscar.getText();
+            if(valor == 1)
+            TablaSociosM(filtro);
+            jtbCuotas.setVisible(true);
+            if(valor == 2)
+            TablaSociosF(filtro);
+            jtbCuotas.setVisible(true);
+           
+        if (valor ==0)
+        {
+
+             lblErrorcb.setText("Seleccione el filtro de busqueda");
+        }
+        } 
+        
+        else 
+        {
+            jtbCuotas.setVisible(false);
+        } // TODO add your handling code here:
+    }//GEN-LAST:event_txtBuscarKeyReleased
+
+    private void txtValorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorKeyPressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtValorKeyPressed
+
+    private void txtValorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorKeyTyped
+if (!Character.isDigit(evt.getKeyChar())) {
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+         }        // TODO add your handling code here:
+    }//GEN-LAST:event_txtValorKeyTyped
+   
     /**
      * @param args the command line arguments
      */
@@ -410,16 +760,12 @@ public class Cuotas extends javax.swing.JInternalFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnBuscar1;
     private javax.swing.JButton btnCancelar;
-    private javax.swing.JButton btnCliActualizar;
-    private javax.swing.JButton btnCliEliminar;
-    private javax.swing.JButton btnCliGuardar;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnGuardar;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -431,11 +777,13 @@ public class Cuotas extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField8;
+    private javax.swing.JComboBox<String> jcbBuscar;
+    private com.toedter.calendar.JDateChooser jdcFecha;
+    private javax.swing.JTable jtbCuotas;
+    private javax.swing.JLabel lblErrorcb;
+    private javax.swing.JTextField txtBuscar;
+    private javax.swing.JTextField txtID;
+    private javax.swing.JTextField txtValor;
+    private javax.swing.JTextField txtxMotivo;
     // End of variables declaration//GEN-END:variables
 }

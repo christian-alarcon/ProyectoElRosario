@@ -5,6 +5,25 @@
  */
 package Sesion;
 
+import com.mysql.jdbc.PreparedStatement;
+import com.mysql.jdbc.Statement;
+import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
+import com.toedter.calendar.JDateChooser;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Diego
@@ -14,8 +33,155 @@ public class Sesion extends javax.swing.JInternalFrame {
     /**
      * Creates new form Sesion
      */
-    public Sesion() {
+    public Sesion() throws Exception {
         initComponents();
+        carTabla("");
+        //
+        jTable1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                int fila = jTable1.getSelectedRow();
+                if (jTable1.getSelectedRow() != -1) {
+                    txtCodigo.setText(jTable1.getValueAt(fila, 0).toString());
+                    txtMotivo.setText(jTable1.getValueAt(fila, 1).toString());
+                    Calendar c2 = new GregorianCalendar();
+                    jDateChooser1.setCalendar(c2);
+                    //SimpleDateFormat formatoDelTexto = new SimpleDateFormat("yyyy/MM/dd");
+                    //String fecha = jTable1.getValueAt(fila,2).toString().trim() ;
+                    //Date dato = null;
+                    //try {
+                    //dato = formatoDelTexto.parse(fecha);
+                    //} catch (ParseException ex) {
+                    //ex.printStackTrace();
+                    //}
+                    //////////jDateChooser1.setDate(fecha);
+  
+                    //jDateChooser1.setDate((Date) jTable1.getValueAt(fila, 2));
+                    
+                    txtCodigo.setEnabled(false);
+                }
+            }
+        });
+        //
+    }
+    
+    DefaultTableModel model;
+    public void carTabla(String Dato) throws Exception{
+        String [] titulos={"CODIGO","MOTIVO","FECHA"};
+        String [] registros=new String[3];
+        //model = new DefaultTableModel(null, titulos);
+        model=new DefaultTableModel(null, titulos);
+        model = (DefaultTableModel) jTable1.getModel();
+        java.sql.Connection cn =  Conexion.Conexion.GetConnection();
+        String sql="";
+        sql="select * from sesion where Id_Sesion LIKE '%"+Dato+"%'";
+        
+        try {
+            Statement psd=(Statement) cn.createStatement();
+            ResultSet rs=psd.executeQuery(sql);
+            
+            while(rs.next()){
+                registros[0]=rs.getString("Id_Sesion");
+                registros[1]=rs.getString("Mot_Sesion");
+                registros[2]=rs.getString("Fec_Sesion");
+                //JOptionPane.showMessageDialog(null, registros[0]);
+                model.addRow(registros);
+            }
+            jTable1.setModel(model);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+    }
+    public static String fechaMySQL(JDateChooser miJDate){ 
+
+        DecimalFormat sdf = new DecimalFormat("00"); 
+        int anio = miJDate.getCalendar().get(Calendar. YEAR); 
+        int mes = miJDate.getCalendar().get(Calendar. MONTH) + 1; 
+        int dia = miJDate.getCalendar().get(Calendar. DAY_OF_MONTH); 
+
+        return anio+"/"+sdf.format(mes)+"/"+sdf.format(dia); 
+    }
+    public void GuardarSesion() throws Exception {
+        if (txtCodigo.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "ERROR: Debe ingresar el Código...");
+            txtCodigo.requestFocus();
+        } else if (txtMotivo.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "ERROR: Debe ingresar un Motivo...");
+            txtMotivo.requestFocus();
+        } else if (jDateChooser1.getDate().toString().equals("")) {
+            JOptionPane.showMessageDialog(null, "ERROR: Debe ingresar una Fecha...");
+            jDateChooser1.requestFocus();
+        }else {
+            //SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+            //Date fecha_parsed = formato.parse(modeloAsistencia.getFecha_registro_asistencia());
+            //SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+            //String formato =  jDateChooser1.getDateFormatString();
+           // Date date = jDateChooser1.getDate();
+            //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            
+
+
+            //psmt.setDate(1, fecha_registro);
+            
+            String Id_Sesion, Mot_Sesion, Fec_Sesion;
+            Fec_Sesion = fechaMySQL(jDateChooser1);
+            //conexion cc = new conexion();
+            java.sql.Connection cn =  Conexion.Conexion.GetConnection();
+            Id_Sesion = txtCodigo.getText();
+            Mot_Sesion = txtMotivo.getText();
+            //Fec_Sesion = jDateChooser1.getDate().toString();
+            //java.sql.Date fecha_registro = new java.sql.Date(jDateChooser1);
+            
+            String sql = "";
+            String registros;
+            sql = "select * from sesion where Id_Sesion LIKE '%"+Id_Sesion+"%'";
+            try {
+                //JOptionPane.showMessageDialog(null, Fec_Sesion);
+                Statement psd = (Statement) cn.createStatement();
+                ResultSet rs = psd.executeQuery(sql);
+                while (rs.next()) {
+                    
+                    registros = rs.getString("Id_Sesion");
+                    if (registros.equals(Id_Sesion)) {
+                        JOptionPane.showMessageDialog(null, "ERROR: Duplicado de Sesiones...");
+                        
+                        txtCodigo.setText("");
+                        txtCodigo.requestFocus();
+                        break;
+                    }
+                }
+                sql = "insert into sesion(Id_Sesion,Mot_Sesion,Fec_Sesion) values(?,?,?)";
+                try {
+                PreparedStatement psd1 = (PreparedStatement) cn.prepareStatement(sql);
+                psd1.setString(1, Id_Sesion);
+                psd1.setString(2, Mot_Sesion);
+                psd1.setString(3, Fec_Sesion);
+                int n = psd1.executeUpdate();
+                if (n > 0) {
+                    //JOptionPane.showMessageDialog(null, psd);//Los datos que se estan insertando
+                    JOptionPane.showMessageDialog(null, "Se insertó el dato correctamente...");
+                    //limpiarTextos();
+                    //bloquearBotonesGuardar();
+                    //bloquear();
+                }
+                String [] registro=new String[3];
+        registro[0]=Id_Sesion;
+                registro[1]=Mot_Sesion;
+                registro[2]=Fec_Sesion;
+                //JOptionPane.showMessageDialog(null, registros[0]);
+                model.addRow(registro);
+            } catch (SQLException ex) {
+                //JOptionPane.showMessageDialog(null, ex);
+            }
+            
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, ex);
+            }
+            
+        }
+        
+        //carTabla("");
     }
 
     /**
@@ -34,10 +200,10 @@ public class Sesion extends javax.swing.JInternalFrame {
         btnCliEliminar1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        txtCodigo = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
+        txtMotivo = new javax.swing.JTextField();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -103,6 +269,8 @@ public class Sesion extends javax.swing.JInternalFrame {
 
         jLabel5.setText("MOTIVO:");
 
+        txtCodigo.setName(""); // NOI18N
+
         jLabel7.setText("FECHA:");
 
         jLabel6.setText("CODIGO:");
@@ -118,8 +286,8 @@ public class Sesion extends javax.swing.JInternalFrame {
                     .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
-                    .addComponent(jTextField4))
+                    .addComponent(txtMotivo, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
+                    .addComponent(txtCodigo))
                 .addGap(41, 41, 41)
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -132,13 +300,13 @@ public class Sesion extends javax.swing.JInternalFrame {
                 .addGap(17, 17, 17)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel5)
-                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtMotivo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel7)))
                 .addContainerGap(70, Short.MAX_VALUE))
         );
@@ -249,7 +417,7 @@ public class Sesion extends javax.swing.JInternalFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 479, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -331,7 +499,13 @@ public class Sesion extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCliEliminarActionPerformed
 
     private void btnCliGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliGuardar1ActionPerformed
-        // TODO add your handling code here: jkadsfd
+
+        try {
+            // TODO add your handling code here: jkadsfd
+            GuardarSesion();
+        } catch (Exception ex) {
+            Logger.getLogger(Sesion.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnCliGuardar1ActionPerformed
 
     private void btnCliActualizar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliActualizar1ActionPerformed
@@ -344,6 +518,15 @@ public class Sesion extends javax.swing.JInternalFrame {
 
     private void btnCliEliminar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliEliminar1ActionPerformed
         // TODO add your handling code here:
+        asistenciaSession as;
+        JOptionPane.showMessageDialog(null, fechaMySQL(jDateChooser1));
+        try {
+            as = new asistenciaSession(txtCodigo.getText(),txtMotivo.getText(),fechaMySQL(jDateChooser1));
+            as.show();
+        } catch (Exception ex) {
+            Logger.getLogger(Sesion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }//GEN-LAST:event_btnCliEliminar1ActionPerformed
 
     /**
@@ -376,7 +559,11 @@ public class Sesion extends javax.swing.JInternalFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Sesion().setVisible(true);
+                try {
+                    new Sesion().setVisible(true);
+                } catch (Exception ex) {
+                    Logger.getLogger(Sesion.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -403,7 +590,7 @@ public class Sesion extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
+    private javax.swing.JTextField txtCodigo;
+    private javax.swing.JTextField txtMotivo;
     // End of variables declaration//GEN-END:variables
 }
