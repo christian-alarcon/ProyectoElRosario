@@ -68,6 +68,125 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
         });
     }
     
+    public void buscarDatoVendedor(String Dato) {
+           String[] titulos = {"Terreno", "Socio_Vendedor", "Socio_Comprador", "Fecha","Monto", "Modulo","tipo_Transaccion"};
+        
+        String[] registros = new String[8];
+        modelo = new DefaultTableModel(null, titulos);
+
+        java.sql.Connection con;
+        con = Conexion.GetConnection();
+
+        String sql = "";
+  
+        sql = "Select * from transaccionterreno where Socio_Vendedor LIKE'%" + Dato + "%'";
+
+        try {
+
+            Statement psd = con.createStatement();
+
+            ResultSet rs = psd.executeQuery(sql);
+
+         
+            while (rs.next()) { 
+                registros[0] = rs.getString("Id"); 
+                registros[1] = rs.getString("Socio_Vendedor");
+                registros[2] = rs.getString("Socio_Comprador");
+                registros[3] = rs.getString("Fecha");
+                registros[4] = rs.getString("monto");
+                registros[5] = rs.getString("modulo");
+                 registros[6] = rs.getString("tipo_transaccion");
+
+                modelo.addRow(registros);
+
+            }
+
+            tblTerreno.setModel(modelo);
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+    }
+    
+     public void buscarDatoComprador(String Dato) {
+           String[] titulos = {"Terreno", "Socio_Vendedor", "Socio_Comprador", "Fecha","Monto", "Modulo","tipo_Transaccion"};
+        
+        String[] registros = new String[8];
+        modelo = new DefaultTableModel(null, titulos);
+
+        java.sql.Connection con;
+        con = Conexion.GetConnection();
+
+        String sql = "";
+  
+        sql = "Select * from transaccionterreno where Socio_Comprador LIKE'%" + Dato + "%'";
+
+        try {
+
+            Statement psd = con.createStatement();
+
+            ResultSet rs = psd.executeQuery(sql);
+
+         
+            while (rs.next()) { 
+                registros[0] = rs.getString("Id"); 
+                registros[1] = rs.getString("Socio_Vendedor");
+                registros[2] = rs.getString("Socio_Comprador");
+                registros[3] = rs.getString("Fecha");
+                registros[4] = rs.getString("monto");
+                registros[5] = rs.getString("modulo");
+                 registros[6] = rs.getString("tipo_transaccion");
+
+                modelo.addRow(registros);
+
+            }
+
+            tblTerreno.setModel(modelo);
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+    }
+     public void buscarDatoTipoTra(String Dato) {
+           String[] titulos = {"Terreno", "Socio_Vendedor", "Socio_Comprador", "Fecha","Monto", "Modulo","tipo_Transaccion"};
+        
+        String[] registros = new String[8];
+        modelo = new DefaultTableModel(null, titulos);
+
+        java.sql.Connection con;
+        con = Conexion.GetConnection();
+
+        String sql = "";
+  
+        sql = "Select * from transaccionterreno where tipo_transaccion LIKE'%" + Dato + "%'";
+
+        try {
+
+            Statement psd = con.createStatement();
+
+            ResultSet rs = psd.executeQuery(sql);
+
+         
+            while (rs.next()) { 
+                registros[0] = rs.getString("Id"); 
+                registros[1] = rs.getString("Socio_Vendedor");
+                registros[2] = rs.getString("Socio_Comprador");
+                registros[3] = rs.getString("Fecha");
+                registros[4] = rs.getString("monto");
+                registros[5] = rs.getString("modulo");
+                 registros[6] = rs.getString("tipo_transaccion");
+
+                modelo.addRow(registros);
+
+            }
+
+            tblTerreno.setModel(modelo);
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+    }
+    
     public void cargarModulo() {
          java.sql.Connection con;
             con = Conexion.GetConnection();
@@ -198,9 +317,9 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblTerreno = new javax.swing.JTable();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        jComboBoxBuscar = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
-        jTextField8 = new javax.swing.JTextField();
+        txtBuscar = new javax.swing.JTextField();
         btnBuscar = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
@@ -297,7 +416,7 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
         ));
         jScrollPane1.setViewportView(tblTerreno);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE:", "COMPRADOR", "VENDEDOR", "TIPO DE ADQUISICION" }));
+        jComboBoxBuscar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE:", "COMPRADOR", "VENDEDOR", "TIPO DE ADQUISICION" }));
 
         jLabel9.setText("BUSCAR POR:");
 
@@ -319,9 +438,9 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jComboBoxBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -335,8 +454,8 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
                     .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel9)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jComboBoxBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE))
         );
@@ -672,7 +791,15 @@ private void verificarDatos() {
         // TODO add your handling code here:
 //        BuscarSocio obj = new BuscarSocio();
      //   obj.setVisible(true);
-       
+      
+        
+        if (jComboBoxBuscar.getSelectedItem()== "COMPRADOR" ){
+            buscarDatoComprador(txtBuscar.getText());
+        }else if (jComboBoxBuscar.getSelectedItem()== "VENDEDOR" ){
+            buscarDatoVendedor(txtBuscar.getText());
+        }else if (jComboBoxBuscar.getSelectedItem()== "TIPO DE ADQUISICION" ){
+            buscarDatoTipoTra(txtBuscar.getText());
+        }
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void jPanel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel6MouseClicked
@@ -746,8 +873,8 @@ private void verificarDatos() {
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JComboBox<String> cnbModulo;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JComboBox<String> jComboBoxBuscar;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -765,8 +892,8 @@ private void verificarDatos() {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField8;
     private javax.swing.JTable tblTerreno;
+    private javax.swing.JTextField txtBuscar;
     private javax.swing.JTextField txtIdTerreno;
     private javax.swing.JTextField txtMonto;
     private javax.swing.JTextField txtSocioComprador;

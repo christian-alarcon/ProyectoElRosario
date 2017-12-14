@@ -26,7 +26,8 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Terrenos extends javax.swing.JInternalFrame {
 
-     DefaultTableModel modelo; 
+    DefaultTableModel modelo;
+
     /**
      * Creates new form Socios
      */
@@ -34,99 +35,232 @@ public class Terrenos extends javax.swing.JInternalFrame {
         initComponents();
         crearTabla();
         cargarModulo();
-        
+        bloquearBotonesInicio() ;
+
         tblTerreno.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                
+
                 int fila = tblTerreno.getSelectedRow();
-                
+
                 if (fila != -1) {
-                    
 
                     txtIdTerreno.setText(tblTerreno.getValueAt(fila, 0).toString());
 
                     txtMetaje.setText(tblTerreno.getValueAt(fila, 1).toString());
                     txtDireccion.setText(tblTerreno.getValueAt(fila, 2).toString());
                     txtSolar.setText(tblTerreno.getValueAt(fila, 3).toString());
-                   txtSocio.setText(tblTerreno.getValueAt(fila, 5).toString());
-                   cnbModulo.setSelectedItem(tblTerreno.getValueAt(fila, 4).toString());
-                   
+                    txtSocio.setText(tblTerreno.getValueAt(fila, 5).toString());
+                    cnbModulo.setSelectedItem(tblTerreno.getValueAt(fila, 4).toString());
+
                     txtIdTerreno.setEnabled(false);
                     //bloquearBotonesNuevo();
                     //Texto();
-                   // bloquearBotonUpdate();
-                   // btnBorrar.setEnabled(true);
-                   // txtPlaca.setEditable(false);
+                    // bloquearBotonUpdate();
+                    // btnBorrar.setEnabled(true);
+                    // txtPlaca.setEditable(false);
                 }
 
             }
         });
     }
-     public void cargarModulo() {
-         java.sql.Connection con;
-            con = Conexion.GetConnection();
-            
+    
+      public void bloquearBotonesInicio() {
+        
+        btnCliGuardar.setEnabled(true);
+        btnCancelar.setEnabled(false);
+        
+        btnCliEliminar.setEnabled(false);
+        btnCliActualizar.setEnabled(false);
+
+    }
+        public void bloquearBotonesActualizar() {
+        
+        btnCliGuardar.setEnabled(false);
+        btnCancelar.setEnabled(false);
+        
+        btnCliEliminar.setEnabled(false);
+        btnCliActualizar.setEnabled(false);
+
+    }
+
+    public void cargarModulo() {
+        java.sql.Connection con;
+        con = Conexion.GetConnection();
+
         String sql = "";
         sql = "Select Id_Modulo from terreno";
-        
+
         try {
             Statement psd = con.createStatement();
             ResultSet rs = psd.executeQuery(sql);
 
             while (rs.next()) {
-               
+
                 cnbModulo.addItem(rs.getString("Id_Modulo"));
-                
+
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "No se cargo los datos del Modiulo");
         }
     }
+
     public void crearTabla() {
-        String[] titulos = {"Terreno", "Metros", "Dirección", "Solar", "Modulo","Socio"};
-        
+        String[] titulos = {"Terreno", "Metros", "Dirección", "Solar", "Modulo", "Socio"};
+
         String[] registros = new String[6];
-        
+
         modelo = new DefaultTableModel(null, titulos);
 
-
-
-       
         java.sql.Connection con;
-            con = Conexion.GetConnection();
+        con = Conexion.GetConnection();
 
         String sql = "";
 
-
-       
-        sql = "Select * from terreno"; 
+        sql = "Select * from terreno";
 
         try {
-            
+
             Statement psd = con.createStatement();
-            ResultSet rs = psd.executeQuery(sql); 
-            while (rs.next()) { 
-                registros[0] = rs.getString("Id_Terreno"); 
+            ResultSet rs = psd.executeQuery(sql);
+            while (rs.next()) {
+                registros[0] = rs.getString("Id_Terreno");
                 registros[1] = rs.getString("Met_Terreno");
                 registros[2] = rs.getString("Dir_Terreno");
-              registros[3] = rs.getString("Sol_Terrono");
+                registros[3] = rs.getString("Sol_Terrono");
                 registros[4] = rs.getString("Id_Modulo");
-            registros[5] = rs.getString("Socio");
-               
+                registros[5] = rs.getString("Socio");
+
                 modelo.addRow(registros);
 
             }
 
-           tblTerreno.setModel(modelo);
+            tblTerreno.setModel(modelo);
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex);
         }
     }
 
-  public void modificar() {
+    public void buscarDato(String Dato) {
+        String[] titulos = {"Terreno", "Metros", "Dirección", "Solar", "Modulo", "Socio"};
+
+        String[] registros = new String[6];
+
+        modelo = new DefaultTableModel(null, titulos);
+
+        java.sql.Connection con;
+        con = Conexion.GetConnection();
+
+        String sql = "";
+
+        sql = "Select * from terreno where Id_Terreno LIKE'%" + Dato + "%'";
+
+        try {
+
+            Statement psd = con.createStatement();
+
+            ResultSet rs = psd.executeQuery(sql);
+
+            while (rs.next()) {
+                registros[0] = rs.getString("Id_Terreno");
+                registros[1] = rs.getString("Met_Terreno");
+                registros[2] = rs.getString("Dir_Terreno");
+                registros[3] = rs.getString("Sol_Terrono");
+                registros[4] = rs.getString("Id_Modulo");
+                registros[5] = rs.getString("Socio");
+
+                modelo.addRow(registros);
+
+            }
+
+            tblTerreno.setModel(modelo);
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+    }
+
+    public void buscarDatoModulo(String Dato) {
+        String[] titulos = {"Terreno", "Metros", "Dirección", "Solar", "Modulo", "Socio"};
+
+        String[] registros = new String[6];
+
+        modelo = new DefaultTableModel(null, titulos);
+
+        java.sql.Connection con;
+        con = Conexion.GetConnection();
+
+        String sql = "";
+
+        sql = "Select * from terreno where Id_Modulo LIKE'%" + Dato + "%'";
+
+        try {
+
+            Statement psd = con.createStatement();
+
+            ResultSet rs = psd.executeQuery(sql);
+
+            while (rs.next()) {
+                registros[0] = rs.getString("Id_Terreno");
+                registros[1] = rs.getString("Met_Terreno");
+                registros[2] = rs.getString("Dir_Terreno");
+                registros[3] = rs.getString("Sol_Terrono");
+                registros[4] = rs.getString("Id_Modulo");
+                registros[5] = rs.getString("Socio");
+
+                modelo.addRow(registros);
+
+            }
+
+            tblTerreno.setModel(modelo);
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+    }
+
+    public void buscarDatoSocio(String Dato) {
+        String[] titulos = {"Terreno", "Metros", "Dirección", "Solar", "Modulo", "Socio"};
+
+        String[] registros = new String[6];
+
+        modelo = new DefaultTableModel(null, titulos);
+
+        java.sql.Connection con;
+        con = Conexion.GetConnection();
+
+        String sql = "";
+
+        sql = "Select * from terreno where Socio LIKE'%" + Dato + "%'";
+
+        try {
+
+            Statement psd = con.createStatement();
+
+            ResultSet rs = psd.executeQuery(sql);
+
+            while (rs.next()) {
+                registros[0] = rs.getString("Id_Terreno");
+                registros[1] = rs.getString("Met_Terreno");
+                registros[2] = rs.getString("Dir_Terreno");
+                registros[3] = rs.getString("Sol_Terrono");
+                registros[4] = rs.getString("Id_Modulo");
+                registros[5] = rs.getString("Socio");
+
+                modelo.addRow(registros);
+
+            }
+
+            tblTerreno.setModel(modelo);
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+    }
+
+    public void modificar() {
         if (txtSocio.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Ingrese la Socio");
             txtSocio.requestFocus();
@@ -134,21 +268,20 @@ public class Terrenos extends javax.swing.JInternalFrame {
         } else if (txtDireccion.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Ingrese el Dirección");
             txtDireccion.requestFocus();
-        
-      
+
         } else {
             java.sql.Connection con;
             con = Conexion.GetConnection();
-            
+
             String sql = "";
-            sql = "update terreno set Id_Terreno='" +  txtIdTerreno.getText() + "',"
+            sql = "update terreno set Id_Terreno='" + txtIdTerreno.getText() + "',"
                     + "Dir_Terreno='" + txtDireccion.getText() + "',"
                     + "Met_Terreno='" + txtMetaje.getText() + "',"
                     + "Id_Modulo='" + cnbModulo.getSelectedItem() + "',"
-                     + "Sol_Terrono='" + txtSolar.getText() + "',"
-                  + "Socio='" + txtSocio.getText()+ "' "
-                    + "where Id_Terreno ='" +txtIdTerreno.getText()+ "'";
-            
+                    + "Sol_Terrono='" + txtSolar.getText() + "',"
+                    + "Socio='" + txtSocio.getText() + "' "
+                    + "where Id_Terreno ='" + txtIdTerreno.getText() + "'";
+
             try {
 
                 PreparedStatement psd = (PreparedStatement) con.prepareStatement(sql);
@@ -161,7 +294,7 @@ public class Terrenos extends javax.swing.JInternalFrame {
             }
         }
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -194,9 +327,9 @@ public class Terrenos extends javax.swing.JInternalFrame {
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblTerreno = new javax.swing.JTable();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        jComboBoxBuscar = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
-        jTextField8 = new javax.swing.JTextField();
+        txtBuscar = new javax.swing.JTextField();
         btnBuscar = new javax.swing.JButton();
         jLabel11 = new javax.swing.JLabel();
 
@@ -384,7 +517,7 @@ public class Terrenos extends javax.swing.JInternalFrame {
         ));
         jScrollPane1.setViewportView(tblTerreno);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE:", "SOCIO", "MODULO" }));
+        jComboBoxBuscar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE:", "SOCIO", "MODULO" }));
 
         jLabel9.setText("BUSCAR POR:");
 
@@ -406,9 +539,9 @@ public class Terrenos extends javax.swing.JInternalFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jComboBoxBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -422,8 +555,8 @@ public class Terrenos extends javax.swing.JInternalFrame {
                     .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel9)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jComboBoxBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE))
         );
@@ -502,26 +635,26 @@ public class Terrenos extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCliGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliGuardarActionPerformed
-  verificarDatos();
-    
+        verificarDatos();
+
         crearTabla();
-        
+
     }//GEN-LAST:event_btnCliGuardarActionPerformed
 
     private void btnCliActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliActualizarActionPerformed
         // TODO add your handling code here:
         modificar();
-      crearTabla();
+        crearTabla();
     }//GEN-LAST:event_btnCliActualizarActionPerformed
 
     private void btnCliEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliEliminarActionPerformed
         // TODO add your handling code here:
-       
+
     }//GEN-LAST:event_btnCliEliminarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         // TODO add your handling code here:
-    
+
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void jPanel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseClicked
@@ -531,8 +664,14 @@ public class Terrenos extends javax.swing.JInternalFrame {
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         // TODO add your handling code here:
 //        BuscarSocio obj = new BuscarSocio();
-       // obj.setVisible(true);
-       
+        // obj.setVisible(true); 
+        buscarDato(txtBuscar.getText());
+        
+        if (jComboBoxBuscar.getSelectedItem()== "SOCIO" ){
+            buscarDatoSocio(txtBuscar.getText());
+        }else if (jComboBoxBuscar.getSelectedItem()== "MODULO" ){
+            buscarDatoModulo(txtBuscar.getText());
+        }
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void txtMetajeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMetajeActionPerformed
@@ -545,7 +684,7 @@ public class Terrenos extends javax.swing.JInternalFrame {
 
     private void txtSocioKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSocioKeyTyped
         // TODO add your handling code here:
-        
+
         controlSoloLetras(evt);
     }//GEN-LAST:event_txtSocioKeyTyped
 
@@ -561,7 +700,7 @@ public class Terrenos extends javax.swing.JInternalFrame {
 
     private void txtDireccionKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDireccionKeyTyped
         // TODO add your handling code here:
-        
+
         controlSoloLetras(evt);
     }//GEN-LAST:event_txtDireccionKeyTyped
 
@@ -608,7 +747,7 @@ public class Terrenos extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnCliEliminar;
     private javax.swing.JButton btnCliGuardar;
     private javax.swing.JComboBox<String> cnbModulo;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> jComboBoxBuscar;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -623,8 +762,8 @@ public class Terrenos extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField8;
     private javax.swing.JTable tblTerreno;
+    private javax.swing.JTextField txtBuscar;
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtIdTerreno;
     private javax.swing.JTextField txtMetaje;
@@ -633,10 +772,10 @@ public class Terrenos extends javax.swing.JInternalFrame {
     // End of variables declaration//GEN-END:variables
 
     private void verificarDatos() {
-       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-     String id = txtIdTerreno.getText();
-      java.sql.Connection con;
-            con = Conexion.GetConnection();
+        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String id = txtIdTerreno.getText();
+        java.sql.Connection con;
+        con = Conexion.GetConnection();
         try {
             Statement consulta = con.createStatement();
             ResultSet resultado = consulta.executeQuery("Select * from terreno where terreno.Id_Terreno like '" + id + "'");
@@ -647,22 +786,20 @@ public class Terrenos extends javax.swing.JInternalFrame {
                 JOptionPane.showMessageDialog(null, "el terreno ya existe");
             }
 
-
         } catch (Exception ex) {
         }
 
     }
 
     private void GuardarTerrenos() {
-      //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    if (txtIdTerreno.getText().equals("")) {
+        //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (txtIdTerreno.getText().equals("")) {
 
             JOptionPane.showMessageDialog(null, "Ingrese Id Terreno");
             txtIdTerreno.requestFocus(true);
         } else if (txtDireccion.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Ingrese la Direccion");
             txtDireccion.requestFocus(true);
-
 
         } else if (txtMetaje.getText().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Ingrese la Metaje");
@@ -675,15 +812,15 @@ public class Terrenos extends javax.swing.JInternalFrame {
         //  txtAn.requestFocus(true);
         // }
         else {
-            String Id_Terreno,Dir_Terreno,Id_Modulo,Socio;
-            double Met_Terreno,Sol_Terrono;
+            String Id_Terreno, Dir_Terreno, Id_Modulo, Socio;
+            double Met_Terreno, Sol_Terrono;
             Id_Terreno = txtIdTerreno.getText();
-            Met_Terreno =Double.valueOf( txtMetaje.getText());
+            Met_Terreno = Double.valueOf(txtMetaje.getText());
             Dir_Terreno = txtDireccion.getText();
-             Sol_Terrono =Double.valueOf(txtSolar.getText());
+            Sol_Terrono = Double.valueOf(txtSolar.getText());
             Id_Modulo = String.valueOf(cnbModulo.getSelectedItem());
-            	Socio = txtSocio.getText();
-          
+            Socio = txtSocio.getText();
+
             java.sql.Connection con;
             con = Conexion.GetConnection();
             String sql = "";
@@ -691,46 +828,41 @@ public class Terrenos extends javax.swing.JInternalFrame {
             try {
                 java.sql.PreparedStatement psd = con.prepareStatement(sql);
 
-
-
                 psd.setString(1, Id_Terreno);
                 psd.setDouble(2, Met_Terreno);
                 psd.setString(3, Dir_Terreno);
                 psd.setDouble(4, Sol_Terrono);
                 psd.setString(5, Id_Modulo);
                 psd.setString(6, Socio);
-               
 
                 int n = psd.executeUpdate();
 
                 if (n > 0) {
                     JOptionPane.showMessageDialog(null, "Se Inserto el dato correctamente");
                     limpiarTexto();
-               //     BloquearTexto();
-               //     bloquearBotonesInicio();
-
-
+                    //     BloquearTexto();
+                    //     bloquearBotonesInicio();
 
                 }
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(null,ex);
+                JOptionPane.showMessageDialog(null, ex);
             }
 
         }
     }
 
     private void limpiarTexto() {
-      //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    txtDireccion.setText("");
-    txtIdTerreno.setText("");
-    txtMetaje.setText("");
-    txtSocio.setText("");
-    txtSolar.setText("");
-    cnbModulo.setSelectedIndex(-1);
-    
-    
+        //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        txtDireccion.setText("");
+        txtIdTerreno.setText("");
+        txtMetaje.setText("");
+        txtSocio.setText("");
+        txtSolar.setText("");
+        cnbModulo.setSelectedIndex(-1);
+
     }
-     public void controlSoloLetras(KeyEvent evt) {
+
+    public void controlSoloLetras(KeyEvent evt) {
         if (evt.getKeyChar() < 65 || evt.getKeyChar() > 90 && evt.getKeyChar() < 97 || evt.getKeyChar() > 122 && evt.getKeyChar() == 32) {
             evt.consume();
         }
