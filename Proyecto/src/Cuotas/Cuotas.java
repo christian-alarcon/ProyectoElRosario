@@ -662,6 +662,7 @@ public  void Limpiar()
 
     private void btnBuscar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscar1ActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_btnBuscar1ActionPerformed
 
     private void jtbCuotasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtbCuotasMouseClicked
