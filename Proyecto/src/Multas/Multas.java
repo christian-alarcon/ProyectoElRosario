@@ -6,6 +6,8 @@
 package Multas;
 
 import com.toedter.calendar.JDateChooser;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -39,13 +41,15 @@ public class Multas extends javax.swing.JInternalFrame {
        private Rectangle dimBusqueda;
        private ArrayList datos_busqueda;
        
+       
     /**
      * Creates new form Multas
      */
     public Multas() {
         initComponents();
         inicio();
-        
+        estado_inicio_controles(Color.WHITE);
+        control_componentes();
     }
 
     
@@ -59,14 +63,14 @@ public class Multas extends javax.swing.JInternalFrame {
        
        
        
-       ((JTextField) this.txtFecha.getDateEditor()).setEditable(false);
-       iniciarFecha(txtFecha);
+       ((JTextField) this.txtFechaIngreso.getDateEditor()).setEditable(false);
+       iniciarFecha(txtFechaIngreso);
        
        txtFechaBusqueda.setVisible(false);
        
        txtValor.setText("$ ");
        
-      
+             
     }
     
     public void limpiar(){
@@ -76,7 +80,25 @@ public class Multas extends javax.swing.JInternalFrame {
         
         txtIdMulta.setText(multas.obtenerNuevoIdMulta());
         
-        iniciarFecha(txtFecha);
+        iniciarFecha(txtFechaIngreso);
+    }
+    
+    public void control_componentes(){
+        btnInserta.setEnabled(false);
+        btnCliActualizar.setEnabled(false);
+    }
+    
+    public void estado_inicio_controles(Color color){
+        txtIdMulta.setForeground(color);
+        
+        for (Component field : txtFechaIngreso.getComponents()) {
+            if (field instanceof JTextField) {
+                field.setForeground(color);
+            }
+        }
+        txtValor.setForeground(color);
+        
+        txtMotivo.setEditable(false);
     }
     
     private void iniciarFecha(JDateChooser fecha){
@@ -91,7 +113,7 @@ public class Multas extends javax.swing.JInternalFrame {
         String val=txtValor.getText().substring(2).replace(",",".");
         valor=Float.valueOf(val);
         System.out.println("valor: "+valor);
-        String fecha=Metodos_Multas.fechaMySQL(txtFecha);
+        String fecha=Metodos_Multas.fechaMySQL(txtFechaIngreso);
         int id_socio=Integer.parseInt(txtSocio.getText());
         
         if(multas.insertar(id,multa, valor, fecha, id_socio)==1){
@@ -120,8 +142,8 @@ public class Multas extends javax.swing.JInternalFrame {
         jPanel1 = new javax.swing.JPanel();
         btnInserta = new javax.swing.JButton();
         btnCliActualizar = new javax.swing.JButton();
-        btnCliEliminar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
+        btnNuevo = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -132,7 +154,7 @@ public class Multas extends javax.swing.JInternalFrame {
         btnBuscarSocio = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         txtMotivo = new javax.swing.JTextField();
-        txtFecha = new com.toedter.calendar.JDateChooser();
+        txtFechaIngreso = new com.toedter.calendar.JDateChooser();
         txtValor = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -170,17 +192,17 @@ public class Multas extends javax.swing.JInternalFrame {
             }
         });
 
-        btnCliEliminar.setText("ELIMINAR");
-        btnCliEliminar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCliEliminarActionPerformed(evt);
-            }
-        });
-
         btnCancelar.setText("CANCELAR");
         btnCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCancelarActionPerformed(evt);
+            }
+        });
+
+        btnNuevo.setText("NUEVO");
+        btnNuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevoActionPerformed(evt);
             }
         });
 
@@ -192,19 +214,20 @@ public class Multas extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnCliEliminar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnInserta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnCliActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnCliActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnNuevo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(btnInserta, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(btnNuevo)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnInserta, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnCliActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnCliEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
                 .addContainerGap())
@@ -285,7 +308,7 @@ public class Multas extends javax.swing.JInternalFrame {
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel7)
                                 .addGap(18, 18, 18)
-                                .addComponent(txtFecha, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(txtFechaIngreso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addGap(18, 18, 18)
@@ -305,7 +328,7 @@ public class Multas extends javax.swing.JInternalFrame {
                         .addComponent(jLabel6)
                         .addComponent(txtIdMulta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel7))
-                    .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtFechaIngreso, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
@@ -337,6 +360,11 @@ public class Multas extends javax.swing.JInternalFrame {
 
             }
         ));
+        tblBusqueda.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblBusquedaMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblBusqueda);
 
         jcboBusqueda.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "MOTIVO", "FECHA", "SOCIO" }));
@@ -491,23 +519,26 @@ public class Multas extends javax.swing.JInternalFrame {
                 }
         if(mensaje==""){
             insertar();
-            
+            estado_inicio_controles(Color.WHITE);
+            btnInserta.setEnabled(false);
+            txtMotivo.requestFocus();
         }
         else{
             JOptionPane.showMessageDialog(null, mensaje);
         }
+        
+
     }//GEN-LAST:event_btnInsertaActionPerformed
 
     private void btnCliActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliActualizarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnCliActualizarActionPerformed
 
-    private void btnCliEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliEliminarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnCliEliminarActionPerformed
-
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        // TODO add your handling code here:
+        btnInserta.setEnabled(false);
+        btnNuevo.setEnabled(true);
+        limpiar();
+        estado_inicio_controles(Color.WHITE);
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnBuscarSocioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarSocioActionPerformed
@@ -533,7 +564,7 @@ public class Multas extends javax.swing.JInternalFrame {
                 String cadena = (txtBusqueda.getText());
                 txtBusqueda.setText(cadena);
                 repaint();
-                multas.filtro(jcboBusqueda,trsFiltro,txtBusqueda);
+                multas.filtro_Busqueda(jcboBusqueda,trsFiltro,txtBusqueda);
             }
         });
         trsFiltro = new TableRowSorter(tblBusqueda.getModel());
@@ -640,6 +671,35 @@ public class Multas extends javax.swing.JInternalFrame {
         txtMotivo.requestFocus();
     }//GEN-LAST:event_formMouseEntered
 
+    private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
+        btnInserta.setEnabled(true);
+        estado_inicio_controles(Color.BLACK);
+        btnNuevo.setEnabled(false);
+        txtMotivo.setEditable(true);
+    }//GEN-LAST:event_btnNuevoActionPerformed
+
+    private void tblBusquedaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBusquedaMouseClicked
+
+            int row = tblBusqueda.rowAtPoint(evt.getPoint());
+       //txtIdMulta.setText(tblBusqueda.getValueAt(row, 0).toString());
+    txtValor.setText(tblBusqueda.getValueAt(row, 1).toString());
+    txtMotivo.setText(tblBusqueda.getValueAt(row, 0).toString());
+    
+    
+    
+     try {
+      String fecha =tblBusqueda.getValueAt(row, 2).toString();
+      SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd");
+      Date fechaDate = formato.parse(fecha.replace('-', '/'));
+      txtFechaIngreso.setDate(fechaDate);
+      } catch(Exception e){
+            e.printStackTrace();
+            
+        }
+     
+        estado_inicio_controles(Color.BLACK);
+    }//GEN-LAST:event_tblBusquedaMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -680,8 +740,8 @@ public class Multas extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnBuscarSocio;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnCliActualizar;
-    private javax.swing.JButton btnCliEliminar;
     private javax.swing.JButton btnInserta;
+    private javax.swing.JButton btnNuevo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -698,8 +758,8 @@ public class Multas extends javax.swing.JInternalFrame {
     private javax.swing.JComboBox<String> jcboBusqueda;
     private javax.swing.JTable tblBusqueda;
     private javax.swing.JTextField txtBusqueda;
-    private com.toedter.calendar.JDateChooser txtFecha;
     private com.toedter.calendar.JDateChooser txtFechaBusqueda;
+    private com.toedter.calendar.JDateChooser txtFechaIngreso;
     private javax.swing.JTextField txtIdMulta;
     private javax.swing.JTextField txtMotivo;
     private javax.swing.JTextField txtSocio;

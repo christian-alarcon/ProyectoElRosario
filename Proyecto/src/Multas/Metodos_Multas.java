@@ -60,6 +60,7 @@ public class Metodos_Multas {
                 filas.add(getNombreApellidoUsuario(rs.getInt(5))[0]+" "+
                             getNombreApellidoUsuario(rs.getInt(5))[1]);
                 
+                filas.add(rs.getString(6));
                 columnas.add(filas);
                 
             }
@@ -96,6 +97,7 @@ public class Metodos_Multas {
                 filas.add(getNombreApellidoUsuario(rs.getInt(5))[0]+" "+
                             getNombreApellidoUsuario(rs.getInt(5))[1]);
                 
+                filas.add(rs.getString(6));
                 columnas.add(filas);
                 
             }
@@ -115,6 +117,7 @@ public class Metodos_Multas {
         columnNames.add("Valor");
         columnNames.add("Fecha");
         columnNames.add("Socio");
+        columnNames.add("Estado");
         DefaultTableModel modelo=new DefaultTableModel(columnNames.toArray(),0);
         
         //System.out.println(""+datos.size());
@@ -129,8 +132,8 @@ public class Metodos_Multas {
     }
     
     public int insertar(String id,String multa,double valor,String fecha,int id_socio){
-            query="INSERT INTO MULTAS(Id_Multa,Nom_Multa,Val_Multa,Fec_Multa,Id_Socio)"+
-                    "VALUES(?,?,?,?,?)";
+            query="INSERT INTO MULTAS(Id_Multa,Nom_Multa,Val_Multa,Fec_Multa,Id_Socio,Estado_Multa)"+
+                    "VALUES(?,?,?,?,?,?)";
             int v_retorno=0;
         try {
             
@@ -142,6 +145,7 @@ public class Metodos_Multas {
             ps.setDouble(3, valor);
             ps.setString(4, fecha);
             ps.setInt(5,id_socio);
+            ps.setString(6, "Pendiente");
             
             if(ps.executeUpdate()==1){
                 v_retorno=1;
@@ -188,7 +192,7 @@ public class Metodos_Multas {
     }
     
     
-    public void filtro(JComboBox comboFiltro,TableRowSorter trsFiltro,JTextField txtFiltro) {
+    public void filtro_Busqueda(JComboBox comboFiltro,TableRowSorter trsFiltro,JTextField txtFiltro) {
         int columnaABuscar = 0;
         if (comboFiltro.getSelectedItem().toString() == "MOTIVO") {
             columnaABuscar = 0;
