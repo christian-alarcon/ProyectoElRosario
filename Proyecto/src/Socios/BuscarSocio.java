@@ -6,6 +6,8 @@
 package Socios;
 
 import Conexion.Conexion;
+import Multas.Multas;
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,21 +20,33 @@ import javax.swing.table.DefaultTableModel;
  * @author Diego
  */
 public class BuscarSocio extends javax.swing.JInternalFrame {
-
+    private String nombresSocio;
+    private String apellidosSocio;
+    private String cedulaSocio;
+    
+    private String clase;
     /**
      * Creates new form Socios
      */
     DefaultTableModel m;
-    public BuscarSocio() {
+    public BuscarSocio(String clase) {
         initComponents();
         lblErrorcb.setText("");
+        this.clase=clase;
     }
     
        public void TablaSocios(String val) {//Realiza la consulta de los productos que tenemos en la base de datos
         String titles[] = {"Cédula", "Apellidos", "Nombres", "Dirección", "Teléfono"};
         String reg[] = new String[6];
         String sentence = "";
-        m = new DefaultTableModel(null, titles);
+        m = new DefaultTableModel(null, titles){
+        
+            @Override
+            public boolean isCellEditable(int row, int column) {
+               //all cells false
+               return false;
+            }
+        };
 
         Connection con;
         con = Conexion.GetConnection();
@@ -63,7 +77,14 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
         String titles[] = {"Cédula", "Apellidos", "Nombres", "Dirección", "Teléfono"};
         String reg[] = new String[6];
         String sentence = "";
-        m = new DefaultTableModel(null, titles);
+        m = new DefaultTableModel(null, titles){
+        
+            @Override
+            public boolean isCellEditable(int row, int column) {
+               //all cells false
+               return false;
+            }
+        };
 
         Connection con;
         con = Conexion.GetConnection();
@@ -94,7 +115,14 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
         String titles[] = {"Cédula", "Apellidos", "Nombres", "Dirección", "Teléfono"};
         String reg[] = new String[6];
         String sentence = "";
-        m = new DefaultTableModel(null, titles);
+        m = new DefaultTableModel(null, titles){
+        
+            @Override
+            public boolean isCellEditable(int row, int column) {
+               //all cells false
+               return false;
+            }
+        };
 
         Connection con;
         con = Conexion.GetConnection();
@@ -136,7 +164,7 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
         jLabel2 = new javax.swing.JLabel();
         btnBuscar = new javax.swing.JButton();
         txtBusqueda = new javax.swing.JTextField();
-        cbDatoDeBusqueda = new javax.swing.JComboBox<>();
+        cbDatoDeBusqueda = new javax.swing.JComboBox<String>();
         jLabel3 = new javax.swing.JLabel();
         lblErrorcb = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
@@ -146,6 +174,23 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameClosed(evt);
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            }
+        });
 
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -170,9 +215,12 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtBusquedaKeyReleased(evt);
             }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtBusquedaKeyTyped(evt);
+            }
         });
 
-        cbDatoDeBusqueda.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE:", "CEDULA", "APELLIDO P", "NOMBRE P" }));
+        cbDatoDeBusqueda.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SELECCIONE:", "CEDULA", "APELLIDO P", "NOMBRE P" }));
         cbDatoDeBusqueda.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbDatoDeBusquedaActionPerformed(evt);
@@ -236,6 +284,11 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
 
             }
         ));
+        tblBusqueda.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblBusquedaMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblBusqueda);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -351,7 +404,9 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_cbDatoDeBusquedaActionPerformed
 
     private void txtBusquedaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBusquedaKeyReleased
-       int valor = cbDatoDeBusqueda.getSelectedIndex();
+
+        
+        int valor = cbDatoDeBusqueda.getSelectedIndex();
         if (txtBusqueda.getText().trim().length() >= 1) 
         {
             String filtro = txtBusqueda.getText();
@@ -377,6 +432,30 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
         }
 
     }//GEN-LAST:event_txtBusquedaKeyReleased
+
+    private void txtBusquedaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBusquedaKeyTyped
+         int k=(int)evt.getKeyChar();
+        if (k>=97 && k<=122 || k >= 65 && k <= 90 || k>=48 && k<=57 || k==32){
+            
+        }
+        else{
+            evt.setKeyChar((char)KeyEvent.VK_CLEAR);
+        }
+    }//GEN-LAST:event_txtBusquedaKeyTyped
+
+    private void tblBusquedaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBusquedaMouseClicked
+       int row = tblBusqueda.rowAtPoint(evt.getPoint());
+       cedulaSocio=tblBusqueda.getValueAt(row, 0).toString();
+       nombresSocio=tblBusqueda.getValueAt(row, 1).toString();
+       apellidosSocio=tblBusqueda.getValueAt(row, 2).toString();
+    }//GEN-LAST:event_tblBusquedaMouseClicked
+
+    private void formInternalFrameClosed(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosed
+        if(clase=="Multas"){
+            Multas.setSocio(cedulaSocio, nombresSocio, apellidosSocio);
+        }
+        
+    }//GEN-LAST:event_formInternalFrameClosed
 
     /**
      * @param args the command line arguments
@@ -411,7 +490,7 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new BuscarSocio().setVisible(true);
+                new BuscarSocio("").setVisible(true);
             }
         });
     }

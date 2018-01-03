@@ -5,6 +5,9 @@
  */
 package Multas;
 
+import static Menu.Menu.jDesktopPane1;
+import Pagos.Pagos;
+import Socios.BuscarSocio;
 import com.toedter.calendar.JDateChooser;
 import java.awt.Color;
 import java.awt.Component;
@@ -40,6 +43,7 @@ public class Multas extends javax.swing.JInternalFrame {
        private TableRowSorter trsFiltro;
        private Rectangle dimBusqueda;
        private ArrayList datos_busqueda;
+       private static String ced_socio;
        
        
     /**
@@ -86,6 +90,7 @@ public class Multas extends javax.swing.JInternalFrame {
     public void control_componentes(){
         btnInserta.setEnabled(false);
         btnCliActualizar.setEnabled(false);
+        btnBuscarSocio.setEnabled(false);
     }
     
     public void estado_inicio_controles(Color color){
@@ -114,7 +119,7 @@ public class Multas extends javax.swing.JInternalFrame {
         valor=Float.valueOf(val);
         System.out.println("valor: "+valor);
         String fecha=Metodos_Multas.fechaMySQL(txtFechaIngreso);
-        int id_socio=Integer.parseInt(txtSocio.getText());
+        int id_socio=Integer.parseInt(ced_socio);
         
         if(multas.insertar(id,multa, valor, fecha, id_socio)==1){
             
@@ -126,6 +131,11 @@ public class Multas extends javax.swing.JInternalFrame {
         else{
             JOptionPane.showMessageDialog(null, "No se pudo insertar");
         }
+    }
+    
+    public static void setSocio(String cedula,String nombres,String apellidos){
+        txtSocio.setText(apellidos+" "+nombres);
+        ced_socio=cedula;
     }
     
     /**
@@ -161,7 +171,6 @@ public class Multas extends javax.swing.JInternalFrame {
         tblBusqueda = new javax.swing.JTable();
         jcboBusqueda = new javax.swing.JComboBox<String>();
         jLabel9 = new javax.swing.JLabel();
-        btnBuscar1 = new javax.swing.JButton();
         txtBusqueda = new javax.swing.JTextField();
         txtFechaBusqueda = new com.toedter.calendar.JDateChooser();
         jLabel1 = new javax.swing.JLabel();
@@ -229,7 +238,7 @@ public class Multas extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnCliActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE)
+                .addComponent(btnCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -246,6 +255,8 @@ public class Multas extends javax.swing.JInternalFrame {
         jLabel3.setText("VALOR:");
 
         jLabel5.setText("MOTIVO:");
+
+        txtSocio.setEditable(false);
 
         txtIdMulta.setEditable(false);
 
@@ -308,16 +319,16 @@ public class Multas extends javax.swing.JInternalFrame {
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel7)
                                 .addGap(18, 18, 18)
-                                .addComponent(txtFechaIngreso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(txtFechaIngreso, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addGap(18, 18, 18)
                                 .addComponent(txtValor)))
                         .addGap(16, 16, 16))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(31, 31, 31)
+                        .addGap(43, 43, 43)
                         .addComponent(btnBuscarSocio)
-                        .addContainerGap(173, Short.MAX_VALUE))))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -342,12 +353,11 @@ public class Multas extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtSocio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel2))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtSocio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
                     .addComponent(btnBuscarSocio, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "LISTA DE MULTAS", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(0, 102, 153))); // NOI18N
@@ -381,13 +391,6 @@ public class Multas extends javax.swing.JInternalFrame {
 
         jLabel9.setText("BUSCAR POR:");
 
-        btnBuscar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/buscar1.png"))); // NOI18N
-        btnBuscar1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscar1ActionPerformed(evt);
-            }
-        });
-
         txtBusqueda.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtBusquedaKeyTyped(evt);
@@ -418,23 +421,20 @@ public class Multas extends javax.swing.JInternalFrame {
                         .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(txtFechaBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnBuscar1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(137, 137, 137))))
+                        .addGap(137, 221, Short.MAX_VALUE))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnBuscar1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel9)
                         .addComponent(jcboBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(txtFechaBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE))
+                .addGap(17, 17, 17)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -542,7 +542,13 @@ public class Multas extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnBuscarSocioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarSocioActionPerformed
-        // TODO add your handling code here:
+
+        BuscarSocio socioBuscar=new BuscarSocio("Multas");
+        
+        jDesktopPane1.add(socioBuscar);
+        socioBuscar.setLocation(20,20);
+
+        socioBuscar.show();
 
     }//GEN-LAST:event_btnBuscarSocioActionPerformed
 
@@ -553,10 +559,6 @@ public class Multas extends javax.swing.JInternalFrame {
     private void jcboBusquedaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcboBusquedaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jcboBusquedaActionPerformed
-
-    private void btnBuscar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscar1ActionPerformed
-
-    }//GEN-LAST:event_btnBuscar1ActionPerformed
 
     private void txtBusquedaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBusquedaKeyTyped
          txtBusqueda.addKeyListener(new KeyAdapter() {
@@ -672,18 +674,23 @@ public class Multas extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_formMouseEntered
 
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
+        limpiar();
         btnInserta.setEnabled(true);
         estado_inicio_controles(Color.BLACK);
         btnNuevo.setEnabled(false);
         txtMotivo.setEditable(true);
+        txtMotivo.requestFocus();
+        txtMotivo.setEnabled(true);
+        btnBuscarSocio.setEnabled(true);
     }//GEN-LAST:event_btnNuevoActionPerformed
 
     private void tblBusquedaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBusquedaMouseClicked
 
             int row = tblBusqueda.rowAtPoint(evt.getPoint());
        //txtIdMulta.setText(tblBusqueda.getValueAt(row, 0).toString());
-    txtValor.setText(tblBusqueda.getValueAt(row, 1).toString());
-    txtMotivo.setText(tblBusqueda.getValueAt(row, 0).toString());
+    txtValor.setText(tblBusqueda.getValueAt(row, 2).toString());
+    txtMotivo.setText(tblBusqueda.getValueAt(row, 1).toString());
+    txtIdMulta.setText(tblBusqueda.getValueAt(row, 0).toString());
     
     
     
@@ -736,7 +743,6 @@ public class Multas extends javax.swing.JInternalFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBuscar1;
     private javax.swing.JButton btnBuscarSocio;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnCliActualizar;
@@ -762,7 +768,7 @@ public class Multas extends javax.swing.JInternalFrame {
     private com.toedter.calendar.JDateChooser txtFechaIngreso;
     private javax.swing.JTextField txtIdMulta;
     private javax.swing.JTextField txtMotivo;
-    private javax.swing.JTextField txtSocio;
+    public static javax.swing.JTextField txtSocio;
     private javax.swing.JTextField txtValor;
     // End of variables declaration//GEN-END:variables
 }

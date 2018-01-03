@@ -52,6 +52,7 @@ public class Metodos_Multas {
             while(rs.next()){
 
                 filas=new ArrayList<Object>();
+                filas.add(rs.getString(1));
                 filas.add(rs.getString(2));
                 filas.add(rs.getDouble(3));
                 filas.add(rs.getDate(4));
@@ -89,6 +90,7 @@ public class Metodos_Multas {
             while(rs.next()){
 
                 filas=new ArrayList<Object>();
+                filas.add(rs.getString(1));
                 filas.add(rs.getString(2));
                 filas.add(rs.getDouble(3));
                 filas.add(rs.getDate(4));

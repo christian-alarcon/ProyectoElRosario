@@ -741,7 +741,7 @@ public class Socios extends javax.swing.JInternalFrame {
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         // TODO add your handling code here:
-        BuscarSocio obj = new BuscarSocio();
+        BuscarSocio obj = new BuscarSocio("");
         obj.setVisible(true);
         obj.show();
 
