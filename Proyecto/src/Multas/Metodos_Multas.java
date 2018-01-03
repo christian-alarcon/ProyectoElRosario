@@ -41,7 +41,8 @@ public class Metodos_Multas {
         
         try {            
             conexion=Conexion.GetConnection();
-            query="SELECT * FROM MULTAS";
+            query="SELECT Id_Multa,Nom_Multa,Val_Multa,Fec_Multa as fecha,Id_Socio,Estado_Multa "
+                    + "FROM MULTAS ORDER BY fecha DESC";
             st=conexion.createStatement();
             
             ResultSet rs=st.executeQuery(query);
@@ -78,7 +79,8 @@ public class Metodos_Multas {
         
         try {
             conexion=Conexion.GetConnection();
-            query="SELECT * FROM MULTAS WHERE "+where+" ='"+valor+"'";
+            query="SELECT Id_Multa,Nom_Multa,Val_Multa,Fec_Multa as fecha,Id_Socio,Estado_Multa"
+                    + " FROM MULTAS WHERE "+where+" ='"+valor+"' ORDER BY fecha DESC";
             //System.out.println(""+query);
             st=conexion.createStatement();
             
@@ -115,12 +117,20 @@ public class Metodos_Multas {
         ArrayList<ArrayList> datos=datos1;
         
         ArrayList<String> columnNames=new ArrayList<>();
+        columnNames.add("Id");
         columnNames.add("Multa");
         columnNames.add("Valor");
         columnNames.add("Fecha");
         columnNames.add("Socio");
         columnNames.add("Estado");
-        DefaultTableModel modelo=new DefaultTableModel(columnNames.toArray(),0);
+        DefaultTableModel modelo=new DefaultTableModel(columnNames.toArray(),0){
+        
+            @Override
+            public boolean isCellEditable(int row, int column) {
+               //all cells false
+               return false;
+            }
+        };
         
         //System.out.println(""+datos.size());
         for(int i=0;i<datos.size();i++){
@@ -191,6 +201,25 @@ public class Metodos_Multas {
             Logger.getLogger(Metodos_Multas.class.getName()).log(Level.SEVERE, null, ex);
         }
         return socio;
+    }
+    
+    public String getCedula(String id_multa){
+        String cedula="";
+         try {
+            conexion=Conexion.GetConnection();
+            query="SELECT Id_Socio FROM MULTAS WHERE Id_Multa='"+id_multa+"'";
+            st=conexion.createStatement();
+            
+            ResultSet rs=st.executeQuery(query);
+                while(rs.next()){
+                    cedula=rs.getString(1);
+                }
+            st.close();
+            conexion.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Metodos_Multas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         return cedula;
     }
     
     

@@ -54,6 +54,10 @@ public class Multas extends javax.swing.JInternalFrame {
         inicio();
         estado_inicio_controles(Color.WHITE);
         control_componentes();
+        txtIdMulta.setHighlighter(null);
+        txtValor.setHighlighter(null);
+        ((JTextField) this.txtFechaIngreso.getDateEditor()).setHighlighter(null);
+        
     }
 
     
@@ -68,6 +72,7 @@ public class Multas extends javax.swing.JInternalFrame {
        
        
        ((JTextField) this.txtFechaIngreso.getDateEditor()).setEditable(false);
+       
        iniciarFecha(txtFechaIngreso);
        
        txtFechaBusqueda.setVisible(false);
@@ -283,6 +288,11 @@ public class Multas extends javax.swing.JInternalFrame {
             }
         });
 
+        txtValor.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtValorFocusLost(evt);
+            }
+        });
         txtValor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtValorActionPerformed(evt);
@@ -537,6 +547,7 @@ public class Multas extends javax.swing.JInternalFrame {
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         btnInserta.setEnabled(false);
         btnNuevo.setEnabled(true);
+        btnCliActualizar.setEnabled(false);
         limpiar();
         estado_inicio_controles(Color.WHITE);
     }//GEN-LAST:event_btnCancelarActionPerformed
@@ -627,7 +638,8 @@ public class Multas extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtMotivoKeyTyped
 
     private void txtValorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorKeyTyped
-         int k=(int)evt.getKeyChar();
+        //solo numeros y coma
+        int k=(int)evt.getKeyChar();
         if (k >= 48 && k <= 57 || k==44){
             
         }
@@ -635,13 +647,14 @@ public class Multas extends javax.swing.JInternalFrame {
             evt.setKeyChar((char)KeyEvent.VK_CLEAR);
         }   
         
-        
+        //no repite la coma
         if(txtValor.getText().contains(",")){
             
              if(k==44)
                 evt.consume();
         }
-         
+        
+        //que no tipee en las 2 posiciones donde estan "$ "
         if(txtValor.getText().contains(",")){
             int pos=txtValor.getText().indexOf(",");
              
@@ -649,7 +662,14 @@ public class Multas extends javax.swing.JInternalFrame {
                 evt.consume();
             }
         }
-         
+        
+        //que no digite en las 2 pos iniciales
+        if(txtValor.getCaretPosition()<2)
+            evt.consume();
+        
+         //limite a 10 caracteres
+        if (txtValor.getText().length() >= 7 ) 
+                evt.consume();
     }//GEN-LAST:event_txtValorKeyTyped
 
     private void txtValorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorKeyPressed
@@ -659,6 +679,8 @@ public class Multas extends javax.swing.JInternalFrame {
                 evt.consume();       
             }
         }
+        
+        
     }//GEN-LAST:event_txtValorKeyPressed
 
     private void txtMotivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMotivoActionPerformed
@@ -674,38 +696,63 @@ public class Multas extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_formMouseEntered
 
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
-        limpiar();
-        btnInserta.setEnabled(true);
-        estado_inicio_controles(Color.BLACK);
         btnNuevo.setEnabled(false);
+        btnCliActualizar.setEnabled(false);
+        
+        limpiar();
+        estado_inicio_controles(Color.BLACK);
         txtMotivo.setEditable(true);
         txtMotivo.requestFocus();
+        
+        btnInserta.setEnabled(true);
         txtMotivo.setEnabled(true);
         btnBuscarSocio.setEnabled(true);
+        
     }//GEN-LAST:event_btnNuevoActionPerformed
 
     private void tblBusquedaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBusquedaMouseClicked
 
             int row = tblBusqueda.rowAtPoint(evt.getPoint());
+            btnCliActualizar.setEnabled(true);
        //txtIdMulta.setText(tblBusqueda.getValueAt(row, 0).toString());
-    txtValor.setText(tblBusqueda.getValueAt(row, 2).toString());
-    txtMotivo.setText(tblBusqueda.getValueAt(row, 1).toString());
+    txtSocio.setText(tblBusqueda.getValueAt(row, 4).toString());
+    
     txtIdMulta.setText(tblBusqueda.getValueAt(row, 0).toString());
+    txtMotivo.setText(tblBusqueda.getValueAt(row, 1).toString());
     
+    String valor="$ "+ tblBusqueda.getValueAt(row, 2).toString();
+    txtValor.setText(valor.replace(".", ","));
     
-    
-     try {
-      String fecha =tblBusqueda.getValueAt(row, 2).toString();
+    try {
+      String fecha =tblBusqueda.getValueAt(row, 3).toString();
       SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd");
       Date fechaDate = formato.parse(fecha.replace('-', '/'));
       txtFechaIngreso.setDate(fechaDate);
-      } catch(Exception e){
-            e.printStackTrace();
-            
-        }
+    }
+    catch(Exception e){
+        e.printStackTrace();
+    }
+    
+    //setea la cedula del socio
+    ced_socio=multas.getCedula(tblBusqueda.getValueAt(row, 0).toString());
      
         estado_inicio_controles(Color.BLACK);
     }//GEN-LAST:event_tblBusquedaMouseClicked
+
+    private void txtValorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtValorFocusLost
+        if(txtValor.getText().contains(",")){
+            int comaPos=txtValor.getText().indexOf(",");
+
+            if(comaPos==txtValor.getText().length()-1){
+                txtValor.setText(txtValor.getText()+"00");
+            }
+            
+        }
+        else{
+            txtValor.setText(txtValor.getText()+",00");
+        }
+        
+    }//GEN-LAST:event_txtValorFocusLost
 
     /**
      * @param args the command line arguments
