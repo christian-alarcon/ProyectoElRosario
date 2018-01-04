@@ -157,8 +157,26 @@ public class Login extends javax.swing.JFrame {
 
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
 
-
-        login.IniciarSesion(txtUsuario, txtContrasena, lblError);
+        String mensaje="";
+        
+        if(txtUsuario.getText().equals("")){
+            mensaje+="\nDebe ingresar el usuario";
+        }
+        if(txtContrasena.getText().equals("")){
+            mensaje+="\nDebe ingresar la contraseña";
+        }
+        
+        if(!mensaje.equals("")){
+            JOptionPane.showMessageDialog(null, mensaje);
+        }
+        else{
+                int estado=login.IniciarSesion(txtUsuario, txtContrasena, lblError);
+                
+                if(estado==1){
+                    this.dispose();
+                }
+        }
+        
         
           
     }//GEN-LAST:event_btnIngresarActionPerformed
@@ -170,13 +188,50 @@ public class Login extends javax.swing.JFrame {
     private void btnIngresarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnIngresarKeyPressed
             if(evt.getKeyCode() == evt.VK_ENTER)
            {
-               login.IniciarSesion(txtUsuario, txtContrasena, lblError);
+                      String mensaje="";
+        
+            if(txtUsuario.getText().equals("")){
+                mensaje+="\nDebe ingresar el usuario";
+            }
+            if(txtContrasena.getText().equals("")){
+                mensaje+="\nDebe ingresar la contraseña";
+            }
+
+            if(!mensaje.equals("")){
+                JOptionPane.showMessageDialog(null, mensaje);
+            }
+            else{
+                int estado=login.IniciarSesion(txtUsuario, txtContrasena, lblError);
+                
+                if(estado==1){
+                    this.dispose();
+                }
+            }
            }
     }//GEN-LAST:event_btnIngresarKeyPressed
 
     private void txtContrasenaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtContrasenaKeyReleased
             if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            login.IniciarSesion(txtUsuario, txtContrasena, lblError);
+                   String mensaje="";
+        
+            if(txtUsuario.getText().equals("")){
+                mensaje+="\nDebe ingresar el usuario";
+            }
+            if(txtContrasena.getText().equals("")){
+                mensaje+="\nDebe ingresar la contraseña";
+            }
+
+            if(!mensaje.equals("")){
+                JOptionPane.showMessageDialog(null, mensaje);
+            }
+            else{
+                int estado=login.IniciarSesion(txtUsuario, txtContrasena, lblError);
+                
+                if(estado==1){
+                    this.dispose();
+                }
+                
+            }
         } else if (evt.getKeyCode() == KeyEvent.VK_TAB) {
             btnIngresar.setFocusable(true);
         }  

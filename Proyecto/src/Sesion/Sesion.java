@@ -100,7 +100,7 @@ public class Sesion extends javax.swing.JInternalFrame {
         int mes = miJDate.getCalendar().get(Calendar. MONTH) + 1; 
         int dia = miJDate.getCalendar().get(Calendar. DAY_OF_MONTH); 
 
-        return anio+"/"+sdf.format(mes)+"/"+sdf.format(dia); 
+        return anio+"-"+sdf.format(mes)+"-"+sdf.format(dia); 
     }
     public void GuardarSesion() throws Exception {
         if (txtCodigo.getText().isEmpty()) {
@@ -491,7 +491,38 @@ public class Sesion extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jPanel2MouseClicked
 
     private void btnBuscar2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscar2ActionPerformed
-        // TODO add your handling code here:
+        // TODO add your handling code here
+        String fecha = fechaMySQL(jDateChooser2);
+        //jTable1.setModel(model);
+        String [] titulos={"CODIGO","MOTIVO","FECHA"};
+        String [] registros=new String[3];
+        //model = new DefaultTableModel(null, titulos);
+        model=new DefaultTableModel(null, titulos);
+        //model = (DefaultTableModel) jTable1.getModel();
+        java.sql.Connection cn =  Conexion.Conexion.GetConnection();
+        String sql="";
+        sql="select * from sesion where Fec_Sesion LIKE '%"+fecha+"%'";
+        //JOptionPane.showMessageDialog(null, fecha);
+        try {
+            Statement psd=(Statement) cn.createStatement();
+            ResultSet rs=psd.executeQuery(sql);
+            int c=0;
+            while(rs.next()){
+                registros[0]=rs.getString("Id_Sesion");
+                registros[1]=rs.getString("Mot_Sesion");
+                registros[2]=rs.getString("Fec_Sesion");
+                c++;
+                //JOptionPane.showMessageDialog(null, registros[0]);
+                model.addRow(registros);
+            }
+            if (c==0) {
+                JOptionPane.showMessageDialog(null, "No existe registro de esa fecha...");
+            }
+            jTable1.setModel(model);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+            
+        }
     }//GEN-LAST:event_btnBuscar2ActionPerformed
 
     private void btnCliEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliEliminarActionPerformed

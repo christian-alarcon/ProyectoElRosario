@@ -8,6 +8,7 @@ package Terrenos;
 import Conexion.Conexion;
 import Socios.*;
 import com.mysql.jdbc.PreparedStatement;
+import java.awt.event.KeyEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -65,6 +66,125 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
 
             }
         });
+    }
+    
+    public void buscarDatoVendedor(String Dato) {
+           String[] titulos = {"Terreno", "Socio_Vendedor", "Socio_Comprador", "Fecha","Monto", "Modulo","tipo_Transaccion"};
+        
+        String[] registros = new String[8];
+        modelo = new DefaultTableModel(null, titulos);
+
+        java.sql.Connection con;
+        con = Conexion.GetConnection();
+
+        String sql = "";
+  
+        sql = "Select * from transaccionterreno where Socio_Vendedor LIKE'%" + Dato + "%'";
+
+        try {
+
+            Statement psd = con.createStatement();
+
+            ResultSet rs = psd.executeQuery(sql);
+
+         
+            while (rs.next()) { 
+                registros[0] = rs.getString("Id"); 
+                registros[1] = rs.getString("Socio_Vendedor");
+                registros[2] = rs.getString("Socio_Comprador");
+                registros[3] = rs.getString("Fecha");
+                registros[4] = rs.getString("monto");
+                registros[5] = rs.getString("modulo");
+                 registros[6] = rs.getString("tipo_transaccion");
+
+                modelo.addRow(registros);
+
+            }
+
+            tblTerreno.setModel(modelo);
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+    }
+    
+     public void buscarDatoComprador(String Dato) {
+           String[] titulos = {"Terreno", "Socio_Vendedor", "Socio_Comprador", "Fecha","Monto", "Modulo","tipo_Transaccion"};
+        
+        String[] registros = new String[8];
+        modelo = new DefaultTableModel(null, titulos);
+
+        java.sql.Connection con;
+        con = Conexion.GetConnection();
+
+        String sql = "";
+  
+        sql = "Select * from transaccionterreno where Socio_Comprador LIKE'%" + Dato + "%'";
+
+        try {
+
+            Statement psd = con.createStatement();
+
+            ResultSet rs = psd.executeQuery(sql);
+
+         
+            while (rs.next()) { 
+                registros[0] = rs.getString("Id"); 
+                registros[1] = rs.getString("Socio_Vendedor");
+                registros[2] = rs.getString("Socio_Comprador");
+                registros[3] = rs.getString("Fecha");
+                registros[4] = rs.getString("monto");
+                registros[5] = rs.getString("modulo");
+                 registros[6] = rs.getString("tipo_transaccion");
+
+                modelo.addRow(registros);
+
+            }
+
+            tblTerreno.setModel(modelo);
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+    }
+     public void buscarDatoTipoTra(String Dato) {
+           String[] titulos = {"Terreno", "Socio_Vendedor", "Socio_Comprador", "Fecha","Monto", "Modulo","tipo_Transaccion"};
+        
+        String[] registros = new String[8];
+        modelo = new DefaultTableModel(null, titulos);
+
+        java.sql.Connection con;
+        con = Conexion.GetConnection();
+
+        String sql = "";
+  
+        sql = "Select * from transaccionterreno where tipo_transaccion LIKE'%" + Dato + "%'";
+
+        try {
+
+            Statement psd = con.createStatement();
+
+            ResultSet rs = psd.executeQuery(sql);
+
+         
+            while (rs.next()) { 
+                registros[0] = rs.getString("Id"); 
+                registros[1] = rs.getString("Socio_Vendedor");
+                registros[2] = rs.getString("Socio_Comprador");
+                registros[3] = rs.getString("Fecha");
+                registros[4] = rs.getString("monto");
+                registros[5] = rs.getString("modulo");
+                 registros[6] = rs.getString("tipo_transaccion");
+
+                modelo.addRow(registros);
+
+            }
+
+            tblTerreno.setModel(modelo);
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
     }
     
     public void cargarModulo() {
@@ -190,16 +310,16 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
-        btnCliGuardar = new javax.swing.JButton();
-        btnCliActualizar = new javax.swing.JButton();
-        btnCliEliminar = new javax.swing.JButton();
+        btnGuardar = new javax.swing.JButton();
+        btnActualizar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblTerreno = new javax.swing.JTable();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        jComboBoxBuscar = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
-        jTextField8 = new javax.swing.JTextField();
+        txtBuscar = new javax.swing.JTextField();
         btnBuscar = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
@@ -226,24 +346,24 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "ACCION", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(0, 102, 153))); // NOI18N
 
-        btnCliGuardar.setText("GUARDAR");
-        btnCliGuardar.addActionListener(new java.awt.event.ActionListener() {
+        btnGuardar.setText("GUARDAR");
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCliGuardarActionPerformed(evt);
+                btnGuardarActionPerformed(evt);
             }
         });
 
-        btnCliActualizar.setText("ACTUALIZAR");
-        btnCliActualizar.addActionListener(new java.awt.event.ActionListener() {
+        btnActualizar.setText("ACTUALIZAR");
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCliActualizarActionPerformed(evt);
+                btnActualizarActionPerformed(evt);
             }
         });
 
-        btnCliEliminar.setText("ELIMINAR");
-        btnCliEliminar.addActionListener(new java.awt.event.ActionListener() {
+        btnEliminar.setText("ELIMINAR");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCliEliminarActionPerformed(evt);
+                btnEliminarActionPerformed(evt);
             }
         });
 
@@ -262,20 +382,20 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnCliEliminar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnCliGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnCliActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnEliminar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnGuardar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnActualizar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnCliGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnCliActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(4, 4, 4)
-                .addComponent(btnCliEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -296,7 +416,7 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
         ));
         jScrollPane1.setViewportView(tblTerreno);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE:", "COMPRADOR", "VENDEDOR", "TIPO DE ADQUISICION" }));
+        jComboBoxBuscar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE:", "COMPRADOR", "VENDEDOR", "TIPO DE ADQUISICION" }));
 
         jLabel9.setText("BUSCAR POR:");
 
@@ -318,9 +438,9 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jComboBoxBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -334,8 +454,8 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
                     .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel9)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jComboBoxBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE))
         );
@@ -393,8 +513,25 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
                 txtSocioVendedorActionPerformed(evt);
             }
         });
+        txtSocioVendedor.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtSocioVendedorKeyTyped(evt);
+            }
+        });
+
+        txtSocioComprador.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtSocioCompradorKeyTyped(evt);
+            }
+        });
 
         jLabel7.setText("MODULO:");
+
+        txtMonto.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtMontoKeyTyped(evt);
+            }
+        });
 
         jLabel8.setText("FECHA:");
 
@@ -536,11 +673,11 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnCliGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliGuardarActionPerformed
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
  verificarDatos();
         crearTabla();
  
-    }//GEN-LAST:event_btnCliGuardarActionPerformed
+    }//GEN-LAST:event_btnGuardarActionPerformed
 private void verificarDatos() {
        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
      String id = txtIdTerreno.getText();
@@ -634,16 +771,16 @@ private void verificarDatos() {
 
         }
     }
-    private void btnCliActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliActualizarActionPerformed
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
  modificar();
       crearTabla();        // TODO add your handling code here:
       
-    }//GEN-LAST:event_btnCliActualizarActionPerformed
+    }//GEN-LAST:event_btnActualizarActionPerformed
 
-    private void btnCliEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliEliminarActionPerformed
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         // TODO add your handling code here:
        
-    }//GEN-LAST:event_btnCliEliminarActionPerformed
+    }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         // TODO add your handling code here:
@@ -654,7 +791,15 @@ private void verificarDatos() {
         // TODO add your handling code here:
 //        BuscarSocio obj = new BuscarSocio();
      //   obj.setVisible(true);
-       
+      
+        
+        if (jComboBoxBuscar.getSelectedItem()== "COMPRADOR" ){
+            buscarDatoComprador(txtBuscar.getText());
+        }else if (jComboBoxBuscar.getSelectedItem()== "VENDEDOR" ){
+            buscarDatoVendedor(txtBuscar.getText());
+        }else if (jComboBoxBuscar.getSelectedItem()== "TIPO DE ADQUISICION" ){
+            buscarDatoTipoTra(txtBuscar.getText());
+        }
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void jPanel6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel6MouseClicked
@@ -668,6 +813,22 @@ private void verificarDatos() {
     private void txtSocioVendedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSocioVendedorActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtSocioVendedorActionPerformed
+
+    private void txtSocioVendedorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSocioVendedorKeyTyped
+        // TODO add your handling code here:
+        
+        controlSoloLetras(evt);
+    }//GEN-LAST:event_txtSocioVendedorKeyTyped
+
+    private void txtSocioCompradorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSocioCompradorKeyTyped
+        // TODO add your handling code here:
+        controlSoloLetras(evt);
+    }//GEN-LAST:event_txtSocioCompradorKeyTyped
+
+    private void txtMontoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMontoKeyTyped
+        // TODO add your handling code here:
+        controlSoloNumeros(evt);
+    }//GEN-LAST:event_txtMontoKeyTyped
 
     /**
      * @param args the command line arguments
@@ -706,14 +867,14 @@ private void verificarDatos() {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnCancelar;
-    private javax.swing.JButton btnCliActualizar;
-    private javax.swing.JButton btnCliEliminar;
-    private javax.swing.JButton btnCliGuardar;
+    private javax.swing.JButton btnEliminar;
+    private javax.swing.JButton btnGuardar;
     private javax.swing.JComboBox<String> cnbModulo;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JComboBox<String> jComboBoxBuscar;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -731,8 +892,8 @@ private void verificarDatos() {
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField8;
     private javax.swing.JTable tblTerreno;
+    private javax.swing.JTextField txtBuscar;
     private javax.swing.JTextField txtIdTerreno;
     private javax.swing.JTextField txtMonto;
     private javax.swing.JTextField txtSocioComprador;
@@ -747,5 +908,17 @@ private void verificarDatos() {
     txtSocioVendedor.setText("");
     cnbModulo.setSelectedIndex(-1);
     jComboBox2.setSelectedIndex(-1);
+    }
+    
+     public void controlSoloLetras(KeyEvent evt) {
+        if (evt.getKeyChar() < 65 || evt.getKeyChar() > 90 && evt.getKeyChar() < 97 || evt.getKeyChar() > 122 && evt.getKeyChar() == 32) {
+            evt.consume();
+        }
+    }
+
+    public void controlSoloNumeros(KeyEvent evt) {
+        if (evt.getKeyChar() < 48 || evt.getKeyChar() > 57) {
+            evt.consume();
+        }
     }
 }

@@ -31,6 +31,9 @@ public class Socios extends javax.swing.JInternalFrame {
         btnEliminar.setEnabled(false);
         btnCancelar.setEnabled(false);
         lblErrorcb.setText("");
+        
+        TablaSocios("");
+        tblBusqueda.setVisible(true);
     }
     
     public  void Limpiar()
