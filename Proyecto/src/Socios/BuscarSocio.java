@@ -459,9 +459,9 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
          if(clase=="Terrenos"){
             Terrenos.setSocio(cedulaSocio, nombresSocio, apellidosSocio);
         }if(clase=="TerrenosVendedor"){
-            TrasnTerrenos.setSocioVendedor(nombresSocio, apellidosSocio);
+            TrasnTerrenos.setSocioVendedor(cedulaSocio,nombresSocio, apellidosSocio);
         }if(clase=="TerrenosComprador"){
-            TrasnTerrenos.setSocioComprador(nombresSocio, apellidosSocio);
+            TrasnTerrenos.setSocioComprador(cedulaSocio,nombresSocio, apellidosSocio);
         }
     }//GEN-LAST:event_formInternalFrameClosed
 
