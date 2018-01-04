@@ -37,7 +37,9 @@ public class Cuotas extends javax.swing.JInternalFrame {
          btnActualizar.setEnabled(false);
         btnEliminar.setEnabled(false);
         btnCancelar.setEnabled(false);
+        txtID.setEnabled(false);
         TablaSocios("");
+        RecuperarID();
     }
 public  void Limpiar()
     {
@@ -63,6 +65,33 @@ public  void Limpiar()
         btnCancelar.setEnabled(false);
     }
    DefaultTableModel m;
+      public void RecuperarID() {//Realiza la consulta de los productos que tenemos en la base de datos
+      
+    
+        String sentence = "";
+        
+
+        Connection con;
+        con = Conexion.GetConnection();
+        //sentence = "CALL SP_SociosSel('%" + val + "%')";
+         String variable = (String) jcbBuscar.getSelectedItem();
+      
+            sentence = "Select MAX(Id_Cuota) From cuota; ";
+        try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sentence);
+            while (rs.next()) {
+               txtID.setText(String.valueOf(Integer.parseInt( rs.getString(1))+1));
+              
+               
+            }
+           //asigna a la tabla el modelo creado
+          
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }   
+        
+    }
 
     public void TablaSocios(String val) {//Realiza la consulta de los productos que tenemos en la base de datos
         String titles[] = {"ID", "MOTIVO", "VALOR", "FECHA"};
@@ -662,6 +691,7 @@ public  void Limpiar()
 
     private void btnBuscar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscar1ActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_btnBuscar1ActionPerformed
 
     private void jtbCuotasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtbCuotasMouseClicked
@@ -718,10 +748,14 @@ public  void Limpiar()
     }//GEN-LAST:event_txtValorKeyPressed
 
     private void txtValorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorKeyTyped
-if (!Character.isDigit(evt.getKeyChar())) {
+if (!Character.isDigit(evt.getKeyChar())&&evt.getKeyChar()!='.') {
             Toolkit.getDefaultToolkit().beep();
             evt.consume();
          }        // TODO add your handling code here:
+if (evt.getKeyChar()=='.'&& txtValor.getText().contains(".")) {
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+         } 
     }//GEN-LAST:event_txtValorKeyTyped
    
     /**

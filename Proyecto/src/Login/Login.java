@@ -170,8 +170,11 @@ public class Login extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, mensaje);
         }
         else{
-            login.IniciarSesion(txtUsuario, txtContrasena, lblError);
-            this.dispose();
+                int estado=login.IniciarSesion(txtUsuario, txtContrasena, lblError);
+                
+                if(estado==1){
+                    this.dispose();
+                }
         }
         
         
@@ -198,8 +201,11 @@ public class Login extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, mensaje);
             }
             else{
-                login.IniciarSesion(txtUsuario, txtContrasena, lblError);
-                this.dispose();
+                int estado=login.IniciarSesion(txtUsuario, txtContrasena, lblError);
+                
+                if(estado==1){
+                    this.dispose();
+                }
             }
            }
     }//GEN-LAST:event_btnIngresarKeyPressed
@@ -219,8 +225,12 @@ public class Login extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, mensaje);
             }
             else{
-                login.IniciarSesion(txtUsuario, txtContrasena, lblError);
-                this.dispose();
+                int estado=login.IniciarSesion(txtUsuario, txtContrasena, lblError);
+                
+                if(estado==1){
+                    this.dispose();
+                }
+                
             }
         } else if (evt.getKeyCode() == KeyEvent.VK_TAB) {
             btnIngresar.setFocusable(true);

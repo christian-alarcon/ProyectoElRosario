@@ -23,8 +23,8 @@ public class Login_Metodos {
  public static String Usuario;
     public static String Password;  
     
-    public void IniciarSesion(JTextField txtUsuario,JTextField txtContrasena,JLabel lblError) {
-        
+    public int IniciarSesion(JTextField txtUsuario,JTextField txtContrasena,JLabel lblError) {
+        int estado=0;
         Usuario = txtUsuario.getText();
         Password = txtContrasena.getText();
         Connection con;
@@ -37,6 +37,7 @@ public class Login_Metodos {
            
             if (rs.first()) {
                 if(rs.getString(1).equals(Usuario)&& rs.getString(2).equals(Password)){
+                    estado=1;
                     Menu ob = new Menu();
                     
                     ob.setVisible(true);
@@ -52,8 +53,10 @@ public class Login_Metodos {
             }
             rs.close();
             con.close();
+            
         } catch (Exception SQL) {
             System.out.println(SQL.getMessage());
         }
+        return estado;
     }
 }
