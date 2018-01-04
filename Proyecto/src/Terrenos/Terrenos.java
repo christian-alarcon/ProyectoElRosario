@@ -897,7 +897,7 @@ public void keyReleased(KeyEvent arg0) {
             Dir_Terreno = txtDireccion.getText();
             Sol_Terrono = Double.valueOf(txtSolar.getText());
             Id_Modulo = String.valueOf(cnbModulo.getSelectedItem());
-            Socio =ced_socio;
+            Socio =txtSocio.getText();
 
             java.sql.Connection con;
             con = Conexion.GetConnection();

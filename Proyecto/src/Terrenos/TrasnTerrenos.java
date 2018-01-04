@@ -786,8 +786,8 @@ private void verificarDatos() {
             int dia=jDateChooser1.getCalendar().get(Calendar.DAY_OF_WEEK_IN_MONTH);
             Fecha=dia+"/"+mes+"/"+anio+"";
             Id = txtIdTerreno.getText();
-            Socio_Vendedor =ced_socio;
-            Socio_Comprador=ced_sociocomp;
+            Socio_Vendedor =txtSocioVendedor.getText();
+            Socio_Comprador=txtSocioComprador.getText();
             modulo=cnbModulo.getSelectedItem().toString();
             tipo_transaccion=jComboBox2.getSelectedItem().toString();
             monto=Double.valueOf( txtMonto.getText());
