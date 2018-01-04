@@ -17,6 +17,7 @@ import java.awt.Rectangle;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
+import java.sql.PreparedStatement;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -555,7 +556,8 @@ public class Multas extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnInsertaActionPerformed
 
     private void btnCliActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliActualizarActionPerformed
-        // TODO add your handling code here:
+    
+        
     }//GEN-LAST:event_btnCliActualizarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
