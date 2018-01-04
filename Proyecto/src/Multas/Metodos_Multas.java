@@ -36,6 +36,9 @@ public class Metodos_Multas {
     private Statement st;
     private PreparedStatement ps;
     
+    
+   
+    
     public ArrayList obtenerMultas(){
         ArrayList<ArrayList> columnas=null;
         
@@ -141,6 +144,38 @@ public class Metodos_Multas {
         }
         tabla.setModel(modelo);
         
+    }
+    
+    public int actualizar(String id,String multa,double valor,String fecha,int id_socio){
+        int v_retorno=0;
+        try {
+            query="UPDATE MULTAS"
+                    + " SET Nom_Multa = ? , "
+                    + " SET Val_Multa = ? , "
+                    + " SET Fec_Multa = ? , "
+                    + " SET Id_Socio = ?  "+
+                    " WHERE Id_Multa = ? ";
+        
+            conexion=Conexion.GetConnection();
+            PreparedStatement pstm=conexion.prepareStatement(query);
+            
+            pstm.setString(1, multa);
+            pstm.setDouble(2, valor);
+            pstm.setString(3, fecha);
+            pstm.setInt(4, id_socio);
+            pstm.setString(5, id);
+            
+            if(ps.executeUpdate()==1){
+                v_retorno=1;
+            }
+
+            ps.close();
+            conexion.close();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Metodos_Multas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return v_retorno;
     }
     
     public int insertar(String id,String multa,double valor,String fecha,int id_socio){
