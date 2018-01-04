@@ -323,7 +323,7 @@ public void keyReleased(KeyEvent arg0) {
                     + "Met_Terreno='" + txtMetaje.getText() + "',"
                     + "Id_Modulo='" + cnbModulo.getSelectedItem() + "',"
                     + "Sol_Terrono='" + txtSolar.getText() + "',"
-                    + "Socio='" + txtSocio.getText() + "' "
+                    + "Socio='" + ced_socio + "' "
                     + "where Id_Terreno ='" + txtIdTerreno.getText() + "'";
 
             try {
@@ -897,7 +897,7 @@ public void keyReleased(KeyEvent arg0) {
             Dir_Terreno = txtDireccion.getText();
             Sol_Terrono = Double.valueOf(txtSolar.getText());
             Id_Modulo = String.valueOf(cnbModulo.getSelectedItem());
-            Socio =txtSocio.getText();
+            Socio =ced_socio;
 
             java.sql.Connection con;
             con = Conexion.GetConnection();
