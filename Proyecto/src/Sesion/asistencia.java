@@ -3,44 +3,46 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package Sesion;
+
 import Conexion.Conexion;
 import Multas.Metodos_Multas;
 import com.mysql.jdbc.Statement;
 import com.toedter.calendar.JDateChooser;
+import java.awt.print.PrinterException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.text.MessageFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
+
 /**
  *
- * @author Gabriel
+ * @author PC
  */
-public class asistenciaSession extends javax.swing.JFrame {
-    private Connection conexion;
+public class asistencia extends javax.swing.JInternalFrame {
+private Connection conexion;
     private String query;
     private java.sql.Statement st;
     private PreparedStatement ps;
-
     /**
-     * Creates new form asistenciaSession
+     * Creates new form asistencia
      */
-    public asistenciaSession() {
+    public asistencia() {
         initComponents();
-        
     }
     public String selectMaxMulta(){
             
@@ -83,7 +85,7 @@ public class asistenciaSession extends javax.swing.JFrame {
         
         return id_nuevo;
     }
-    public asistenciaSession(String codigo,String motivo,String fecha) throws Exception {
+    public asistencia(String codigo,String motivo,String fecha) throws Exception {
         initComponents();
         carTabla("");
         txtCodigo.setEnabled(false);
@@ -127,13 +129,22 @@ public class asistenciaSession extends javax.swing.JFrame {
                 String apellido=rs.getString("Apellido_Socio");
                 String nombre=rs.getString("Nombre_Socio");
                 registros[2]=apellido+" "+nombre;
-                JOptionPane.showMessageDialog(null, registros[0]);
+                //JOptionPane.showMessageDialog(null, registros[0]);
                 model.addRow(registros);
             }
             jTable1.setModel(model);
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, ex);
         }
+    }
+    public static String fechaMySQL(JDateChooser miJDate){ 
+
+        DecimalFormat sdf = new DecimalFormat("00"); 
+        int anio = miJDate.getCalendar().get(Calendar. YEAR); 
+        int mes = miJDate.getCalendar().get(Calendar. MONTH) + 1; 
+        int dia = miJDate.getCalendar().get(Calendar. DAY_OF_MONTH); 
+
+        return anio+"/"+sdf.format(mes)+"/"+sdf.format(dia); 
     }
 
     /**
@@ -145,12 +156,12 @@ public class asistenciaSession extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jComboBox2 = new javax.swing.JComboBox();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         btnCliGuardar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
+        btnCancelar1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         txtCodigo = new javax.swing.JTextField();
@@ -163,9 +174,7 @@ public class asistenciaSession extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         jLabel11 = new javax.swing.JLabel();
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setClosable(true);
 
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -188,6 +197,13 @@ public class asistenciaSession extends javax.swing.JFrame {
             }
         });
 
+        btnCancelar1.setText("IMPRIMIR");
+        btnCancelar1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelar1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -196,7 +212,8 @@ public class asistenciaSession extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnCliGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCancelar1, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -206,7 +223,9 @@ public class asistenciaSession extends javax.swing.JFrame {
                 .addComponent(btnCliGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
-                .addGap(69, 69, 69))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnCancelar1, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                .addGap(35, 35, 35))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "DATOS SESION", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(0, 102, 153))); // NOI18N
@@ -269,11 +288,8 @@ public class asistenciaSession extends javax.swing.JFrame {
                 "MODULO", "CEDULA ", "APELLIDO NOMBRE", "ASISTENCIA", "REPRESENTANTE"
             }
         ));
+        jTable1.setFocusable(false);
         jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(2).setMinWidth(100);
-            jTable1.getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(jComboBox2));
-        }
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -350,7 +366,7 @@ public class asistenciaSession extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -359,33 +375,25 @@ public class asistenciaSession extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-public static String fechaMySQL(JDateChooser miJDate){ 
 
-        DecimalFormat sdf = new DecimalFormat("00"); 
-        int anio = miJDate.getCalendar().get(Calendar. YEAR); 
-        int mes = miJDate.getCalendar().get(Calendar. MONTH) + 1; 
-        int dia = miJDate.getCalendar().get(Calendar. DAY_OF_MONTH); 
-
-        return anio+"/"+sdf.format(mes)+"/"+sdf.format(dia); 
-    }
     private void btnCliGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliGuardarActionPerformed
-            TableModel tableModel = jTable1.getModel();
+        TableModel tableModel = jTable1.getModel();
         int cols = tableModel.getColumnCount();
         int fils = tableModel.getRowCount();
         for (int i = 0; i < fils; i++) {
-                  String asiste = tableModel.getValueAt(i, 3).toString();
-                  String modulo = tableModel.getValueAt(i, 0).toString();
-                String razon = "Asiste";
-                //Date fecha = jDateChooser1.getDate();
-                String socio = tableModel.getValueAt(i, 1).toString();
-                ////////////////////////////////////////////////////////////
-                String Id = obtenerNuevoIdMulta();
+            String asiste = tableModel.getValueAt(i, 3).toString();
+            String modulo = tableModel.getValueAt(i, 0).toString();
+            String razon = "Asiste";
+            //Date fecha = jDateChooser1.getDate();
+            String socio = tableModel.getValueAt(i, 1).toString();
+            ////////////////////////////////////////////////////////////
+            String Id = obtenerNuevoIdMulta();
             if (asiste.equals("Falta")) {
                 int valor = 10;
                 razon = "Falta";
                 /****************************************/
                 query = "INSERT INTO MULTAS(Id_Multa,Nom_Multa,Val_Multa,Fec_Multa,Id_Socio)"
-                        + "VALUES(?,?,?,?,?)";
+                + "VALUES(?,?,?,?,?)";
                 try {
 
                     conexion = Conexion.GetConnection();
@@ -414,7 +422,7 @@ public static String fechaMySQL(JDateChooser miJDate){
                 razon = "Atraso";
                 /****************************************/
                 query = "INSERT INTO MULTAS(Id_Multa,Nom_Multa,Val_Multa,Fec_Multa,Id_Socio)"
-                        + "VALUES(?,?,?,?,?)";
+                + "VALUES(?,?,?,?,?)";
                 try {
 
                     conexion = Conexion.GetConnection();
@@ -439,91 +447,70 @@ public static String fechaMySQL(JDateChooser miJDate){
                 ////////////////////////////////////////////////////////////
             }
             /****************************************/
-                query = "INSERT INTO Detalle_Sesion(Rep_Det_Sesion,Obs_Det_Sesion,Id_Sesion,Id_Modulo)"
-                        + "VALUES(?,?,?,?)";
-                String Rep_Det_Sesion,Obs_Det_Sesion,Id_Sesion,Id_Modulo;
-                Id_Sesion = txtCodigo.getText();
-                Id_Modulo = modulo;
-                Rep_Det_Sesion = socio;
-                Obs_Det_Sesion = asiste;
-                try {
+            query = "INSERT INTO Detalle_Sesion(Rep_Det_Sesion,Obs_Det_Sesion,Id_Sesion,Id_Modulo)"
+            + "VALUES(?,?,?,?)";
+            String Rep_Det_Sesion,Obs_Det_Sesion,Id_Sesion,Id_Modulo;
+            Id_Sesion = txtCodigo.getText();
+            Id_Modulo = modulo;
+            Rep_Det_Sesion = socio;
+            Obs_Det_Sesion = asiste;
+            try {
 
-                    conexion = Conexion.GetConnection();
-                    ps = conexion.prepareStatement(query);
+                conexion = Conexion.GetConnection();
+                ps = conexion.prepareStatement(query);
 
-                    ps.setString(1, Rep_Det_Sesion);
-                    ps.setString(2, Obs_Det_Sesion);
-                    ps.setString(3, Id_Sesion);
-                    ps.setString(4, Id_Modulo);
+                ps.setString(1, Rep_Det_Sesion);
+                ps.setString(2, Obs_Det_Sesion);
+                ps.setString(3, Id_Sesion);
+                ps.setString(4, Id_Modulo);
 
-                    if (ps.executeUpdate() >  0) {
-                        JOptionPane.showMessageDialog(null, "Se insertó el dato en Detalle Sesión correctamente...");
-                    }
-
-                    ps.close();
-                    conexion.close();
-                } catch (SQLException ex) {
-                    Logger.getLogger(Metodos_Multas.class.getName()).log(Level.SEVERE, null, ex);
+                if (ps.executeUpdate() >  0) {
+                    JOptionPane.showMessageDialog(null, "Se insertó el dato en Detalle Sesión correctamente...");
                 }
-                
-                /****************************************/
+
+                ps.close();
+                conexion.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(Metodos_Multas.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            /****************************************/
             /******Holaaaa*****/
-            
+
             //for (int j = 0; j < cols; j++) {
                 //System.out.print(tableModel.getValueAt(i, j);
-                
-            //}
-            //System.out.println();
-        }
+
+                    //}
+                //System.out.println();
+            }
     }//GEN-LAST:event_btnCliGuardarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnCancelarActionPerformed
 
+    private void btnCancelar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelar1ActionPerformed
+        // TODO add your handling code here:
+        MessageFormat header=new MessageFormat("Sesión");
+        MessageFormat footer=new MessageFormat("Página");
+
+        try {
+            jTable1.print(JTable.PrintMode.FIT_WIDTH,header,footer);
+        }
+        catch(PrinterException pe) {
+            JOptionPane.showMessageDialog(null, "No se pudo imprimir");
+        }
+    }//GEN-LAST:event_btnCancelar1ActionPerformed
+
     private void jPanel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_jPanel2MouseClicked
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(asistenciaSession.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(asistenciaSession.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(asistenciaSession.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(asistenciaSession.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new asistenciaSession().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnCancelar1;
     private javax.swing.JButton btnCliGuardar;
-    private javax.swing.JComboBox jComboBox2;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel5;

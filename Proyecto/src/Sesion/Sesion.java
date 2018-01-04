@@ -5,13 +5,16 @@
  */
 package Sesion;
 
+import static Menu.Menu.jDesktopPane1;
 import com.mysql.jdbc.PreparedStatement;
 import com.mysql.jdbc.Statement;
 import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
 import com.toedter.calendar.JDateChooser;
+import java.awt.print.PrinterException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,9 +23,16 @@ import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -196,7 +206,6 @@ public class Sesion extends javax.swing.JInternalFrame {
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
-        btnCliEliminar = new javax.swing.JButton();
         btnCliEliminar1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
@@ -224,13 +233,6 @@ public class Sesion extends javax.swing.JInternalFrame {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, " ACCION ASISTENCIA", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(0, 102, 153))); // NOI18N
 
-        btnCliEliminar.setText("IMPRIMIR");
-        btnCliEliminar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCliEliminarActionPerformed(evt);
-            }
-        });
-
         btnCliEliminar1.setText("INGRESAR ASISTENCIA");
         btnCliEliminar1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -244,17 +246,13 @@ public class Sesion extends javax.swing.JInternalFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap(16, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnCliEliminar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnCliEliminar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(btnCliEliminar1)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(37, 37, 37)
-                .addComponent(btnCliEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(71, 71, 71)
                 .addComponent(btnCliEliminar1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(43, Short.MAX_VALUE))
         );
@@ -525,10 +523,6 @@ public class Sesion extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btnBuscar2ActionPerformed
 
-    private void btnCliEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliEliminarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnCliEliminarActionPerformed
-
     private void btnCliGuardar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliGuardar1ActionPerformed
 
         try {
@@ -549,10 +543,13 @@ public class Sesion extends javax.swing.JInternalFrame {
 
     private void btnCliEliminar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliEliminar1ActionPerformed
         // TODO add your handling code here:
-        asistenciaSession as;
+        asistencia as;
         JOptionPane.showMessageDialog(null, fechaMySQL(jDateChooser1));
         try {
-            as = new asistenciaSession(txtCodigo.getText(),txtMotivo.getText(),fechaMySQL(jDateChooser1));
+            
+            as = new asistencia(txtCodigo.getText(),txtMotivo.getText(),fechaMySQL(jDateChooser1));
+            jDesktopPane1.add(as);
+            as.setLocation(20,20);
             as.show();
         } catch (Exception ex) {
             Logger.getLogger(Sesion.class.getName()).log(Level.SEVERE, null, ex);
@@ -603,7 +600,6 @@ public class Sesion extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnBuscar2;
     private javax.swing.JButton btnCancelar1;
     private javax.swing.JButton btnCliActualizar1;
-    private javax.swing.JButton btnCliEliminar;
     private javax.swing.JButton btnCliEliminar1;
     private javax.swing.JButton btnCliGuardar1;
     private com.toedter.calendar.JDateChooser jDateChooser1;
