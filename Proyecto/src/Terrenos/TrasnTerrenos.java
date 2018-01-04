@@ -10,6 +10,7 @@ import static Menu.Menu.jDesktopPane1;
 import Socios.*;
 import com.mysql.jdbc.PreparedStatement;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -25,6 +26,17 @@ import javax.swing.table.DefaultTableModel;
  * @author Diego
  */
 public class TrasnTerrenos extends javax.swing.JInternalFrame {
+
+    public static void setSocioVendedor(String nombresSocio, String apellidosSocio) {
+       txtSocioVendedor.setText(nombresSocio+" "+apellidosSocio);
+       
+        //To change body of generated methods, choose Tools | Templates.
+    }
+     public static void setSocioComprador(String nombresSocio, String apellidosSocio) {
+       txtSocioComprador.setText(nombresSocio+" "+apellidosSocio);
+       
+        //To change body of generated methods, choose Tools | Templates.
+    }
 
      DefaultTableModel modelo; 
     /**
@@ -67,6 +79,22 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
 
             }
         });
+        int limite=8;
+        txtMonto.addKeyListener(new KeyListener(){
+ 
+public void keyTyped(KeyEvent e)
+ 
+{if (txtMonto.getText().length()== limite)
+ 
+     e.consume();
+}
+ 
+public void keyPressed(KeyEvent arg0) {
+}
+ 
+public void keyReleased(KeyEvent arg0) {
+}
+});
     }
     
     public void buscarDatoVendedor(String Dato) {
@@ -571,7 +599,7 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
                         .addComponent(btnBuscar1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(txtSocioComprador, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnBuscar2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -587,7 +615,7 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGap(6, 6, 6)
                                 .addComponent(jLabel8)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)))
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtMonto, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
                             .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
@@ -619,7 +647,7 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
                         .addComponent(txtSocioComprador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel7))
                     .addComponent(btnBuscar2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -857,7 +885,7 @@ private void verificarDatos() {
     }//GEN-LAST:event_txtMontoKeyTyped
 
     private void btnBuscar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscar1ActionPerformed
-  BuscarSocio socioBuscar=new BuscarSocio("Multas");
+  BuscarSocio socioBuscar=new BuscarSocio("TerrenosVendedor");
         
         jDesktopPane1.add(socioBuscar);
         socioBuscar.setLocation(20,20);
@@ -866,7 +894,7 @@ private void verificarDatos() {
     }//GEN-LAST:event_btnBuscar1ActionPerformed
 
     private void btnBuscar2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscar2ActionPerformed
-  BuscarSocio socioBuscar=new BuscarSocio("Multas");
+  BuscarSocio socioBuscar=new BuscarSocio("TerrenosComprador");
         
         jDesktopPane1.add(socioBuscar);
         socioBuscar.setLocation(20,20);
@@ -942,8 +970,8 @@ private void verificarDatos() {
     private javax.swing.JTextField txtBuscar;
     private javax.swing.JTextField txtIdTerreno;
     private javax.swing.JTextField txtMonto;
-    private javax.swing.JTextField txtSocioComprador;
-    private javax.swing.JTextField txtSocioVendedor;
+    public static javax.swing.JTextField txtSocioComprador;
+    public static javax.swing.JTextField txtSocioVendedor;
     // End of variables declaration//GEN-END:variables
 
     private void limpiarTexto() {

@@ -8,10 +8,12 @@ package Terrenos;
 import Conexion.Conexion;
 import static Menu.Menu.jDesktopPane1;
 import Multas.Metodos_Multas;
+import Multas.Multas;
 import Socios.*;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -27,11 +29,19 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Terrenos extends javax.swing.JInternalFrame {
 
+    public static void setSocio(String cedulaSocio, String nombresSocio, String apellidosSocio) {
+        //To change body of generated methods, choose Tools | Templates.
+        
+        txtSocio.setText(nombresSocio+" "+apellidosSocio);
+       // ced_socio=cedula;
+    }
+
     DefaultTableModel modelo;
 
     /**
      * Creates new form Socios
      */
+      int limite  = 10;
     public Terrenos() {
         initComponents();
         crearTabla();
@@ -65,6 +75,38 @@ public class Terrenos extends javax.swing.JInternalFrame {
 
             }
         });
+    
+ 
+txtMetaje.addKeyListener(new KeyListener(){
+ 
+public void keyTyped(KeyEvent e)
+ 
+{if (txtMetaje.getText().length()== limite)
+ 
+     e.consume();
+}
+ 
+public void keyPressed(KeyEvent arg0) {
+}
+ 
+public void keyReleased(KeyEvent arg0) {
+}
+});
+txtSolar.addKeyListener(new KeyListener(){
+ 
+public void keyTyped(KeyEvent e)
+ 
+{if (txtSolar.getText().length()== limite)
+ 
+     e.consume();
+}
+ 
+public void keyPressed(KeyEvent arg0) {
+}
+ 
+public void keyReleased(KeyEvent arg0) {
+}
+});
     }
     
       public void bloquearBotonesInicio() {
@@ -429,6 +471,9 @@ public class Terrenos extends javax.swing.JInternalFrame {
             }
         });
         txtMetaje.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtMetajeKeyPressed(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtMetajeKeyTyped(evt);
             }
@@ -720,7 +765,7 @@ public class Terrenos extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_txtDireccionKeyTyped
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-  BuscarSocio socioBuscar=new BuscarSocio("Multas");
+  BuscarSocio socioBuscar=new BuscarSocio("Terreno");
         
         jDesktopPane1.add(socioBuscar);
         socioBuscar.setLocation(20,20);
@@ -729,6 +774,11 @@ public class Terrenos extends javax.swing.JInternalFrame {
         
 // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void txtMetajeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMetajeKeyPressed
+  
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtMetajeKeyPressed
 
     /**
      * @param args the command line arguments
@@ -794,7 +844,7 @@ public class Terrenos extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtIdTerreno;
     private javax.swing.JTextField txtMetaje;
-    private javax.swing.JTextField txtSocio;
+    public static javax.swing.JTextField txtSocio;
     private javax.swing.JTextField txtSolar;
     // End of variables declaration//GEN-END:variables
 

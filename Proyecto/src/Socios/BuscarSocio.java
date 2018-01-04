@@ -7,6 +7,8 @@ package Socios;
 
 import Conexion.Conexion;
 import Multas.Multas;
+import Terrenos.Terrenos;
+import Terrenos.TrasnTerrenos;
 import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -454,7 +456,13 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
         if(clase=="Multas"){
             Multas.setSocio(cedulaSocio, nombresSocio, apellidosSocio);
         }
-        
+         if(clase=="Terrenos"){
+            Terrenos.setSocio(cedulaSocio, nombresSocio, apellidosSocio);
+        }if(clase=="TerrenosVendedor"){
+            TrasnTerrenos.setSocioVendedor(nombresSocio, apellidosSocio);
+        }if(clase=="TerrenosComprador"){
+            TrasnTerrenos.setSocioComprador(nombresSocio, apellidosSocio);
+        }
     }//GEN-LAST:event_formInternalFrameClosed
 
     /**
