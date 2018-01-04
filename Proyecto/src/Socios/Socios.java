@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package Socios;
-
+//guardaadoooo
 import Conexion.Conexion;
 import java.awt.Toolkit;
 import java.io.IOException;
