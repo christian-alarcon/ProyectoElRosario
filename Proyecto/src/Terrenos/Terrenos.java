@@ -6,6 +6,7 @@
 package Terrenos;
 
 import Conexion.Conexion;
+import static Menu.Menu.jDesktopPane1;
 import Multas.Metodos_Multas;
 import Socios.*;
 import com.mysql.jdbc.Connection;
@@ -35,7 +36,7 @@ public class Terrenos extends javax.swing.JInternalFrame {
         initComponents();
         crearTabla();
         cargarModulo();
-        bloquearBotonesInicio() ;
+      //  bloquearBotonesInicio() ;
 
         tblTerreno.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 
@@ -451,6 +452,11 @@ public class Terrenos extends javax.swing.JInternalFrame {
         });
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -712,6 +718,17 @@ public class Terrenos extends javax.swing.JInternalFrame {
 
         controlSoloLetras(evt);
     }//GEN-LAST:event_txtDireccionKeyTyped
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+  BuscarSocio socioBuscar=new BuscarSocio("Multas");
+        
+        jDesktopPane1.add(socioBuscar);
+        socioBuscar.setLocation(20,20);
+
+        socioBuscar.show();
+        
+// TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments

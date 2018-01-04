@@ -6,6 +6,7 @@
 package Terrenos;
 
 import Conexion.Conexion;
+import static Menu.Menu.jDesktopPane1;
 import Socios.*;
 import com.mysql.jdbc.PreparedStatement;
 import java.awt.event.KeyEvent;
@@ -317,13 +318,13 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblTerreno = new javax.swing.JTable();
-        jComboBoxBuscar = new javax.swing.JComboBox<>();
+        jComboBoxBuscar = new javax.swing.JComboBox<String>();
         jLabel9 = new javax.swing.JLabel();
         txtBuscar = new javax.swing.JTextField();
         btnBuscar = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        jComboBox2 = new javax.swing.JComboBox<String>();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -335,8 +336,10 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
         jLabel7 = new javax.swing.JLabel();
         txtMonto = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
-        cnbModulo = new javax.swing.JComboBox<>();
+        cnbModulo = new javax.swing.JComboBox<String>();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        btnBuscar1 = new javax.swing.JButton();
+        btnBuscar2 = new javax.swing.JButton();
         jLabel11 = new javax.swing.JLabel();
 
         setClosable(true);
@@ -416,7 +419,7 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
         ));
         jScrollPane1.setViewportView(tblTerreno);
 
-        jComboBoxBuscar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE:", "COMPRADOR", "VENDEDOR", "TIPO DE ADQUISICION" }));
+        jComboBoxBuscar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SELECCIONE:", "COMPRADOR", "VENDEDOR", "TIPO DE ADQUISICION" }));
 
         jLabel9.setText("BUSCAR POR:");
 
@@ -470,7 +473,7 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
 
         jLabel12.setText("TRANSACCION A REALIZAR:");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE:", "COMPRA-VENTA", "HERENCIA", "TRASPASO" }));
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SELECCIONE:", "COMPRA-VENTA", "HERENCIA", "TRASPASO" }));
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -535,6 +538,20 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
 
         jLabel8.setText("FECHA:");
 
+        btnBuscar1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBuscar1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscar1ActionPerformed(evt);
+            }
+        });
+
+        btnBuscar2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        btnBuscar2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscar2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -546,11 +563,17 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
                     .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txtSocioVendedor, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
-                    .addComponent(txtSocioComprador)
-                    .addComponent(txtIdTerreno, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtIdTerreno, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(txtSocioVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnBuscar1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(txtSocioComprador, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnBuscar2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel7)
@@ -581,18 +604,21 @@ jComboBox2.setSelectedItem(tblTerreno.getValueAt(fila, 6).toString());
                         .addComponent(jLabel8))
                     .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(txtSocioVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6)
-                    .addComponent(txtMonto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(txtSocioVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel6)
+                        .addComponent(txtMonto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnBuscar1, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cnbModulo, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel5)
                         .addComponent(txtSocioComprador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel7)))
+                        .addComponent(jLabel7))
+                    .addComponent(btnBuscar2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -830,6 +856,24 @@ private void verificarDatos() {
         controlSoloNumeros(evt);
     }//GEN-LAST:event_txtMontoKeyTyped
 
+    private void btnBuscar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscar1ActionPerformed
+  BuscarSocio socioBuscar=new BuscarSocio("Multas");
+        
+        jDesktopPane1.add(socioBuscar);
+        socioBuscar.setLocation(20,20);
+
+        socioBuscar.show();          // TODO add your handling code here:
+    }//GEN-LAST:event_btnBuscar1ActionPerformed
+
+    private void btnBuscar2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscar2ActionPerformed
+  BuscarSocio socioBuscar=new BuscarSocio("Multas");
+        
+        jDesktopPane1.add(socioBuscar);
+        socioBuscar.setLocation(20,20);
+
+        socioBuscar.show();        // TODO add your handling code here:
+    }//GEN-LAST:event_btnBuscar2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -869,6 +913,8 @@ private void verificarDatos() {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnBuscar1;
+    private javax.swing.JButton btnBuscar2;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
