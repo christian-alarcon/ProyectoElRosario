@@ -28,12 +28,13 @@ import javax.swing.table.DefaultTableModel;
  * @author Diego
  */
 public class Terrenos extends javax.swing.JInternalFrame {
-
+ private static String ced_socio;
     public static void setSocio(String cedulaSocio, String nombresSocio, String apellidosSocio) {
         //To change body of generated methods, choose Tools | Templates.
         
         txtSocio.setText(nombresSocio+" "+apellidosSocio);
-       // ced_socio=cedula;
+   
+         ced_socio = cedulaSocio;
     }
 
     DefaultTableModel modelo;
@@ -322,7 +323,7 @@ public void keyReleased(KeyEvent arg0) {
                     + "Met_Terreno='" + txtMetaje.getText() + "',"
                     + "Id_Modulo='" + cnbModulo.getSelectedItem() + "',"
                     + "Sol_Terrono='" + txtSolar.getText() + "',"
-                    + "Socio='" + txtSocio.getText() + "' "
+                    + "Socio='" + ced_socio + "' "
                     + "where Id_Terreno ='" + txtIdTerreno.getText() + "'";
 
             try {
@@ -896,7 +897,7 @@ public void keyReleased(KeyEvent arg0) {
             Dir_Terreno = txtDireccion.getText();
             Sol_Terrono = Double.valueOf(txtSolar.getText());
             Id_Modulo = String.valueOf(cnbModulo.getSelectedItem());
-            Socio = txtSocio.getText();
+            Socio =ced_socio;
 
             java.sql.Connection con;
             con = Conexion.GetConnection();

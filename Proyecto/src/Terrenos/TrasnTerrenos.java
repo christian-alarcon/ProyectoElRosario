@@ -26,15 +26,16 @@ import javax.swing.table.DefaultTableModel;
  * @author Diego
  */
 public class TrasnTerrenos extends javax.swing.JInternalFrame {
-
-    public static void setSocioVendedor(String nombresSocio, String apellidosSocio) {
+ private static String ced_socio;
+  private static String ced_sociocomp;
+    public static void setSocioVendedor(String cedula ,String nombresSocio, String apellidosSocio) {
        txtSocioVendedor.setText(nombresSocio+" "+apellidosSocio);
-       
+       ced_socio=cedula;
         //To change body of generated methods, choose Tools | Templates.
     }
-     public static void setSocioComprador(String nombresSocio, String apellidosSocio) {
+     public static void setSocioComprador(String cedula ,String nombresSocio, String apellidosSocio) {
        txtSocioComprador.setText(nombresSocio+" "+apellidosSocio);
-       
+       ced_sociocomp=cedula;
         //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -305,8 +306,8 @@ public void keyReleased(KeyEvent arg0) {
             
             String sql = "";
             sql = "update transaccionterreno set Id='" +  txtIdTerreno.getText() + "',"
-                    + "Socio_Vendedor='" + txtSocioVendedor.getText() + "',"
-                    + "Socio_Comprador='" + txtSocioComprador.getText() + "',"
+                    + "Socio_Vendedor='" + ced_socio + "',"
+                    + "Socio_Comprador='" + ced_sociocomp+ "',"
                     + "Fecha='" + jDateChooser1.getDateFormatString()+ "',"
                      + "monto='" + txtMonto.getText() + "',"   
                   + "modulo='" + cnbModulo.getSelectedItem()+ "', "
@@ -785,8 +786,8 @@ private void verificarDatos() {
             int dia=jDateChooser1.getCalendar().get(Calendar.DAY_OF_WEEK_IN_MONTH);
             Fecha=dia+"/"+mes+"/"+anio+"";
             Id = txtIdTerreno.getText();
-            Socio_Vendedor =txtSocioVendedor.getText();
-            Socio_Comprador=txtSocioComprador.getText();
+            Socio_Vendedor =ced_socio;
+            Socio_Comprador=ced_sociocomp;
             modulo=cnbModulo.getSelectedItem().toString();
             tipo_transaccion=jComboBox2.getSelectedItem().toString();
             monto=Double.valueOf( txtMonto.getText());
