@@ -120,6 +120,28 @@ public class Multas extends javax.swing.JInternalFrame {
         fecha.setCalendar(c2);
     }
     
+    private void actualizar(){
+        String id=txtIdMulta.getText();
+        String multa=txtMotivo.getText().toUpperCase();
+        double valor=0;
+        String val=txtValor.getText().substring(2).replace(",",".");
+        valor=Float.valueOf(val);
+        System.out.println("valor: "+valor);
+        String fecha=Metodos_Multas.fechaMySQL(txtFechaIngreso);
+        int id_socio=Integer.parseInt(ced_socio);
+        
+        if(multas.actualizar(id,multa, valor, fecha, id_socio)==1){
+            
+            JOptionPane.showMessageDialog(null, "Se actualizó correctamente");
+            limpiar();
+            datos_busqueda=multas.obtenerMultas();
+            multas.cargarTabla(tblBusqueda, datos_busqueda);
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "No se pudo actualizar");
+        }
+    }
+    
     private void insertar(){
         String id=txtIdMulta.getText();
         String multa=txtMotivo.getText().toUpperCase();
@@ -143,8 +165,14 @@ public class Multas extends javax.swing.JInternalFrame {
     }
     
     public static void setSocio(String cedula,String nombres,String apellidos){
-        txtSocio.setText(apellidos+" "+nombres);
-        ced_socio=cedula;
+        if(cedula==""){
+            txtSocio.setText("");
+        }
+        else{
+            txtSocio.setText(apellidos+" "+nombres);
+            ced_socio=cedula;
+        }
+        
     }
     
     /**
@@ -248,7 +276,7 @@ public class Multas extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnCliActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
+                .addComponent(btnCancelar, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -324,11 +352,10 @@ public class Multas extends javax.swing.JInternalFrame {
                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtIdMulta, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
-                    .addComponent(txtMotivo)
-                    .addComponent(txtSocio))
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtIdMulta, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
+                            .addComponent(txtMotivo))
                         .addGap(52, 52, 52)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -341,7 +368,8 @@ public class Multas extends javax.swing.JInternalFrame {
                                 .addComponent(txtValor)))
                         .addGap(16, 16, 16))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(43, 43, 43)
+                        .addComponent(txtSocio, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(btnBuscarSocio)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
@@ -372,7 +400,7 @@ public class Multas extends javax.swing.JInternalFrame {
                     .addComponent(txtSocio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
                     .addComponent(btnBuscarSocio, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "LISTA DE MULTAS", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(0, 102, 153))); // NOI18N
@@ -459,7 +487,7 @@ public class Multas extends javax.swing.JInternalFrame {
                         .addComponent(txtFechaBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jButton1))
                 .addGap(17, 17, 17)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -556,7 +584,26 @@ public class Multas extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnInsertaActionPerformed
 
     private void btnCliActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCliActualizarActionPerformed
-    
+       String mensaje="";
+        if(txtMotivo.getText().equals("")){
+           mensaje+="Debe ingresar un motivo\n";
+        }
+            if(!txtValor.getText().contains(",")){
+                mensaje+="El valor de la multa debe tener un formato adecuado\n";
+            }
+                if(txtSocio.getText().equals("")){
+                    mensaje+="Debe escoger un socio";
+                }
+        if(mensaje==""){
+            actualizar();
+            estado_inicio_controles(Color.WHITE);
+            btnCliActualizar.setEnabled(false);
+            //txtMotivo.requestFocus();
+        }
+        else{
+            JOptionPane.showMessageDialog(null, mensaje);
+        }
+       
         
     }//GEN-LAST:event_btnCliActualizarActionPerformed
 
@@ -651,6 +698,9 @@ public class Multas extends javax.swing.JInternalFrame {
         else{
             evt.setKeyChar((char)KeyEvent.VK_CLEAR);
         }
+        
+         if (txtMotivo.getText().length() >= 30 ) 
+                evt.consume();
     }//GEN-LAST:event_txtMotivoKeyTyped
 
     private void txtValorKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorKeyTyped
@@ -690,12 +740,17 @@ public class Multas extends javax.swing.JInternalFrame {
 
     private void txtValorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtValorKeyPressed
         int k=(int)evt.getKeyChar();
-        if(txtValor.getText().length()<=2){
+        if(txtValor.getText().length()<=2 || txtValor.getCaretPosition()<=2){
             if(k == KeyEvent.VK_BACK_SPACE || k==KeyEvent.VK_SPACE ){
                 evt.consume();       
             }
         }
         
+        if(txtValor.getCaretPosition()<=1){
+            if(k == KeyEvent.VK_DELETE  ){
+                evt.consume();       
+            }
+        }
         
     }//GEN-LAST:event_txtValorKeyPressed
 
@@ -727,9 +782,9 @@ public class Multas extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnNuevoActionPerformed
 
     private void tblBusquedaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBusquedaMouseClicked
-
+        
             int row = tblBusqueda.rowAtPoint(evt.getPoint());
-            btnCliActualizar.setEnabled(true);
+            
        //txtIdMulta.setText(tblBusqueda.getValueAt(row, 0).toString());
     txtSocio.setText(tblBusqueda.getValueAt(row, 4).toString());
     
@@ -753,6 +808,9 @@ public class Multas extends javax.swing.JInternalFrame {
     ced_socio=multas.getCedula(tblBusqueda.getValueAt(row, 0).toString());
      
         estado_inicio_controles(Color.BLACK);
+        btnCliActualizar.setEnabled(true);
+        txtMotivo.setEditable(true);
+        btnBuscarSocio.setEnabled(true);
     }//GEN-LAST:event_tblBusquedaMouseClicked
 
     private void txtValorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtValorFocusLost

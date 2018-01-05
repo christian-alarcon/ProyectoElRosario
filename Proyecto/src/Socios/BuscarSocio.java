@@ -22,9 +22,9 @@ import javax.swing.table.DefaultTableModel;
  * @author Diego
  */
 public class BuscarSocio extends javax.swing.JInternalFrame {
-    private String nombresSocio;
-    private String apellidosSocio;
-    private String cedulaSocio;
+    private String nombresSocio="";
+    private String apellidosSocio="";
+    private String cedulaSocio="";
     
     private String clase;
     /**
@@ -454,7 +454,10 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
 
     private void formInternalFrameClosed(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosed
         if(clase=="Multas"){
-            Multas.setSocio(cedulaSocio, nombresSocio, apellidosSocio);
+            if(cedulaSocio=="")
+                Multas.setSocio("","","");
+            else
+                Multas.setSocio(cedulaSocio, nombresSocio, apellidosSocio);
         }
          if(clase=="Terrenos"){
             Terrenos.setSocio(cedulaSocio, nombresSocio, apellidosSocio);

@@ -151,9 +151,9 @@ public class Metodos_Multas {
         try {
             query="UPDATE MULTAS"
                     + " SET Nom_Multa = ? , "
-                    + " SET Val_Multa = ? , "
-                    + " SET Fec_Multa = ? , "
-                    + " SET Id_Socio = ?  "+
+                    + " Val_Multa = ? , "
+                    + " Fec_Multa = ? , "
+                    + " Id_Socio = ?  "+
                     " WHERE Id_Multa = ? ";
         
             conexion=Conexion.GetConnection();
@@ -165,11 +165,11 @@ public class Metodos_Multas {
             pstm.setInt(4, id_socio);
             pstm.setString(5, id);
             
-            if(ps.executeUpdate()==1){
+            if(pstm.executeUpdate()==1){
                 v_retorno=1;
             }
 
-            ps.close();
+            pstm.close();
             conexion.close();
             
         } catch (SQLException ex) {
