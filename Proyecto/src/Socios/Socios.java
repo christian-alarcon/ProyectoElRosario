@@ -7,6 +7,7 @@ package Socios;
 //guardaadoooo
 import Conexion.Conexion;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -399,7 +400,7 @@ public class Socios extends javax.swing.JInternalFrame {
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblBusqueda = new javax.swing.JTable();
-        cbDatoDeBusqueda = new javax.swing.JComboBox<String>();
+        cbDatoDeBusqueda = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
         txtBusqueda = new javax.swing.JTextField();
         btnBuscar = new javax.swing.JButton();
@@ -412,7 +413,7 @@ public class Socios extends javax.swing.JInternalFrame {
 
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "ACCION", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, new java.awt.Color(0, 102, 153)));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "ACCION", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(0, 102, 153))); // NOI18N
 
         btnIngresar.setText("GUARDAR");
         btnIngresar.addActionListener(new java.awt.event.ActionListener() {
@@ -468,7 +469,7 @@ public class Socios extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "DATOS PERSONALES", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, new java.awt.Color(0, 102, 153)));
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "DATOS PERSONALES", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(0, 102, 153))); // NOI18N
         jPanel2.setForeground(new java.awt.Color(0, 102, 153));
         jPanel2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -507,6 +508,12 @@ public class Socios extends javax.swing.JInternalFrame {
         });
 
         jLabel7.setText("DIRECCION:");
+
+        txtDireccion.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtDireccionKeyTyped(evt);
+            }
+        });
 
         jLabel8.setText("TELEFONO:");
 
@@ -566,7 +573,7 @@ public class Socios extends javax.swing.JInternalFrame {
                 .addContainerGap(45, Short.MAX_VALUE))
         );
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "LISTA DE CLIENTES", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, new java.awt.Color(0, 102, 153)));
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "LISTA DE CLIENTES", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(0, 102, 153))); // NOI18N
 
         tblBusqueda.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -581,7 +588,7 @@ public class Socios extends javax.swing.JInternalFrame {
         ));
         jScrollPane1.setViewportView(tblBusqueda);
 
-        cbDatoDeBusqueda.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SELECCIONE:", "CEDULA", "APELLIDO", "NOMBRE" }));
+        cbDatoDeBusqueda.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE:", "CEDULA", "APELLIDO", "NOMBRE" }));
         cbDatoDeBusqueda.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbDatoDeBusquedaActionPerformed(evt);
@@ -593,6 +600,9 @@ public class Socios extends javax.swing.JInternalFrame {
         txtBusqueda.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtBusquedaKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtBusquedaKeyTyped(evt);
             }
         });
 
@@ -752,24 +762,53 @@ public class Socios extends javax.swing.JInternalFrame {
             Toolkit.getDefaultToolkit().beep();
             evt.consume();
          }
+        
+         if (txtCedula.getText().length() >= 10 ) 
+                evt.consume();
     }//GEN-LAST:event_txtCedulaKeyTyped
 
     private void txtNombresKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombresKeyTyped
      char c = evt.getKeyChar();
-        if (Character.isLowerCase(c)) {
+     int k=(int)evt.getKeyChar();
+        
+     if (Character.isLowerCase(c)) {
             String cad = ("" + c).toUpperCase();
             c = cad.charAt(0);
             evt.setKeyChar(c);
-        } 
+     }
+        if (k>=97 && k<=122 || k >= 65 && k <= 90 || k==32){
+            
+        }
+        else{
+            evt.setKeyChar((char)KeyEvent.VK_CLEAR);
+        }
+         
+        
+         if (txtNombres.getText().length() >= 40 ) 
+                evt.consume();
+    
     }//GEN-LAST:event_txtNombresKeyTyped
 
     private void txtApellidosKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtApellidosKeyTyped
      char c = evt.getKeyChar();
+     int k=(int)evt.getKeyChar();
         if (Character.isLowerCase(c)) {
             String cad = ("" + c).toUpperCase();
             c = cad.charAt(0);
             evt.setKeyChar(c);
         } 
+        
+           if (k>=97 && k<=122 || k >= 65 && k <= 90 || k==32){
+            
+        }
+        else{
+            evt.setKeyChar((char)KeyEvent.VK_CLEAR);
+        }
+         
+        
+         if (txtApellidos.getText().length() >= 40 ) 
+                evt.consume();
+    
     }//GEN-LAST:event_txtApellidosKeyTyped
 
     private void txtTelefonoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoKeyTyped
@@ -777,11 +816,16 @@ public class Socios extends javax.swing.JInternalFrame {
             Toolkit.getDefaultToolkit().beep();
             evt.consume();
          }
-
+        
+         if (txtTelefono.getText().length() >= 11 ) 
+                evt.consume();
     }//GEN-LAST:event_txtTelefonoKeyTyped
 
     private void txtBusquedaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBusquedaKeyReleased
        int valor = cbDatoDeBusqueda.getSelectedIndex();
+
+         if (txtApellidos.getText().length() >= 25 ) 
+                evt.consume();
         if (txtBusqueda.getText().trim().length() >= 1) 
         {
             String filtro = txtBusqueda.getText();
@@ -829,6 +873,37 @@ public class Socios extends javax.swing.JInternalFrame {
             txtBusqueda.requestFocus();
         }
     }//GEN-LAST:event_cbDatoDeBusquedaActionPerformed
+
+    private void txtDireccionKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDireccionKeyTyped
+        char c = evt.getKeyChar();
+        int k=(int)evt.getKeyChar();
+        if (Character.isLowerCase(c)) {
+            String cad = ("" + c).toUpperCase();
+            c = cad.charAt(0);
+            evt.setKeyChar(c);
+        } 
+        if (k>=97 && k<=122 || k >= 65 && k <= 90 || k>=45 && k<=57 || k==32 || k==35){
+            
+        }
+        else{
+            evt.setKeyChar((char)KeyEvent.VK_CLEAR);
+        }
+         
+        
+         if (txtApellidos.getText().length() >= 25 ) 
+                evt.consume();
+    }//GEN-LAST:event_txtDireccionKeyTyped
+
+    private void txtBusquedaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBusquedaKeyTyped
+        int k=(int)evt.getKeyChar();
+       
+       if (k>=97 && k<=122 || k >= 65 && k <= 90 || k>=48 && k<=57 || k==32 ){
+            
+        }
+        else{
+            evt.setKeyChar((char)KeyEvent.VK_CLEAR);
+        }
+    }//GEN-LAST:event_txtBusquedaKeyTyped
 
     /**
      * @param args the command line arguments
