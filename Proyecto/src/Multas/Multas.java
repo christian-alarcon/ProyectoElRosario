@@ -7,7 +7,7 @@ package Multas;
 
 import static Menu.Menu.jDesktopPane1;
 import Pagos.Pagos;
-import Socios.BuscarSocio;
+import Socios.Buscar_Socio;
 import com.toedter.calendar.JDateChooser;
 import java.awt.Color;
 import java.awt.Component;
@@ -617,7 +617,7 @@ public class Multas extends javax.swing.JInternalFrame {
 
     private void btnBuscarSocioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarSocioActionPerformed
 
-        BuscarSocio socioBuscar=new BuscarSocio("Multas");
+        Buscar_Socio socioBuscar=new Buscar_Socio("Multas");
         
         jDesktopPane1.add(socioBuscar);
         socioBuscar.setLocation(20,20);

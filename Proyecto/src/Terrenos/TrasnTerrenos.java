@@ -886,7 +886,7 @@ private void verificarDatos() {
     }//GEN-LAST:event_txtMontoKeyTyped
 
     private void btnBuscar1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscar1ActionPerformed
-  BuscarSocio socioBuscar=new BuscarSocio("TerrenosVendedor");
+  Buscar_Socio socioBuscar=new Buscar_Socio("TerrenosVendedor");
         
         jDesktopPane1.add(socioBuscar);
         socioBuscar.setLocation(20,20);
@@ -895,7 +895,7 @@ private void verificarDatos() {
     }//GEN-LAST:event_btnBuscar1ActionPerformed
 
     private void btnBuscar2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscar2ActionPerformed
-  BuscarSocio socioBuscar=new BuscarSocio("TerrenosComprador");
+  Buscar_Socio socioBuscar=new Buscar_Socio("TerrenosComprador");
         
         jDesktopPane1.add(socioBuscar);
         socioBuscar.setLocation(20,20);

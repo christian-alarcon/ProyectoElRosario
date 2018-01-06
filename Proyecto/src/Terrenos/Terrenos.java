@@ -766,7 +766,7 @@ public void keyReleased(KeyEvent arg0) {
     }//GEN-LAST:event_txtDireccionKeyTyped
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-  BuscarSocio socioBuscar=new BuscarSocio("Terrenos");
+  Buscar_Socio socioBuscar=new Buscar_Socio("Terrenos");
         
         jDesktopPane1.add(socioBuscar);
         socioBuscar.setLocation(20,20);
