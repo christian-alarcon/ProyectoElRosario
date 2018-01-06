@@ -164,7 +164,6 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
         jPanel5 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        btnBuscar = new javax.swing.JButton();
         txtBusqueda = new javax.swing.JTextField();
         cbDatoDeBusqueda = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
@@ -206,13 +205,6 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
 
         jLabel2.setText("TEXTO: ");
 
-        btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/buscar1.png"))); // NOI18N
-        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscarActionPerformed(evt);
-            }
-        });
-
         txtBusqueda.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtBusquedaKeyReleased(evt);
@@ -246,21 +238,18 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
                     .addComponent(jLabel3))
                 .addGap(25, 25, 25)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cbDatoDeBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblErrorcb)))
-                .addContainerGap(388, Short.MAX_VALUE))
+                        .addGap(58, 58, 58)
+                        .addComponent(lblErrorcb))
+                    .addComponent(cbDatoDeBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(cbDatoDeBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -375,11 +364,6 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
     private void jPanel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_jPanel2MouseClicked
-
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        // TODO add your handling code here:
-       
-    }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void cbDatoDeBusquedaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbDatoDeBusquedaActionPerformed
             int valor = cbDatoDeBusqueda.getSelectedIndex();
@@ -505,7 +489,6 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBuscar;
     private javax.swing.JComboBox<String> cbDatoDeBusqueda;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
