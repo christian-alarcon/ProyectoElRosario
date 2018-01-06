@@ -198,8 +198,8 @@
                       <StringArray count="4">
                         <StringItem index="0" value="SELECCIONE:"/>
                         <StringItem index="1" value="CEDULA"/>
-                        <StringItem index="2" value="APELLIDO P"/>
-                        <StringItem index="3" value="NOMBRE P"/>
+                        <StringItem index="2" value="APELLIDO"/>
+                        <StringItem index="3" value="NOMBRE"/>
                       </StringArray>
                     </Property>
                   </Properties>

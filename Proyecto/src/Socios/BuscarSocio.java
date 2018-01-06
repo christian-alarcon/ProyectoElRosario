@@ -166,7 +166,7 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
         jLabel2 = new javax.swing.JLabel();
         btnBuscar = new javax.swing.JButton();
         txtBusqueda = new javax.swing.JTextField();
-        cbDatoDeBusqueda = new javax.swing.JComboBox<String>();
+        cbDatoDeBusqueda = new javax.swing.JComboBox<>();
         jLabel3 = new javax.swing.JLabel();
         lblErrorcb = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
@@ -222,7 +222,7 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
             }
         });
 
-        cbDatoDeBusqueda.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SELECCIONE:", "CEDULA", "APELLIDO P", "NOMBRE P" }));
+        cbDatoDeBusqueda.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE:", "CEDULA", "APELLIDO", "NOMBRE" }));
         cbDatoDeBusqueda.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbDatoDeBusquedaActionPerformed(evt);
@@ -382,7 +382,7 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void cbDatoDeBusquedaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbDatoDeBusquedaActionPerformed
-        int valor = cbDatoDeBusqueda.getSelectedIndex();
+            int valor = cbDatoDeBusqueda.getSelectedIndex();
         if (valor == 1)
         {
             txtBusqueda.setText("");
@@ -406,9 +406,8 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_cbDatoDeBusquedaActionPerformed
 
     private void txtBusquedaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBusquedaKeyReleased
-
-        
-        int valor = cbDatoDeBusqueda.getSelectedIndex();
+      int valor = cbDatoDeBusqueda.getSelectedIndex();
+      
         if (txtBusqueda.getText().trim().length() >= 1) 
         {
             String filtro = txtBusqueda.getText();
@@ -432,7 +431,6 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
         {
             tblBusqueda.setVisible(false);
         }
-
     }//GEN-LAST:event_txtBusquedaKeyReleased
 
     private void txtBusquedaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBusquedaKeyTyped
@@ -442,7 +440,7 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
         }
         else{
             evt.setKeyChar((char)KeyEvent.VK_CLEAR);
-        }
+        }        
     }//GEN-LAST:event_txtBusquedaKeyTyped
 
     private void tblBusquedaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBusquedaMouseClicked

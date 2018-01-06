@@ -6,6 +6,7 @@
 package Socios;
 //guardaadoooo
 import Conexion.Conexion;
+import static Menu.Menu.jDesktopPane1;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -751,9 +752,12 @@ public class Socios extends javax.swing.JInternalFrame {
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         // TODO add your handling code here:
-        BuscarSocio obj = new BuscarSocio("");
-        obj.setVisible(true);
-        obj.show();
+        BuscarSocio socioBuscar=new BuscarSocio("");
+        
+        jDesktopPane1.add(socioBuscar);
+        socioBuscar.setLocation(20,20);
+
+        socioBuscar.show();
 
     }//GEN-LAST:event_btnBuscarActionPerformed
 
