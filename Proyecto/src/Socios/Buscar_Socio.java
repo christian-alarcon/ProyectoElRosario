@@ -77,7 +77,7 @@ public class Buscar_Socio extends javax.swing.JInternalFrame {
        
        
     public void TablaSociosA(String val) {//Realiza la consulta de los productos que tenemos en la base de datos
-        String titles[] = {"CÃ©dula", "Apellidos", "Nombres", "DirecciÃ³n", "TelÃ©fono"};
+        String titles[] = {"Cédula", "Apellidos", "Nombres", "Dirección", "Teléfono"};
         String reg[] = new String[6];
         String sentence = "";
         m = new DefaultTableModel(null, titles){
@@ -115,7 +115,7 @@ public class Buscar_Socio extends javax.swing.JInternalFrame {
         }       
     }
     public void TablaSociosN(String val) {//Realiza la consulta de los productos que tenemos en la base de datos
-        String titles[] = {"CÃ©dula", "Apellidos", "Nombres", "DirecciÃ³n", "TelÃ©fono"};
+        String titles[] = {"Cédula", "Apellidos", "Nombres", "Dirección", "Teléfono"};
         String reg[] = new String[6];
         String sentence = "";
         m = new DefaultTableModel(null, titles){
@@ -175,6 +175,23 @@ public class Buscar_Socio extends javax.swing.JInternalFrame {
         jLabel11 = new javax.swing.JLabel();
 
         setClosable(true);
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameClosed(evt);
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            }
+        });
 
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -414,6 +431,22 @@ public class Buscar_Socio extends javax.swing.JInternalFrame {
         nombresSocio=tblBusqueda.getValueAt(row, 1).toString();
         apellidosSocio=tblBusqueda.getValueAt(row, 2).toString();
     }//GEN-LAST:event_tblBusquedaMouseClicked
+
+    private void formInternalFrameClosed(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosed
+        if(clase=="Multas"){
+            if(cedulaSocio=="")
+                Multas.setSocio("","","");
+            else
+                Multas.setSocio(cedulaSocio, nombresSocio, apellidosSocio);
+        }
+         if(clase=="Terrenos"){
+            Terrenos.setSocio(cedulaSocio, nombresSocio, apellidosSocio);
+        }if(clase=="TerrenosVendedor"){
+            TrasnTerrenos.setSocioVendedor(cedulaSocio,nombresSocio, apellidosSocio);
+        }if(clase=="TerrenosComprador"){
+            TrasnTerrenos.setSocioComprador(cedulaSocio,nombresSocio, apellidosSocio);
+        }
+    }//GEN-LAST:event_formInternalFrameClosed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

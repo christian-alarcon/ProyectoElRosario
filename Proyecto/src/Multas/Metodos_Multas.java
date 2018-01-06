@@ -261,10 +261,10 @@ public class Metodos_Multas {
     public void filtro_Busqueda(JComboBox comboFiltro,TableRowSorter trsFiltro,JTextField txtFiltro) {
         int columnaABuscar = 0;
         if (comboFiltro.getSelectedItem().toString() == "MOTIVO") {
-            columnaABuscar = 0;
+            columnaABuscar = 1;
         }
         if (comboFiltro.getSelectedItem().toString() == "SOCIO") {
-            columnaABuscar = 3;
+            columnaABuscar = 4;
         }
         
         trsFiltro.setRowFilter(RowFilter.regexFilter(txtFiltro.getText(), columnaABuscar));
