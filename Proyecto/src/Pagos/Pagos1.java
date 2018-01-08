@@ -30,7 +30,7 @@ import javax.swing.table.TableRowSorter;
  *
  * @author Diego
  */
-public class Pagos extends javax.swing.JInternalFrame {
+public class Pagos1 extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form Pagos
@@ -47,7 +47,7 @@ public class Pagos extends javax.swing.JInternalFrame {
     String deuda;
     int pago=0;
 
-    public Pagos() {
+    public Pagos1() {
         initComponents();
         //inicio();
         cargarTabla1("");
@@ -86,30 +86,27 @@ public class Pagos extends javax.swing.JInternalFrame {
     }
 
     public void cargarTabla1(String Dato) {
-        String[] titulos = {"ID PAGO", "MULTA", "PAGO", "DEUDA", "FECHA PAGO", "ESTADO PAGO", "MOTIVO", "Modulo"};
-        String[] registros = new String[8];
+        String[] titulos = {"ID MULTAS", "RAZON", "VALOR", "SOCIO", "ESTADO"};
+        String[] registros = new String[5];
         modelo = new DefaultTableModel(null, titulos);
 
         Conexion cc = new Conexion();
         Connection cn = cc.GetConnection();
         String sql = "";
-        sql = "SELECT pagos.id_pagos, cuota.Val_Cuota, pagos.val_pagado, cuota.Val_Cuota-pagos.val_pagado As deuda, pagos.fec_pago, pagos.estado_pago, cuota.Mot_Cuota,modulo.Des_Modulo FROM pagos" +
-                " INNER JOIN cuota ON pagos.id_cuota = cuota.Id_Cuota "
-                + " INNER JOIN modulo ON pagos.id_modulo = modulo.Id_Modulo";
+        sql = "SELECT multas.Id_Multa, multas.Nom_Multa, multas.Val_Multa, socio.Nombre_Socio, socio.Apellido_Socio, multas.estado_multa FROM multas " +
+                "INNER JOIN socio ON multas.Id_Socio = socio.Ced_Socio ";
         try {
             Statement psd = cn.createStatement(); //Hace las consultas para poder visualizar lo q esta en la tabla
             ResultSet rs = psd.executeQuery(sql);//es vuna clase de java para optener los resultados del statement
 
             while (rs.next()) {
                 //int pago = Integer.parseInt(rs.getString("pagos.id_pagos"));
-                registros[0] = rs.getString("pagos.id_pagos");
-                registros[1] = rs.getString("cuota.Val_Cuota");
-                registros[2] = rs.getString("pagos.val_pagado");
-                registros[3] = rs.getString("deuda");
-                registros[4] = rs.getString("pagos.fec_pago");
-                registros[5] = rs.getString("pagos.estado_pago");
-                registros[6] = rs.getString("cuota.Mot_Cuota");
-                registros[7] = rs.getString("modulo.Des_Modulo");
+                String socio = rs.getString("socio.Nombre_Socio") +" "+ rs.getString("socio.Apellido_Socio");
+                registros[0] = rs.getString("multas.Id_Multa");
+                registros[1] = rs.getString("multas.Nom_Multa");
+                registros[2] = rs.getString("multas.Val_Multa");
+                registros[3] = socio;
+                registros[4] = rs.getString("multas.estado_multa");
                 modelo.addRow(registros);
             }
             tblPagos.setModel(modelo);
@@ -121,30 +118,27 @@ public class Pagos extends javax.swing.JInternalFrame {
     }
 
     public void cargarTabla(String Dato) {
-        String[] titulos = {"ID PAGO", "MULTA", "PAGO", "DEUDA", "FECHA PAGO", "ESTADO PAGO", "MOTIVO", "MODULO"};
-        String[] registros = new String[8];
+        String[] titulos = {"ID MULTAS", "RAZON", "VALOR", "SOCIO", "ESTADO"};
+        String[] registros = new String[5];
         modelo = new DefaultTableModel(null, titulos);
 
         Conexion cc = new Conexion();
         Connection cn = cc.GetConnection();
         String sql = "";
-        sql = "SELECT pagos.id_pagos, cuota.Val_Cuota, pagos.val_pagado, cuota.Val_Cuota-pagos.val_pagado As deuda, pagos.fec_pago, pagos.estado_pago, cuota.Mot_Cuota,modulo.Des_Modulo FROM pagos" +
-                " INNER JOIN cuota ON pagos.id_cuota = cuota.Id_Cuota "
-                + " INNER JOIN modulo ON pagos.id_modulo = modulo.Id_Modulo WHERE pagos.estado_pago = 'pendiente'  AND cuota.Val_Cuota-pagos.val_pagado >'0'";
+        sql = "SELECT multas.Id_Multa, multas.Nom_Multa, multas.Val_Multa, socio.Nombre_Socio, socio.Apellido_Socio, multas.estado_multa FROM multas " +
+                "INNER JOIN socio ON multas.Id_Socio = socio.Ced_Socio WHERE  multas.estado_multa = 'pendiente'";
         try {
             Statement psd = cn.createStatement(); //Hace las consultas para poder visualizar lo q esta en la tabla
             ResultSet rs = psd.executeQuery(sql);//es vuna clase de java para optener los resultados del statement
 
             while (rs.next()) {
                 //int pago = Integer.parseInt(rs.getString("pagos.id_pagos"));
-                registros[0] = rs.getString("pagos.id_pagos");
-                registros[1] = rs.getString("cuota.Val_Cuota");
-                registros[2] = rs.getString("pagos.val_pagado");
-                registros[3] = rs.getString("deuda");
-                registros[4] = rs.getString("pagos.fec_pago");
-                registros[5] = rs.getString("pagos.estado_pago");
-                registros[6] = rs.getString("cuota.Mot_Cuota");
-                registros[7] = rs.getString("modulo.Des_Modulo");
+                String socio = rs.getString("socio.Nombre_Socio") +" "+ rs.getString("socio.Apellido_Socio");
+                registros[0] = rs.getString("multas.Id_Multa");
+                registros[1] = rs.getString("multas.Nom_Multa");
+                registros[2] = rs.getString("multas.Val_Multa");
+                registros[3] = socio;
+                registros[4] = rs.getString("multas.estado_multa");
                 modelo.addRow(registros);
             }
             tblPagos.setModel(modelo);
@@ -242,9 +236,8 @@ public class Pagos extends javax.swing.JInternalFrame {
             Connection cn = cc.GetConnection();
             String txtN = tblPagos.getValueAt(tblPagos.getSelectedRow(), 0).toString().trim();
             int valor = Integer.parseInt(txtValor.getText());
-            int nuevoValor = pago + valor;
             String sql = "";
-            sql = "update pagos set val_pagado='" + nuevoValor + "' where id_pagos='" + txtID.getText() + "'";
+            sql = "update multas set estado_multa='PAGADA' where Id_Multa='" + txtID.getText() + "'";
             try {
                 PreparedStatement psd = cn.prepareStatement(sql);
                 int n = psd.executeUpdate();
@@ -350,7 +343,7 @@ public class Pagos extends javax.swing.JInternalFrame {
 
         jLabel3.setText("ESTADO:");
 
-        jLabel5.setText("MODULO:");
+        jLabel5.setText("SOCIO:");
 
         txtEstado.setEditable(false);
         txtEstado.setEnabled(false);
@@ -359,7 +352,7 @@ public class Pagos extends javax.swing.JInternalFrame {
 
         jLabel7.setText("FECHA:");
 
-        jLabel6.setText("ID PAGO:");
+        jLabel6.setText("ID MULTA:");
 
         txtModulo.setEditable(false);
         txtModulo.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -375,7 +368,7 @@ public class Pagos extends javax.swing.JInternalFrame {
         txtCuota.setEditable(false);
         txtCuota.setEnabled(false);
 
-        jLabel1.setText("ID CUOTA:");
+        jLabel1.setText("MOTIVO:");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -419,16 +412,13 @@ public class Pagos extends javax.swing.JInternalFrame {
                         .addComponent(txtID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel7))
                     .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel5))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3)
-                            .addComponent(txtModulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(jLabel5)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txtEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3)
+                        .addComponent(txtModulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(7, 7, 7)
@@ -464,7 +454,7 @@ public class Pagos extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tblPagos);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE:", "MOTIVO", "MODULO" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE:", "MOTIVO", "SOCIO" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
@@ -501,7 +491,7 @@ public class Pagos extends javax.swing.JInternalFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 777, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 779, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -541,7 +531,7 @@ public class Pagos extends javax.swing.JInternalFrame {
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 69, Short.MAX_VALUE))))
+                        .addGap(0, 78, Short.MAX_VALUE))))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -621,7 +611,7 @@ public class Pagos extends javax.swing.JInternalFrame {
                 String cadena = (txtBuscar.getText());
                 txtBuscar.setText(cadena);
                 repaint();
-                pagos.filtro(jComboBox1,trsFiltro,txtBuscar);
+                pagos.filtromultas(jComboBox1,trsFiltro,txtBuscar);
             }
         });
         trsFiltro = new TableRowSorter(tblPagos.getModel());
@@ -640,12 +630,13 @@ public class Pagos extends javax.swing.JInternalFrame {
        //txtIdMulta.setText(tblBusqueda.getValueAt(row, 0).toString());
     txtID.setText(tblPagos.getValueAt(row, 0).toString());
     
-    txtModulo.setText(tblPagos.getValueAt(row, 7).toString());
-    txtEstado.setText(tblPagos.getValueAt(row, 5).toString());
-    txtCuota.setText(tblPagos.getValueAt(row, 6).toString());
-    deuda = tblPagos.getValueAt(row, 3).toString();
+    txtModulo.setText(tblPagos.getValueAt(row, 3).toString());
+    txtEstado.setText(tblPagos.getValueAt(row, 4).toString());
+    txtCuota.setText(tblPagos.getValueAt(row, 1).toString());
+    
     pago = Integer.parseInt(tblPagos.getValueAt(row, 2).toString());
-    String valor=tblPagos.getValueAt(row, 3).toString();
+    String valor=tblPagos.getValueAt(row, 2).toString();
+    deuda = valor;
     txtValor.setText(valor);
     
     try {
@@ -678,17 +669,15 @@ public class Pagos extends javax.swing.JInternalFrame {
 
     private void btnPagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPagarActionPerformed
         
-        if(Integer.parseInt(deuda)>Integer.parseInt(txtValor.getText().toString()) && Integer.parseInt(txtValor.getText().toString())>0){
+        if(Integer.parseInt(deuda)==Integer.parseInt(txtValor.getText())){
             modificar();
             cancelar();
+            
         }else{
-            if(deuda.equals("0")){
-            JOptionPane.showMessageDialog(this, "La deuda se encuentra cancelada");
-            cancelar();
-            }else{
-            JOptionPane.showMessageDialog(this, "La deuda a pagar es de $ "+deuda);
+            
+            JOptionPane.showMessageDialog(this, "La deuda a pagar es de $ "+deuda+ "\n y no puede pagar por partes");
             txtValor.setText(deuda.toString());
-            }
+            
         }
         
     }//GEN-LAST:event_btnPagarActionPerformed

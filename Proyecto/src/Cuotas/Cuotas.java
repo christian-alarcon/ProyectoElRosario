@@ -7,7 +7,7 @@ package Cuotas;
 
 import Conexion.Conexion;
 import static Menu.Menu.jDesktopPane1;
-import Socios.BuscarSocio;
+import Socios.Buscar_Socio;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.sql.Connection;

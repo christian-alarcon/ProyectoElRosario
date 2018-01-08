@@ -36,12 +36,16 @@ public class Metodos_Multas {
     private Statement st;
     private PreparedStatement ps;
     
+    
+   
+    
     public ArrayList obtenerMultas(){
         ArrayList<ArrayList> columnas=null;
         
         try {            
             conexion=Conexion.GetConnection();
-            query="SELECT * FROM MULTAS";
+            query="SELECT Id_Multa,Nom_Multa,Val_Multa,Fec_Multa as fecha,Id_Socio,Estado_Multa "
+                    + "FROM MULTAS ORDER BY fecha DESC";
             st=conexion.createStatement();
             
             ResultSet rs=st.executeQuery(query);
@@ -52,6 +56,7 @@ public class Metodos_Multas {
             while(rs.next()){
 
                 filas=new ArrayList<Object>();
+                filas.add(rs.getString(1));
                 filas.add(rs.getString(2));
                 filas.add(rs.getDouble(3));
                 filas.add(rs.getDate(4));
@@ -77,7 +82,8 @@ public class Metodos_Multas {
         
         try {
             conexion=Conexion.GetConnection();
-            query="SELECT * FROM MULTAS WHERE "+where+" ='"+valor+"'";
+            query="SELECT Id_Multa,Nom_Multa,Val_Multa,Fec_Multa as fecha,Id_Socio,Estado_Multa"
+                    + " FROM MULTAS WHERE "+where+" ='"+valor+"' ORDER BY fecha DESC";
             //System.out.println(""+query);
             st=conexion.createStatement();
             
@@ -89,6 +95,7 @@ public class Metodos_Multas {
             while(rs.next()){
 
                 filas=new ArrayList<Object>();
+                filas.add(rs.getString(1));
                 filas.add(rs.getString(2));
                 filas.add(rs.getDouble(3));
                 filas.add(rs.getDate(4));
@@ -113,12 +120,20 @@ public class Metodos_Multas {
         ArrayList<ArrayList> datos=datos1;
         
         ArrayList<String> columnNames=new ArrayList<>();
+        columnNames.add("Id");
         columnNames.add("Multa");
         columnNames.add("Valor");
         columnNames.add("Fecha");
         columnNames.add("Socio");
         columnNames.add("Estado");
-        DefaultTableModel modelo=new DefaultTableModel(columnNames.toArray(),0);
+        DefaultTableModel modelo=new DefaultTableModel(columnNames.toArray(),0){
+        
+            @Override
+            public boolean isCellEditable(int row, int column) {
+               //all cells false
+               return false;
+            }
+        };
         
         //System.out.println(""+datos.size());
         for(int i=0;i<datos.size();i++){
@@ -129,6 +144,38 @@ public class Metodos_Multas {
         }
         tabla.setModel(modelo);
         
+    }
+    
+    public int actualizar(String id,String multa,double valor,String fecha,int id_socio){
+        int v_retorno=0;
+        try {
+            query="UPDATE MULTAS"
+                    + " SET Nom_Multa = ? , "
+                    + " Val_Multa = ? , "
+                    + " Fec_Multa = ? , "
+                    + " Id_Socio = ?  "+
+                    " WHERE Id_Multa = ? ";
+        
+            conexion=Conexion.GetConnection();
+            PreparedStatement pstm=conexion.prepareStatement(query);
+            
+            pstm.setString(1, multa);
+            pstm.setDouble(2, valor);
+            pstm.setString(3, fecha);
+            pstm.setInt(4, id_socio);
+            pstm.setString(5, id);
+            
+            if(pstm.executeUpdate()==1){
+                v_retorno=1;
+            }
+
+            pstm.close();
+            conexion.close();
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Metodos_Multas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return v_retorno;
     }
     
     public int insertar(String id,String multa,double valor,String fecha,int id_socio){
@@ -191,14 +238,33 @@ public class Metodos_Multas {
         return socio;
     }
     
+    public String getCedula(String id_multa){
+        String cedula="";
+         try {
+            conexion=Conexion.GetConnection();
+            query="SELECT Id_Socio FROM MULTAS WHERE Id_Multa='"+id_multa+"'";
+            st=conexion.createStatement();
+            
+            ResultSet rs=st.executeQuery(query);
+                while(rs.next()){
+                    cedula=rs.getString(1);
+                }
+            st.close();
+            conexion.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(Metodos_Multas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         return cedula;
+    }
+    
     
     public void filtro_Busqueda(JComboBox comboFiltro,TableRowSorter trsFiltro,JTextField txtFiltro) {
         int columnaABuscar = 0;
         if (comboFiltro.getSelectedItem().toString() == "MOTIVO") {
-            columnaABuscar = 0;
+            columnaABuscar = 1;
         }
         if (comboFiltro.getSelectedItem().toString() == "SOCIO") {
-            columnaABuscar = 3;
+            columnaABuscar = 4;
         }
         
         trsFiltro.setRowFilter(RowFilter.regexFilter(txtFiltro.getText(), columnaABuscar));

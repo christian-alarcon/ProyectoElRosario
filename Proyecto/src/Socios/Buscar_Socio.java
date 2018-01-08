@@ -4,35 +4,50 @@
  * and open the template in the editor.
  */
 package Socios;
-
 import Conexion.Conexion;
+import Multas.Multas;
+import Terrenos.Terrenos;
+import Terrenos.TrasnTerrenos;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-
 /**
  *
- * @author Diego
+ * @author Chris
  */
-public class BuscarSocio extends javax.swing.JInternalFrame {
-
-    /**
-     * Creates new form Socios
-     */
-    DefaultTableModel m;
-    public BuscarSocio() {
-        initComponents();
-        lblErrorcb.setText("");
-    }
+public class Buscar_Socio extends javax.swing.JInternalFrame {
+    private String nombresSocio="";
+    private String apellidosSocio="";
+    private String cedulaSocio="";
     
+    private String clase;
+    DefaultTableModel m;
+    
+    /**
+     * Creates new form Buscar_Socio
+     */
+    public Buscar_Socio(String clase) {
+        initComponents();
+                lblErrorcb.setText("");
+        this.clase=clase;
+    }
        public void TablaSocios(String val) {//Realiza la consulta de los productos que tenemos en la base de datos
         String titles[] = {"Cédula", "Apellidos", "Nombres", "Dirección", "Teléfono"};
         String reg[] = new String[6];
         String sentence = "";
-        m = new DefaultTableModel(null, titles);
+        m = new DefaultTableModel(null, titles){
+        
+            @Override
+            public boolean isCellEditable(int row, int column) {
+               //all cells false
+               return false;
+            }
+        };
 
         Connection con;
         con = Conexion.GetConnection();
@@ -59,11 +74,20 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
         }   
         }       
     }
+       
+       
     public void TablaSociosA(String val) {//Realiza la consulta de los productos que tenemos en la base de datos
         String titles[] = {"Cédula", "Apellidos", "Nombres", "Dirección", "Teléfono"};
         String reg[] = new String[6];
         String sentence = "";
-        m = new DefaultTableModel(null, titles);
+        m = new DefaultTableModel(null, titles){
+        
+            @Override
+            public boolean isCellEditable(int row, int column) {
+               //all cells false
+               return false;
+            }
+        };
 
         Connection con;
         con = Conexion.GetConnection();
@@ -94,7 +118,14 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
         String titles[] = {"Cédula", "Apellidos", "Nombres", "Dirección", "Teléfono"};
         String reg[] = new String[6];
         String sentence = "";
-        m = new DefaultTableModel(null, titles);
+        m = new DefaultTableModel(null, titles){
+        
+            @Override
+            public boolean isCellEditable(int row, int column) {
+               //all cells false
+               return false;
+            }
+        };
 
         Connection con;
         con = Conexion.GetConnection();
@@ -134,9 +165,8 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
         jPanel5 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        btnBuscar = new javax.swing.JButton();
         txtBusqueda = new javax.swing.JTextField();
-        cbDatoDeBusqueda = new javax.swing.JComboBox<>();
+        cbDatoDeBusqueda = new javax.swing.JComboBox<String>();
         jLabel3 = new javax.swing.JLabel();
         lblErrorcb = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
@@ -145,7 +175,23 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
         jLabel11 = new javax.swing.JLabel();
 
         setClosable(true);
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameClosed(evt);
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+            }
+        });
 
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -159,20 +205,16 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
 
         jLabel2.setText("TEXTO: ");
 
-        btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/buscar1.png"))); // NOI18N
-        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBuscarActionPerformed(evt);
-            }
-        });
-
         txtBusqueda.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtBusquedaKeyReleased(evt);
             }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtBusquedaKeyTyped(evt);
+            }
         });
 
-        cbDatoDeBusqueda.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE:", "CEDULA", "APELLIDO P", "NOMBRE P" }));
+        cbDatoDeBusqueda.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SELECCIONE:", "CEDULA", "APELLIDO", "NOMBRE" }));
         cbDatoDeBusqueda.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbDatoDeBusquedaActionPerformed(evt);
@@ -196,21 +238,18 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
                     .addComponent(jLabel3))
                 .addGap(25, 25, 25)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cbDatoDeBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblErrorcb)))
-                .addContainerGap(388, Short.MAX_VALUE))
+                        .addGap(58, 58, 58)
+                        .addComponent(lblErrorcb))
+                    .addComponent(cbDatoDeBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(cbDatoDeBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -236,6 +275,11 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
 
             }
         ));
+        tblBusqueda.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblBusquedaMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblBusqueda);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -277,7 +321,6 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
         jLabel11.setBackground(new java.awt.Color(0, 51, 0));
         jLabel11.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(0, 51, 51));
-        jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/cliente2.png"))); // NOI18N
         jLabel11.setText("SOCIOS");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -317,14 +360,43 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jPanel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jPanel2MouseClicked
+    private void txtBusquedaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBusquedaKeyReleased
+        int valor = cbDatoDeBusqueda.getSelectedIndex();
 
-    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        // TODO add your handling code here:
-       
-    }//GEN-LAST:event_btnBuscarActionPerformed
+        if (txtBusqueda.getText().trim().length() >= 1)
+        {
+            String filtro = txtBusqueda.getText();
+            if(valor == 1)
+            TablaSocios(filtro);
+            tblBusqueda.setVisible(true);
+            if(valor == 2)
+            TablaSociosA(filtro);
+            tblBusqueda.setVisible(true);
+            if(valor == 3)
+            TablaSociosN(filtro);
+            tblBusqueda.setVisible(true);
+            if (valor ==0)
+            {
+
+                lblErrorcb.setText("Seleccione el filtro de busqueda");
+            }
+        }
+
+        else
+        {
+            tblBusqueda.setVisible(false);
+        }
+    }//GEN-LAST:event_txtBusquedaKeyReleased
+
+    private void txtBusquedaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBusquedaKeyTyped
+        int k=(int)evt.getKeyChar();
+        if (k>=97 && k<=122 || k >= 65 && k <= 90 || k>=48 && k<=57 || k==32){
+
+        }
+        else{
+            evt.setKeyChar((char)KeyEvent.VK_CLEAR);
+        }
+    }//GEN-LAST:event_txtBusquedaKeyTyped
 
     private void cbDatoDeBusquedaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbDatoDeBusquedaActionPerformed
         int valor = cbDatoDeBusqueda.getSelectedIndex();
@@ -347,77 +419,37 @@ public class BuscarSocio extends javax.swing.JInternalFrame {
             txtBusqueda.requestFocus();
         }
 
-    
     }//GEN-LAST:event_cbDatoDeBusquedaActionPerformed
 
-    private void txtBusquedaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBusquedaKeyReleased
-       int valor = cbDatoDeBusqueda.getSelectedIndex();
-        if (txtBusqueda.getText().trim().length() >= 1) 
-        {
-            String filtro = txtBusqueda.getText();
-            if(valor == 1)
-            TablaSocios(filtro);
-            tblBusqueda.setVisible(true);
-            if(valor == 2)
-            TablaSociosA(filtro);
-            tblBusqueda.setVisible(true);
-            if(valor == 3)
-            TablaSociosN(filtro);
-            tblBusqueda.setVisible(true);
-        if (valor ==0)
-        {
+    private void jPanel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jPanel2MouseClicked
 
-             lblErrorcb.setText("Seleccione el filtro de busqueda");
+    private void tblBusquedaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBusquedaMouseClicked
+        int row = tblBusqueda.rowAtPoint(evt.getPoint());
+        cedulaSocio=tblBusqueda.getValueAt(row, 0).toString();
+        nombresSocio=tblBusqueda.getValueAt(row, 1).toString();
+        apellidosSocio=tblBusqueda.getValueAt(row, 2).toString();
+    }//GEN-LAST:event_tblBusquedaMouseClicked
+
+    private void formInternalFrameClosed(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameClosed
+        if(clase=="Multas"){
+            if(cedulaSocio=="")
+                Multas.setSocio("","","");
+            else
+                Multas.setSocio(cedulaSocio, nombresSocio, apellidosSocio);
         }
-        } 
-        
-        else 
-        {
-            tblBusqueda.setVisible(false);
+         if(clase=="Terrenos"){
+            Terrenos.setSocio(cedulaSocio, nombresSocio, apellidosSocio);
+        }if(clase=="TerrenosVendedor"){
+            TrasnTerrenos.setSocioVendedor(cedulaSocio,nombresSocio, apellidosSocio);
+        }if(clase=="TerrenosComprador"){
+            TrasnTerrenos.setSocioComprador(cedulaSocio,nombresSocio, apellidosSocio);
         }
+    }//GEN-LAST:event_formInternalFrameClosed
 
-    }//GEN-LAST:event_txtBusquedaKeyReleased
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(BuscarSocio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(BuscarSocio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(BuscarSocio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(BuscarSocio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new BuscarSocio().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBuscar;
     private javax.swing.JComboBox<String> cbDatoDeBusqueda;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;

@@ -6,11 +6,14 @@
 package Terrenos;
 
 import Conexion.Conexion;
+import static Menu.Menu.jDesktopPane1;
 import Multas.Metodos_Multas;
+import Multas.Multas;
 import Socios.*;
 import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.PreparedStatement;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -25,17 +28,26 @@ import javax.swing.table.DefaultTableModel;
  * @author Diego
  */
 public class Terrenos extends javax.swing.JInternalFrame {
+ private static String ced_socio;
+    public static void setSocio(String cedulaSocio, String nombresSocio, String apellidosSocio) {
+        //To change body of generated methods, choose Tools | Templates.
+        
+        txtSocio.setText(nombresSocio+" "+apellidosSocio);
+   
+         ced_socio = cedulaSocio;
+    }
 
     DefaultTableModel modelo;
 
     /**
      * Creates new form Socios
      */
+      int limite  = 10;
     public Terrenos() {
         initComponents();
         crearTabla();
         cargarModulo();
-        bloquearBotonesInicio() ;
+      //  bloquearBotonesInicio() ;
 
         tblTerreno.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 
@@ -64,6 +76,38 @@ public class Terrenos extends javax.swing.JInternalFrame {
 
             }
         });
+    
+ 
+txtMetaje.addKeyListener(new KeyListener(){
+ 
+public void keyTyped(KeyEvent e)
+ 
+{if (txtMetaje.getText().length()== limite)
+ 
+     e.consume();
+}
+ 
+public void keyPressed(KeyEvent arg0) {
+}
+ 
+public void keyReleased(KeyEvent arg0) {
+}
+});
+txtSolar.addKeyListener(new KeyListener(){
+ 
+public void keyTyped(KeyEvent e)
+ 
+{if (txtSolar.getText().length()== limite)
+ 
+     e.consume();
+}
+ 
+public void keyPressed(KeyEvent arg0) {
+}
+ 
+public void keyReleased(KeyEvent arg0) {
+}
+});
     }
     
       public void bloquearBotonesInicio() {
@@ -279,7 +323,7 @@ public class Terrenos extends javax.swing.JInternalFrame {
                     + "Met_Terreno='" + txtMetaje.getText() + "',"
                     + "Id_Modulo='" + cnbModulo.getSelectedItem() + "',"
                     + "Sol_Terrono='" + txtSolar.getText() + "',"
-                    + "Socio='" + txtSocio.getText() + "' "
+                    + "Socio='" + ced_socio + "' "
                     + "where Id_Terreno ='" + txtIdTerreno.getText() + "'";
 
             try {
@@ -319,15 +363,16 @@ public class Terrenos extends javax.swing.JInternalFrame {
         txtSocio = new javax.swing.JTextField();
         txtMetaje = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        cnbModulo = new javax.swing.JComboBox<>();
+        cnbModulo = new javax.swing.JComboBox<String>();
         jLabel5 = new javax.swing.JLabel();
         txtIdTerreno = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         txtSolar = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblTerreno = new javax.swing.JTable();
-        jComboBoxBuscar = new javax.swing.JComboBox<>();
+        jComboBoxBuscar = new javax.swing.JComboBox<String>();
         jLabel9 = new javax.swing.JLabel();
         txtBuscar = new javax.swing.JTextField();
         btnBuscar = new javax.swing.JButton();
@@ -427,6 +472,9 @@ public class Terrenos extends javax.swing.JInternalFrame {
             }
         });
         txtMetaje.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtMetajeKeyPressed(evt);
+            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtMetajeKeyTyped(evt);
             }
@@ -449,6 +497,13 @@ public class Terrenos extends javax.swing.JInternalFrame {
             }
         });
 
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/buscar1.png"))); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -462,10 +517,14 @@ public class Terrenos extends javax.swing.JInternalFrame {
                     .addComponent(jLabel7))
                 .addGap(32, 32, 32)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtSocio)
                     .addComponent(txtIdTerreno)
-                    .addComponent(txtDireccion)
-                    .addComponent(cnbModulo, 0, 154, Short.MAX_VALUE))
+                    .addComponent(cnbModulo, 0, 154, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(txtDireccion, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
+                            .addComponent(txtSocio, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel8)
@@ -484,18 +543,20 @@ public class Terrenos extends javax.swing.JInternalFrame {
                     .addComponent(jLabel5)
                     .addComponent(txtIdTerreno, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(txtMetaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtSocio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel4)
+                        .addComponent(txtMetaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtSocio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel2)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
                     .addComponent(jLabel8)
                     .addComponent(txtSolar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cnbModulo, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7))
@@ -517,7 +578,7 @@ public class Terrenos extends javax.swing.JInternalFrame {
         ));
         jScrollPane1.setViewportView(tblTerreno);
 
-        jComboBoxBuscar.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SELECCIONE:", "SOCIO", "MODULO" }));
+        jComboBoxBuscar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SELECCIONE:", "SOCIO", "MODULO" }));
 
         jLabel9.setText("BUSCAR POR:");
 
@@ -628,7 +689,7 @@ public class Terrenos extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -704,6 +765,22 @@ public class Terrenos extends javax.swing.JInternalFrame {
         controlSoloLetras(evt);
     }//GEN-LAST:event_txtDireccionKeyTyped
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+  Buscar_Socio socioBuscar=new Buscar_Socio("Terrenos");
+        
+        jDesktopPane1.add(socioBuscar);
+        socioBuscar.setLocation(20,20);
+
+        socioBuscar.show();
+        
+// TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void txtMetajeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMetajeKeyPressed
+  
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtMetajeKeyPressed
+
     /**
      * @param args the command line arguments
      */
@@ -747,6 +824,7 @@ public class Terrenos extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnCliEliminar;
     private javax.swing.JButton btnCliGuardar;
     private javax.swing.JComboBox<String> cnbModulo;
+    private javax.swing.JButton jButton1;
     private javax.swing.JComboBox<String> jComboBoxBuscar;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
@@ -767,7 +845,7 @@ public class Terrenos extends javax.swing.JInternalFrame {
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtIdTerreno;
     private javax.swing.JTextField txtMetaje;
-    private javax.swing.JTextField txtSocio;
+    public static javax.swing.JTextField txtSocio;
     private javax.swing.JTextField txtSolar;
     // End of variables declaration//GEN-END:variables
 
@@ -819,7 +897,7 @@ public class Terrenos extends javax.swing.JInternalFrame {
             Dir_Terreno = txtDireccion.getText();
             Sol_Terrono = Double.valueOf(txtSolar.getText());
             Id_Modulo = String.valueOf(cnbModulo.getSelectedItem());
-            Socio = txtSocio.getText();
+            Socio =ced_socio;
 
             java.sql.Connection con;
             con = Conexion.GetConnection();
