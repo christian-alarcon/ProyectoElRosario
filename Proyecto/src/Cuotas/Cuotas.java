@@ -9,6 +9,7 @@ import Conexion.Conexion;
 import static Menu.Menu.jDesktopPane1;
 import Socios.BuscarSocio;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -128,6 +129,7 @@ public  void Limpiar()
         String reg[] = new String[4];
         String sentence = "";
         m = new DefaultTableModel(null, titles);
+          //  String fecha = new SimpleDateFormat("yyyy-MM-dd").format(val);
 
         Connection con;
         con = Conexion.GetConnection();
@@ -135,7 +137,7 @@ public  void Limpiar()
         String variable = (String) jcbBuscar.getSelectedItem(); 
          if(variable == "FECHA")
         {
-            sentence = "CALL SP_ConsultarCuotaFecha('%" + val + "%')";
+            sentence = "CALL SP_ConsultarCuotaFecha("+val+")";
         try {
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(sentence);
@@ -294,7 +296,7 @@ public  void Limpiar()
                 JOptionPane.showMessageDialog(null,"No se ha seleccionado ninguna fila","Advertencia",JOptionPane.WARNING_MESSAGE);
                 txtBuscar.requestFocus();
             }else{
-                int confirmado=javax.swing.JOptionPane.showConfirmDialog(null,"¿Realmente desea eliminar el socio?","Confirmación",JOptionPane.YES_OPTION);
+                int confirmado=javax.swing.JOptionPane.showConfirmDialog(null,"¿Realmente desea eliminar la cuota?","Confirmación",JOptionPane.YES_OPTION);
                 if(confirmado==JOptionPane.YES_OPTION){
                 m=(DefaultTableModel) jtbCuotas.getModel();
                 id=(String) m.getValueAt(filasel, 0);
@@ -307,7 +309,7 @@ public  void Limpiar()
                 try {
                        PreparedStatement pst=con.prepareStatement(sentence);
                        pst.executeUpdate();
-                       JOptionPane.showMessageDialog(null,"Socio eliminado correctamente","Información",JOptionPane.INFORMATION_MESSAGE);
+                       JOptionPane.showMessageDialog(null,"Cuota eliminado correctamente","Información",JOptionPane.INFORMATION_MESSAGE);
                         //Limpia de nuevo todos los campos
                        jtbCuotas.setVisible(false);
                        txtBuscar.setText("");
@@ -451,6 +453,15 @@ public  void Limpiar()
         jLabel7.setText("FECHA:");
 
         jLabel6.setText("ID:");
+
+        txtxMotivo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtxMotivoKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtxMotivoKeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -727,8 +738,13 @@ public  void Limpiar()
             TablaSociosM(filtro);
             jtbCuotas.setVisible(true);
             if(valor == 2)
-            TablaSociosF(filtro);
+            {
+                if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+            String filtro2 = txtBuscar.getText().trim();
+            TablaSociosF(filtro2);
             jtbCuotas.setVisible(true);
+                }
+            }
            
         if (valor ==0)
         {
@@ -757,6 +773,18 @@ if (evt.getKeyChar()=='.'&& txtValor.getText().contains(".")) {
             evt.consume();
          } 
     }//GEN-LAST:event_txtValorKeyTyped
+
+    private void txtxMotivoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtxMotivoKeyReleased
+    
+    }//GEN-LAST:event_txtxMotivoKeyReleased
+
+    private void txtxMotivoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtxMotivoKeyTyped
+if (!Character.isLetterOrDigit(evt.getKeyChar())) {
+            Toolkit.getDefaultToolkit().beep();
+            evt.consume();
+         }        // TODO add your handling code here:
+      // TODO add your handling code here:
+    }//GEN-LAST:event_txtxMotivoKeyTyped
    
     /**
      * @param args the command line arguments
